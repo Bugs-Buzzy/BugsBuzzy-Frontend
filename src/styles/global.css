@@ -6,43 +6,38 @@
 	box-sizing: border-box;
 }
 
-/* Persian Fonts (placeholder paths) */
-@font-face {
-	font-family: 'IranSans';
-	src: url('../assets/fonts/IranSans/IranSans-Regular.woff2') format('woff2');
-	font-weight: 400;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'IranSans';
-	src: url('../assets/fonts/IranSans/IranSans-Medium.woff2') format('woff2');
-	font-weight: 500;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'IranSans';
-	src: url('../assets/fonts/IranSans/IranSans-Bold.woff2') format('woff2');
-	font-weight: 700;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'Peyda';
-	src: url('../assets/fonts/Peyda/Peyda-Regular.woff2') format('woff2');
-	font-weight: 400;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'Peyda';
-	src: url('../assets/fonts/Peyda/Peyda-SemiBold.woff2') format('woff2');
-	font-weight: 600;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'Peyda';
-	src: url('../assets/fonts/Peyda/Peyda-Bold.woff2') format('woff2');
-	font-weight: 700;
-	font-display: swap;
-}
+/* Persian / Farsi Fonts: IRANSansX, PeydaWeb, Estedad (selected weights) */
+/* IRANSansX */
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-DemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* PeydaWeb (note some lowercase filenames) */
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/peydaWeb-extralight.woff2') format('woff2'); font-weight: 200; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/peydaWeb-light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* Estedad */
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-ExtraLight.woff2') format('woff2'); font-weight: 200; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 
 html,
 body,
@@ -50,7 +45,8 @@ body,
 	min-height: 100%;
 	margin: 0;
 	padding: 0;
-	font-family: 'Peyda', 'IranSans', system-ui, Arial, sans-serif;
+	/* Default stack: IRANSansX for readability, fallback PeydaWeb, then Estedad */
+	font-family: 'IRANSansX', 'PeydaWeb', 'Estedad', system-ui, Arial, sans-serif;
 }
 
 body {

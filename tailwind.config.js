@@ -23,8 +23,10 @@ export default {
       fontFamily: {
         orbitron: ['"Orbitron"', 'sans-serif'],
         roboto: ['"Roboto"', 'sans-serif'],
-        iransans: ['"IranSans"', 'Tahoma', 'Arial', 'sans-serif'],
-        peyda: ['"Peyda"', '"IranSans"', 'Tahoma', 'Arial', 'sans-serif'],
+        iransans: ['"IRANSansX"', '"PeydaWeb"', 'Tahoma', 'Arial', 'sans-serif'], // legacy alias
+        iransansx: ['"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
+        peyda: ['"PeydaWeb"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
+        estedad: ['"Estedad"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
       },
       animation: {
         glow: 'glow 2s ease-in-out infinite alternate',
