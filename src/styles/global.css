@@ -6,23 +6,77 @@
 	box-sizing: border-box;
 }
 
+/* Persian / Farsi Fonts: IRANSansX, PeydaWeb, Estedad (selected weights) */
+/* IRANSansX */
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-DemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* PeydaWeb (note some lowercase filenames) */
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/peydaWeb-extralight.woff2') format('woff2'); font-weight: 200; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/peydaWeb-light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* Estedad */
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-ExtraLight.woff2') format('woff2'); font-weight: 200; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
 html,
 body,
 #root {
-	height: 100%;
+	min-height: 100%;
 	margin: 0;
 	padding: 0;
-	font-family: system-ui, Arial, sans-serif;
+	/* Default stack: IRANSansX for readability, fallback PeydaWeb, then Estedad */
+	font-family: 'IRANSansX', 'PeydaWeb', 'Estedad', system-ui, Arial, sans-serif;
 }
 
 body {
-	background: #0d1117;
-	color: #e6edf3;
+	background: #07232E; /* fallback */
+	color: #CEEDF7;
 	-webkit-font-smoothing: antialiased;
+	position: relative;
+}
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -2;
+	background: linear-gradient(145deg, #07232E 0%, #0B3A4B 38%, #0E4F65 68%, #17789B 100%);
+	background-size: 100% 100%;
+	will-change: transform; /* hint */
+}
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	opacity: 0.07;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVQoU2NkYGD4z0ABYCJgYMAEmoCRgTgYhKQJmAqiBSAABk0AQq1wZr4AAAAABJRU5ErkJggg==');
+	background-repeat: repeat;
 }
 
 a {
-	color: #79c0ff;
+	color: #2EB1E0; /* process cyan */
 }
 
 button {
@@ -30,13 +84,15 @@ button {
 	font-size: 1rem;
 	padding: 0.6rem 1rem;
 	border-radius: 6px;
-	border: 1px solid #30363d;
-	background: #21262d;
+	border: 1px solid #17789B; /* cerulean */
+	background: #F14F04; /* golden */
 	color: #fff;
+	transition: background .25s ease, transform .25s ease;
 }
 
 button:hover {
-	background: #30363d;
+	background: #FB5D13; /* orange pantone */
+	transform: translateY(-2px);
 }
 
 .app-container {

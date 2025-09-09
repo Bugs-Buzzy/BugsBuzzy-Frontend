@@ -52,16 +52,16 @@ export function Countdown({ target }: { target: string | Date }) {
   ];
 
   return (
-    <div className="flex justify-center gap-4 md:gap-8 my-12">
+    <div className="flex justify-center gap-4 md:gap-8 my-12" dir="ltr">
       {boxes.map((b) => (
         <div
           key={b.label}
-          className="flex flex-col items-center justify-center bg-white/10 rounded-lg w-24 md:w-28 p-3 md:p-4 backdrop-blur-sm"
+          className="flex flex-col items-center justify-center bg-primary-midnight/60 border border-primary-cerulean/40 rounded-lg w-24 md:w-28 p-3 md:p-4 backdrop-blur-sm shadow-md shadow-primary-midnight/40"
         >
           <div className="tabular-nums leading-none font-orbitron text-4xl md:text-6xl h-14 md:h-20 flex items-center justify-center">
             {pad(b.value)}
           </div>
-          <div className="text-[10px] md:text-xs tracking-wider uppercase text-gray-400 mt-2">
+          <div className="text-[10px] md:text-xs tracking-wider uppercase text-primary-sky mt-2">
             {b.label}
           </div>
         </div>
