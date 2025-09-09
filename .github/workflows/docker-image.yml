@@ -10,6 +10,10 @@ on:
       - 'vite.config.*'
       - 'src/**'
       - '.github/workflows/docker-image.yml'
+  
+  # Build image automatically when a GitHub Release is published (ensures versioned tag published)
+  release:
+    types: [ published ]
   workflow_dispatch:
 
 env:
@@ -25,6 +29,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate production env file
+        run: |
+          echo "Creating .env.production with injected secrets (blank if not set)."
+          cat > .env.production <<'EOF'
+          APP_ENV=production
+          VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}
+          VITE_SENTRY_DSN=${{ secrets.PROD_VITE_SENTRY_DSN }}
+          VITE_ANALYTICS_KEY=${{ secrets.PROD_VITE_ANALYTICS_KEY }}
+          VITE_FEATURE_FLAGS_KEY=${{ secrets.PROD_VITE_FEATURE_FLAGS_KEY }}
+          EOF
+          echo "Created .env.production (contents redacted)."
+        shell: bash
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

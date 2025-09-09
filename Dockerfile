@@ -14,7 +14,7 @@ RUN npm run build
 FROM nginx:1.27-alpine AS runtime
 LABEL org.opencontainers.image.source="https://github.com/Bugs-Buzzy/BugsBuzzy-Frontend"
 LABEL org.opencontainers.image.description="BugsBuzzy Frontend"
-LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.licenses="GPL-3.0-only"
 
 # Remove default nginx site and add our own minimal config
 RUN rm /etc/nginx/conf.d/default.conf
