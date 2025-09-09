@@ -6,20 +6,77 @@
 	box-sizing: border-box;
 }
 
+/* Persian Fonts (placeholder paths) */
+@font-face {
+	font-family: 'IranSans';
+	src: url('../assets/fonts/IranSans/IranSans-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'IranSans';
+	src: url('../assets/fonts/IranSans/IranSans-Medium.woff2') format('woff2');
+	font-weight: 500;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'IranSans';
+	src: url('../assets/fonts/IranSans/IranSans-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Peyda';
+	src: url('../assets/fonts/Peyda/Peyda-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Peyda';
+	src: url('../assets/fonts/Peyda/Peyda-SemiBold.woff2') format('woff2');
+	font-weight: 600;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Peyda';
+	src: url('../assets/fonts/Peyda/Peyda-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-display: swap;
+}
+
 html,
 body,
 #root {
-	height: 100%;
+	min-height: 100%;
 	margin: 0;
 	padding: 0;
-	font-family: system-ui, Arial, sans-serif;
+	font-family: 'Peyda', 'IranSans', system-ui, Arial, sans-serif;
 }
 
 body {
-	/* Gradient built from darkest to lighter blues of the brand palette */
-	background: linear-gradient(135deg, #0B3A4B 0%, #17789B 40%, #2EB1E0 100%);
-	color: #CEEDF7; /* columbia */
+	background: #07232E; /* fallback */
+	color: #CEEDF7;
 	-webkit-font-smoothing: antialiased;
+	position: relative;
+}
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -2;
+	background: linear-gradient(145deg, #07232E 0%, #0B3A4B 38%, #0E4F65 68%, #17789B 100%);
+	background-size: 100% 100%;
+	will-change: transform; /* hint */
+}
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	opacity: 0.07;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVQoU2NkYGD4z0ABYCJgYMAEmoCRgTgYhKQJmAqiBSAABk0AQq1wZr4AAAAABJRU5ErkJggg==');
+	background-repeat: repeat;
 }
 
 a {

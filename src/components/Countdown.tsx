@@ -52,7 +52,7 @@ export function Countdown({ target }: { target: string | Date }) {
   ];
 
   return (
-    <div className="flex justify-center gap-4 md:gap-8 my-12">
+    <div className="flex justify-center gap-4 md:gap-8 my-12" dir="ltr">
       {boxes.map((b) => (
         <div
           key={b.label}
