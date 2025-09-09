@@ -23,5 +23,9 @@
     "types": ["vitest", "node"]
   },
   "include": ["src", "tests"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }
