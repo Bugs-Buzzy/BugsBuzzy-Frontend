@@ -46,7 +46,7 @@ export function SocialLinks() {
           key={s.name}
           href={s.href}
           aria-label={s.name}
-          className="text-gray-400 hover:text-pink-500 transition-colors duration-300"
+          className="text-primary-nonphoto hover:text-secondary-orangeCrayola transition-colors duration-300"
         >
           {s.svg}
         </a>

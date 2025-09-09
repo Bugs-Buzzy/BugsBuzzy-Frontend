@@ -13,7 +13,7 @@ export function NewsletterForm() {
   }
 
   if (submitted) {
-    return <p className="text-green-400 mt-4">Thank you! We'll keep you updated.</p>;
+    return <p className="text-secondary-orangeCrayola mt-4">Thank you! We'll keep you updated.</p>;
   }
 
   return (
@@ -25,7 +25,7 @@ export function NewsletterForm() {
       <input
         type="email"
         placeholder="Enter your email"
-        className="w-full px-4 py-3 rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 text-white"
+        className="w-full px-4 py-3 rounded-md bg-primary-midnight/70 border border-primary-cerulean focus:outline-none focus:ring-2 focus:ring-primary-process text-primary-columbia placeholder:text-primary-sky"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -33,7 +33,7 @@ export function NewsletterForm() {
       />
       <button
         type="submit"
-        className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-md transition-colors duration-300"
+        className="bg-secondary-golden hover:bg-secondary-orangePantone text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 shadow-lg shadow-primary-midnight/40"
       >
         Notify Me
       </button>

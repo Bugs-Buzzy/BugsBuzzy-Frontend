@@ -79,6 +79,8 @@ export function ParticlesCanvas() {
       }
     }
 
+    const connectColors = ['#2EB1E0', '#F14F04', '#FB5D13', '#FC7738'];
+
     function connectParticles() {
       const particles = particlesRef.current;
       for (let a = 0; a < particles.length; a++) {
@@ -89,7 +91,12 @@ export function ParticlesCanvas() {
           if (canvas && distance < (canvas.width / 7) * (canvas.height / 7)) {
             const opacity = 1 - distance / 20000;
             if (ctx) {
-              ctx.strokeStyle = `rgba(236,72,153,${opacity})`; // Tailwind pink-500
+              const color = connectColors[(a + b) % connectColors.length];
+              // Convert hex to rgb
+              const r = parseInt(color.slice(1, 3), 16);
+              const g = parseInt(color.slice(3, 5), 16);
+              const bCh = parseInt(color.slice(5, 7), 16);
+              ctx.strokeStyle = `rgba(${r},${g},${bCh},${opacity})`;
               ctx.lineWidth = 1;
               ctx.beginPath();
               ctx.moveTo(particles[a].x, particles[a].y);

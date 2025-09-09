@@ -3,6 +3,23 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
+      colors: {
+        // Renamed: primary (blue scale) & secondary (orange scale)
+        primary: {
+          columbia: '#CEEDF7',
+          nonphoto: '#A6DEF2',
+          sky: '#7DCEEC',
+          aero: '#56C0E6',
+          process: '#2EB1E0',
+          cerulean: '#17789B',
+          midnight: '#0B3A4B',
+        },
+        secondary: {
+          golden: '#F14F04',
+          orangePantone: '#FB5D13',
+          orangeCrayola: '#FC7738',
+        },
+      },
       fontFamily: {
         orbitron: ['"Orbitron"', 'sans-serif'],
         roboto: ['"Roboto"', 'sans-serif'],

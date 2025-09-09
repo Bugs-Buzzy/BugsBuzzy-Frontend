@@ -16,13 +16,14 @@ body,
 }
 
 body {
-	background: #0d1117;
-	color: #e6edf3;
+	/* Gradient built from darkest to lighter blues of the brand palette */
+	background: linear-gradient(135deg, #0B3A4B 0%, #17789B 40%, #2EB1E0 100%);
+	color: #CEEDF7; /* columbia */
 	-webkit-font-smoothing: antialiased;
 }
 
 a {
-	color: #79c0ff;
+	color: #2EB1E0; /* process cyan */
 }
 
 button {
@@ -30,13 +31,15 @@ button {
 	font-size: 1rem;
 	padding: 0.6rem 1rem;
 	border-radius: 6px;
-	border: 1px solid #30363d;
-	background: #21262d;
+	border: 1px solid #17789B; /* cerulean */
+	background: #F14F04; /* golden */
 	color: #fff;
+	transition: background .25s ease, transform .25s ease;
 }
 
 button:hover {
-	background: #30363d;
+	background: #FB5D13; /* orange pantone */
+	transform: translateY(-2px);
 }
 
 .app-container {
