@@ -14,7 +14,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
     coverage: {
-      provider: 'v8', // switched from 'istanbul' to avoid needing @vitest/coverage-istanbul
+      provider: 'v8',
       reporter: ['text', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
       thresholds: {
