@@ -12,7 +12,7 @@ export function Home() {
           BugsBuzzy
         </h1>
         <p className="mt-4 text-xl md:text-2xl text-gray-300 font-light">
-          Something extraordinary is hatching soon.
+          Something is hatching soon.
         </p>
         <Countdown target="2025-10-31T19:00:00" />
         <div className="max-w-2xl mx-auto">
