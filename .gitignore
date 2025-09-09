@@ -14,6 +14,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -27,6 +28,17 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
+.env.development
+.env.test
+
+# Husky generated
+/.husky/_/
+
+# IDE
+.idea/
+*.code-workspace
+
 
 # vercel
 .vercel
