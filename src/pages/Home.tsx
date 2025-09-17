@@ -1,3 +1,4 @@
+import logoSvg from '@/assets/logo.svg';
 import { Countdown } from '@/components/Countdown';
 import { ParticlesCanvas } from '@/components/ParticlesCanvas';
 import { SocialLinks } from '@/components/SocialLinks';
@@ -13,7 +14,7 @@ export function Home() {
       <div className="relative z-10 flex flex-col items-center w-full">
         {/* === Logo === */}
         <img
-          src={'/src/assets/logo.svg'}
+          src={logoSvg}
           alt="لوگوی رویداد باگزبازی"
           className="w-24 h-24 md:w-32 md:h-32 mb-6 animate-pulse-slow"
         />
