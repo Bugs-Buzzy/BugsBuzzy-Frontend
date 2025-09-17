@@ -1,9 +1,6 @@
 import { Countdown } from '@/components/Countdown';
 import { ParticlesCanvas } from '@/components/ParticlesCanvas';
 import { SocialLinks } from '@/components/SocialLinks';
-// Assuming the logo is an SVG, it's often better to import it as a component if your setup allows
-// import Logo from '@/assets/logo.svg';
-// But using <img> with a direct path is also fine.
 
 export function Home() {
   return (
@@ -16,7 +13,7 @@ export function Home() {
       <div className="relative z-10 flex flex-col items-center w-full">
         {/* === Logo === */}
         <img
-          src="src/assets/logo.svg" // Path to your logo
+          src={'/src/assets/logo.svg'}
           alt="لوگوی رویداد باگزبازی"
           className="w-24 h-24 md:w-32 md:h-32 mb-6 animate-pulse-slow"
         />
