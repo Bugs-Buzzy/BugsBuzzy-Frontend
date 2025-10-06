@@ -23,10 +23,10 @@ env:
   IMAGE_NAME: bugs-buzzy/bugsbuzzy-frontend
   PROD_ENV_FILE: |-
     APP_ENV=production
-    VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}
-    VITE_SENTRY_DSN=${{ secrets.PROD_VITE_SENTRY_DSN }}
-    VITE_ANALYTICS_KEY=${{ secrets.PROD_VITE_ANALYTICS_KEY }}
-    VITE_FEATURE_FLAGS_KEY=${{ secrets.PROD_VITE_FEATURE_FLAGS_KEY }}
+    VITE_API_BASE_URL=${{ vars.PROD_VITE_API_BASE_URL }}
+    VITE_SENTRY_DSN=${{ vars.PROD_VITE_SENTRY_DSN }}
+    VITE_ANALYTICS_KEY=${{ vars.PROD_VITE_ANALYTICS_KEY }}
+    VITE_FEATURE_FLAGS_KEY=${{ vars.PROD_VITE_FEATURE_FLAGS_KEY }}
 
 jobs:
   build-and-push:
