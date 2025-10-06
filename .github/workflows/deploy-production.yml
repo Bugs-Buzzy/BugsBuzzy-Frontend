@@ -1,4 +1,4 @@
-name: Docker Image
+name: Production Deployment
 
 on:
   push:
@@ -18,7 +18,15 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  REG_USERNAME: ${{ github.actor }}
+  REG_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   IMAGE_NAME: bugs-buzzy/bugsbuzzy-frontend
+  PROD_ENV_FILE: |-
+    APP_ENV=production
+    VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}
+    VITE_SENTRY_DSN=${{ secrets.PROD_VITE_SENTRY_DSN }}
+    VITE_ANALYTICS_KEY=${{ secrets.PROD_VITE_ANALYTICS_KEY }}
+    VITE_FEATURE_FLAGS_KEY=${{ secrets.PROD_VITE_FEATURE_FLAGS_KEY }}
 
 jobs:
   build-and-push:
@@ -32,15 +40,8 @@ jobs:
 
       - name: Generate production env file
         run: |
-          echo "Creating .env.production with injected secrets (blank if not set)."
-          cat > .env.production <<'EOF'
-          APP_ENV=production
-          VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}
-          VITE_SENTRY_DSN=${{ secrets.PROD_VITE_SENTRY_DSN }}
-          VITE_ANALYTICS_KEY=${{ secrets.PROD_VITE_ANALYTICS_KEY }}
-          VITE_FEATURE_FLAGS_KEY=${{ secrets.PROD_VITE_FEATURE_FLAGS_KEY }}
-          EOF
-          echo "Created .env.production (contents redacted)."
+          echo "${{ env.PROD_ENV_FILE }}" > .env.prod
+          echo "Created .env.prod with production environment variables."
         shell: bash
 
       - name: Set up QEMU
@@ -56,28 +57,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels)
+      - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
-            type=ref,event=tag
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=prod-
+            type=raw,value=latest
+            type=raw,value=production
 
-      - name: Build and push
+      - name: Build and push Production Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./Dockerfile
           push: true
-          provenance: false
-          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: linux/amd64 #,linux/arm64
 
-      - name: Output image digest
-        run: echo "Image digest ${{ steps.meta.outputs.digest }}"
+      - name: Deploy notification
+        run: |
+          echo "🚀 Production deployment completed!"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:production"
+          echo "SHA: ${{ github.sha }}"
