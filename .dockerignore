@@ -11,3 +11,5 @@ temp.html
 coverage
 *.local
 .env*
+!.env.prod
+!.env.dev.*
