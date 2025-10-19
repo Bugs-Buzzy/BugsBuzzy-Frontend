@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHome, FaTrophy, FaGamepad, FaLaptopCode, FaGem, FaUsers, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -13,7 +13,34 @@ interface HUDProps {
 
 export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showFastTravel, setShowFastTravel] = useState(true);
   const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    let hideTimeout: ReturnType<typeof setTimeout>;
+
+    const handleUserActivity = () => {
+      setShowFastTravel(true);
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          setShowFastTravel(false);
+        }
+      }, 2000);
+    };
+
+    window.addEventListener('scroll', handleUserActivity, true);
+    window.addEventListener('touchmove', handleUserActivity);
+    window.addEventListener('wheel', handleUserActivity);
+
+    return () => {
+      window.removeEventListener('scroll', handleUserActivity, true);
+      window.removeEventListener('touchmove', handleUserActivity);
+      window.removeEventListener('wheel', handleUserActivity);
+      clearTimeout(hideTimeout);
+    };
+  }, []);
 
   const floors = [
     { name: 'باگزبازی', Icon: FaHome },
@@ -54,8 +81,14 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
         </div>
       </div>
 
-      {/* Fast Travel - Desktop: Side, Mobile: Bottom */}
-      <div className="fixed left-1/2 -translate-x-1/2 bottom-4 md:left-auto md:translate-x-0 md:right-8 md:top-1/2 md:-translate-y-1/2 z-50 pointer-events-none">
+      {/* Fast Travel - Desktop: Always, Mobile: Auto-hide */}
+      <div
+        className={`fixed left-1/2 -translate-x-1/2 bottom-4 md:left-auto md:translate-x-0 md:right-8 md:top-1/2 md:-translate-y-1/2 z-50 pointer-events-none transition-all duration-300 ${
+          showFastTravel
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-4 md:translate-y-0 md:opacity-100'
+        }`}
+      >
         <PixelFrame className="pointer-events-auto bg-black bg-opacity-80">
           <div className="flex md:flex-col gap-2 md:gap-4">
             {floors.map((floor, index) => {

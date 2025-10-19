@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 import PixelFrame from '@/components/PixelFrame';
 
@@ -8,6 +8,13 @@ interface PixelModalProps {
 }
 
 export default function PixelModal({ children, onClose }: PixelModalProps) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   return (
     <div className="pixel-modal-overlay p-4">
       <div className="absolute inset-0" onClick={onClose} />
