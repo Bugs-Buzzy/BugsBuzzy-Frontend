@@ -13,20 +13,18 @@ export default {
           process: '#2EB1E0',
           cerulean: '#17789B',
           midnight: '#0B3A4B',
+          oxfordblue: '#0B1F47',
         },
         secondary: {
           golden: '#F14F04',
           orangePantone: '#FB5D13',
           orangeCrayola: '#FC7738',
+          ramzinex: '#FAA61A',
         },
       },
       fontFamily: {
-        orbitron: ['"Orbitron"', 'sans-serif'],
-        roboto: ['"Roboto"', 'sans-serif'],
-        iransans: ['"IRANSansX"', '"PeydaWeb"', 'Tahoma', 'Arial', 'sans-serif'], // legacy alias
-        iransansx: ['"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
-        peyda: ['"PeydaWeb"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
-        estedad: ['"Estedad"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
+        pixel: ['"Pixelify Sans"', '"Unixel"', 'monospace'],
+        normal: ['"Comic Sans MS"', '"Comic Sans"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
       },
       animation: {
         glow: 'glow 2s ease-in-out infinite alternate',

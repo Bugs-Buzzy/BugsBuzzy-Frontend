@@ -1,0 +1,42 @@
+<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <defs>
+    <!-- Pattern for pixel border -->
+    <pattern id="corner" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#7d5006"/>
+      <rect x="4" y="4" width="32" height="32" fill="#a86b0c"/>
+      <rect x="8" y="8" width="24" height="24" fill="#faa61a"/>
+      <rect x="10" y="10" width="8" height="8" fill="#f8b84d"/>
+      <rect x="22" y="10" width="8" height="8" fill="#f8b84d"/>
+      <rect x="10" y="22" width="8" height="8" fill="#f8b84d"/>
+      <rect x="22" y="22" width="8" height="8" fill="#f8b84d"/>
+    </pattern>
+  </defs>
+  
+  <!-- Outer brown border -->
+  <rect x="0" y="0" width="100%" height="100%" fill="#7d5006" stroke="none"/>
+  
+  <!-- Middle orange border -->
+  <rect x="12" y="12" width="calc(100% - 24px)" height="calc(100% - 24px)" fill="#a86b0c" stroke="none"/>
+  
+  <!-- Inner yellow border -->
+  <rect x="18" y="18" width="calc(100% - 36px)" height="calc(100% - 36px)" fill="#faa61a" stroke="none"/>
+  
+  <!-- Content area (transparent) -->
+  <rect x="24" y="24" width="calc(100% - 48px)" height="calc(100% - 48px)" fill="transparent" stroke="none"/>
+  
+  <!-- Corner decorations -->
+  <!-- Top-left corner -->
+  <rect x="0" y="0" width="40" height="40" fill="url(#corner)"/>
+  <!-- Top-right corner -->
+  <rect x="calc(100% - 40px)" y="0" width="40" height="40" fill="url(#corner)"/>
+  <!-- Bottom-left corner -->
+  <rect x="0" y="calc(100% - 40px)" width="40" height="40" fill="url(#corner)"/>
+  <!-- Bottom-right corner -->
+  <rect x="calc(100% - 40px)" y="calc(100% - 40px)" width="40" height="40" fill="url(#corner)"/>
+  
+  <!-- Pixel details on corners -->
+  <rect x="4" y="20" width="16" height="16" fill="#d48817"/>
+  <rect x="calc(100% - 20px)" y="20" width="16" height="16" fill="#d48817"/>
+  <rect x="20" y="4" width="16" height="16" fill="#d48817"/>
+  <rect x="20" y="calc(100% - 20px)" width="16" height="16" fill="#d48817"/>
+</svg>

@@ -1,0 +1,14 @@
+/* ========================================
+   Game World - Scroll Snap Container
+   Main container for vertical scroll-snap navigation
+   ======================================== */
+
+.game-world-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+}
+
+/* Note: Individual floor styles are in components.css under .floor class */

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Frame Demo - BugsBuzzy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'Unixel';
+            src: url('./src/assets/fonts/unixel-Regular.woff2') format('woff2');
+            unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF;
+        }
+
+        body {
+            background: linear-gradient(145deg, #07232E 0%, #0B3A4B 38%, #0E4F65 68%, #17789B 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .font-pixel {
+            font-family: "Pixelify Sans", "Unixel", monospace;
+        }
+
+        .font-normal {
+            font-family: "Comic Sans MS", "IRANSansX", sans-serif;
+        }
+
+        /* Pixel Frame */
+        .pixel-frame {
+            position: relative;
+            padding: 32px;
+            background-color: transparent;
+        }
+
+        .pixel-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            box-shadow: 
+                0 0 0 4px #5a3d0f,
+                0 0 0 8px #7d5006,
+                0 0 0 12px #a86b0c,
+                0 0 0 16px #faa61a,
+                0 0 0 18px #f8b84d;
+            border-radius: 4px;
+        }
+
+        .pixel-frame::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(circle at 0% 0%, #d48817 0%, transparent 20px),
+                radial-gradient(circle at 100% 0%, #d48817 0%, transparent 20px),
+                radial-gradient(circle at 0% 100%, #d48817 0%, transparent 20px),
+                radial-gradient(circle at 100% 100%, #d48817 0%, transparent 20px);
+            background-repeat: no-repeat;
+        }
+
+        /* RTL Fix */
+        p, span, div, h1, h2, h3, h4, h5, h6 {
+            unicode-bidi: plaintext;
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-5xl font-pixel text-white text-center mb-12">
+            🎨 Pixel Frame نمایش فریم پیکسلی
+        </h1>
+
+        <!-- Example 1: Basic Frame -->
+        <div class="pixel-frame mb-12 bg-gradient-to-b from-blue-900 to-purple-900">
+            <h2 class="font-pixel text-4xl text-white mb-4">
+                🏆 Competition رقابت حضوری
+            </h2>
+            <p class="font-normal text-blue-200 text-lg leading-8">
+                این یک مثال از استفاده از فریم پیکسلی است که دقیقاً مشابه پوستر BugsBuzzy طراحی شده است.
+                This is an example of using the pixel frame that matches the BugsBuzzy poster design.
+            </p>
+        </div>
+
+        <!-- Example 2: Workshop Card -->
+        <div class="grid grid-cols-2 gap-8 mb-12">
+            <div class="pixel-frame bg-gradient-to-br from-purple-800 to-purple-600">
+                <div class="text-6xl mb-4">🖥️</div>
+                <h3 class="font-pixel text-2xl text-white mb-3">Unity کارگاه</h3>
+                <p class="font-normal text-purple-100">
+                    آموزش ساخت بازی با Unity
+                    Learn game dev with Unity
+                </p>
+            </div>
+
+            <div class="pixel-frame bg-gradient-to-br from-orange-800 to-orange-600">
+                <div class="text-6xl mb-4">🎨</div>
+                <h3 class="font-pixel text-2xl text-white mb-3">Pixel Art کارگاه</h3>
+                <p class="font-normal text-orange-100">
+                    طراحی هنر پیکسلی
+                    Create pixel art graphics
+                </p>
+            </div>
+        </div>
+
+        <!-- Example 3: Large Content -->
+        <div class="pixel-frame bg-gradient-to-b from-green-900 to-green-700 mb-12">
+            <h2 class="font-pixel text-4xl text-white mb-6 text-center">
+                🌲 Welcome to خوش آمدید BugsBuzzy
+            </h2>
+            <div class="grid grid-cols-3 gap-6 mt-8">
+                <div class="text-center">
+                    <div class="text-5xl mb-3">🏆</div>
+                    <p class="font-pixel text-white">Competitions رقابت‌ها</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-3">🔬</div>
+                    <p class="font-pixel text-white">Workshops کارگاه‌ها</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-3">👥</div>
+                    <p class="font-pixel text-white">Team تیم‌سازی</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="text-center mt-12">
+            <div class="inline-block bg-black bg-opacity-50 px-8 py-4 rounded-lg">
+                <p class="font-normal text-white text-sm">
+                    ✓ فریم پیکسلی با 5 لایه بوردر (قهوه‌ای، نارنجی، زرد)
+                    <br>
+                    ✓ دکوراسیون‌های گوشه‌ای خودکار
+                    <br>
+                    ✓ پشتیبانی کامل از RTL و ترکیب فارسی/انگلیسی
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
