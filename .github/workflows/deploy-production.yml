@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'Dockerfile'
+      - 'index.html'
       - 'nginx.conf'
       - 'package.json'
       - 'vite.config.*'
