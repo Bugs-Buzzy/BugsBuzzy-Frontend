@@ -46,7 +46,7 @@ const teams = {
     { id: 21, name: 'مهبد خالتی', role: '', image: 'src/assets/images/team/21.jpg' },
     { id: 22, name: 'زهرا قصابی', role: '', image: 'src/assets/images/team/22.jpg' },
     { id: 23, name: 'سهیل سیاح ورگ', role: '', image: 'src/assets/images/team/23.jpg' },
-    { id: 24, name: 'سارا قضاوی', role: '', image: 'src/assets/images/team/24.heic' },
+    { id: 24, name: 'سارا قضاوی', role: '', image: 'src/assets/images/team/24.jpeg' },
     { id: 25, name: 'امیرحسین شایان', role: '', image: 'src/assets/images/team/25.jpg' },
     { id: 26, name: 'الینا هژبری', role: '', image: 'src/assets/images/team/26.png' },
     { id: 27, name: 'آرمان انجیدنی', role: '', image: 'src/assets/images/team/27.jpg' },
