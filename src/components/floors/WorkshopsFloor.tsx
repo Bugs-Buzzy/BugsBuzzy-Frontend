@@ -2,18 +2,18 @@ import { forwardRef, useState } from 'react';
 import { FaChalkboardTeacher, FaCogs } from 'react-icons/fa';
 
 import bgWorkshops from '@/assets/bkg-workshops.png';
-import img1 from '@/assets/Images/presents/1.jpg';
-import img10 from '@/assets/Images/presents/10.jpg';
-import img2 from '@/assets/Images/presents/2.jpg';
+import img1 from '@/assets/images/presents/1.jpg';
+import img10 from '@/assets/images/presents/10.jpg';
+import img2 from '@/assets/images/presents/2.jpg';
 
 // ✅ وارد کردن عکس‌ها
-import img3 from '@/assets/Images/presents/3.jpg';
-import img4 from '@/assets/Images/presents/4.jpg';
-import img5 from '@/assets/Images/presents/5.jpg';
-import img6 from '@/assets/Images/presents/6.jpg';
-import img7 from '@/assets/Images/presents/7.jpg';
-import img8 from '@/assets/Images/presents/8.jpg';
-import img9 from '@/assets/Images/presents/9.jpg';
+import img3 from '@/assets/images/presents/3.jpg';
+import img4 from '@/assets/images/presents/4.jpg';
+import img5 from '@/assets/images/presents/5.jpg';
+import img6 from '@/assets/images/presents/6.jpg';
+import img7 from '@/assets/images/presents/7.jpg';
+import img8 from '@/assets/images/presents/8.jpg';
+import img9 from '@/assets/images/presents/9.jpg';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 

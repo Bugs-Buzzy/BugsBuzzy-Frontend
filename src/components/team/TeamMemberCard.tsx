@@ -23,7 +23,7 @@ export default function TeamMemberCard({ member }: TeamMemberCardProps) {
   const getImagePath = () => {
     if (!member.image) return null;
     try {
-      return new URL(`../../assets/Images/team/${member.image}`, import.meta.url).href;
+      return new URL(`../../assets/images/team/${member.image}`, import.meta.url).href;
     } catch {
       return null;
     }
@@ -48,7 +48,7 @@ export default function TeamMemberCard({ member }: TeamMemberCardProps) {
             style={{ imageRendering: 'auto' }}
             loading="eager"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
             onError={() => setImgError(true)}
           />
         )}
