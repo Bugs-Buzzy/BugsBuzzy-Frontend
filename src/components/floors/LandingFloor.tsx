@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { FaChevronDown, FaGamepad } from 'react-icons/fa';
 
 import bgLanding from '@/assets/bkg-landing.png';
+import nameImg from '@/assets/name.png'; // 👈 تصویر جدیدت
 
 const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
   return (
@@ -12,8 +13,9 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
     >
       <div className="flex flex-col items-center justify-center h-full relative">
         <div className="text-center space-y-8">
-          <h1 className="text-6xl font-bold text-white font-pixel">BugsBuzzy</h1>
-          <p className="text-2xl text-green-200 font-pixel">به جنگل باگ‌ها خوش آمدید</p>
+          <img src={nameImg} alt="BugsBuzzy" className="w-[500px] h-auto" />
+
+          <p className="text-2xl text-blue-200 font-pixel">به جنگل بازی ها خوش آمدید</p>
 
           <button className="pixel-btn pixel-btn-secondary py-4 px-8 text-xl">
             ثبت‌نام در رویداد

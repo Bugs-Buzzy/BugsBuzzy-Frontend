@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
-import { FaHome, FaTrophy, FaGamepad, FaLaptopCode, FaGem, FaUsers, FaUser } from 'react-icons/fa';
+import {
+  FaHome,
+  FaTrophy,
+  FaGamepad,
+  FaLaptopCode,
+  FaGem,
+  FaUsers,
+  FaUser,
+  FaTimes,
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
+import coinGif from '@/assets/coin.gif';
 import LoginModal from '@/components/modals/LoginModal';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
@@ -10,10 +20,11 @@ interface HUDProps {
   onFloorNavigate: (_index: number) => void;
   currentFloor: number;
 }
-
-export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
+export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HUDProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showFastTravel, setShowFastTravel] = useState(true);
+  const [showMiniGame, setShowMiniGame] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -53,12 +64,27 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
 
   return (
     <>
-      {/* Top Bar - Desktop & Mobile */}
+      {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
         <div className="pointer-events-auto flex justify-between items-start p-3 md:p-6">
-          <PixelFrame className="bg-black bg-opacity-80">
-            <h2 className="text-white text-sm md:text-xl font-bold font-pixel">BugsBuzzy</h2>
-          </PixelFrame>
+          {/* 👇 سکه‌ی تعاملی */}
+          <div
+            className="cursor-pointer"
+            onClick={() => setShowMiniGame(true)}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            <img
+              src={coinGif}
+              alt="BugsBuzzy Coin"
+              className={`h-6 md:h-20 w-auto select-none ${
+                isHovering ? 'animate-none opacity-80' : 'opacity-100'
+              }`}
+              style={{
+                animationPlayState: isHovering ? 'paused' : 'running',
+              }}
+            />
+          </div>
 
           <PixelFrame className="bg-black bg-opacity-80">
             {isAuthenticated ? (
@@ -81,7 +107,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
         </div>
       </div>
 
-      {/* Fast Travel - Desktop: Always, Mobile: Auto-hide */}
+      {/* Fast Travel */}
       <div
         className={`fixed left-1/2 -translate-x-1/2 bottom-4 md:left-auto md:translate-x-0 md:right-8 md:top-1/2 md:-translate-y-1/2 z-50 pointer-events-none transition-all duration-300 ${
           showFastTravel
@@ -97,11 +123,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
                 <button
                   key={index}
                   onClick={() => onFloorNavigate(index)}
-                  className={`pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all ${
-                    currentFloor === index
-                      ? 'bg-purple-600 hover:bg-purple-500 text-white'
-                      : 'bg-gray-700 hover:bg-gray-600 text-white'
-                  }`}
+                  className="pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80 text-white hover:bg-gray-700"
                   title={floor.name}
                 >
                   <FloorIcon className="text-xl md:text-2xl" />
@@ -114,6 +136,28 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
       </div>
 
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+
+      {/* 🎮 Mini Game Modal */}
+      {showMiniGame && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          {/* قاب اصلی مودال */}
+          <PixelFrame className="relative bg-gray-900 border-4  rounded-2xl shadow-lg w-[90%] max-w-md p-6 text-center">
+            {/* دکمه بستن */}
+            <button
+              onClick={() => setShowMiniGame(false)}
+              className="absolute top-3 right-3 text-white hover:text-red-400 transition"
+            >
+              <FaTimes className="text-2xl" />
+            </button>
+
+            <h2 className="font-pixel text-xl text-white mb-4">🎮 مینی‌گیم تستی</h2>
+            <p className="text-gray-300 mb-4">اینجا می‌تونی یه بازی کوچک یا انیمیشن نشون بدی.</p>
+
+            {/* داخل قاب بازی */}
+            <p>Coming Soon...</p>
+          </PixelFrame>
+        </div>
+      )}
     </>
   );
 }

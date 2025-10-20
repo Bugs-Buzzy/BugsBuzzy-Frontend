@@ -185,10 +185,9 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
             }`}
             disabled={currentPage === 0}
           >
-            <FaChevronRight className="text-2xl text-white" />
+            <FaChevronLeft className="text-2xl text-white" />
           </button>
 
-          {/* Content Frame */}
           <PixelFrame className="bg-blue-900/90 w-full mx-12">
             <div className="p-6 md:p-8">
               <div className="flex flex-col items-center gap-6 text-center">
@@ -211,7 +210,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
             }`}
             disabled={currentPage === pages.length - 1}
           >
-            <FaChevronLeft className="text-2xl text-white" />
+            <FaChevronRight className="text-2xl text-white" />
           </button>
         </div>
 
