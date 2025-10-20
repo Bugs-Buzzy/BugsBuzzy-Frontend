@@ -33,6 +33,11 @@ export default function GameWorld() {
     const scrollDelay = 600;
 
     const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.team-scrollbar')) {
+        return;
+      }
+
       if (isScrolling.current) {
         e.preventDefault();
         return;
@@ -60,11 +65,20 @@ export default function GameWorld() {
     let touchStartTime = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.team-scrollbar')) {
+        return;
+      }
       touchStartY = e.touches[0].clientY;
       touchStartTime = Date.now();
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.team-scrollbar')) {
+        return;
+      }
+
       if (isScrolling.current) return;
 
       const touchEndY = e.changedTouches[0].clientY;
@@ -90,6 +104,28 @@ export default function GameWorld() {
       container.removeEventListener('touchstart', handleTouchStart);
       container.removeEventListener('touchend', handleTouchEnd);
     };
+  }, [currentFloor]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            const index = floorRefs.current.indexOf(entry.target as HTMLElement);
+            if (index !== -1 && index !== currentFloor) {
+              setCurrentFloor(index);
+            }
+          }
+        });
+      },
+      { threshold: [0.5, 0.75, 1.0] },
+    );
+
+    floorRefs.current.forEach((floor) => {
+      if (floor) observer.observe(floor);
+    });
+
+    return () => observer.disconnect();
   }, [currentFloor]);
 
   return (
