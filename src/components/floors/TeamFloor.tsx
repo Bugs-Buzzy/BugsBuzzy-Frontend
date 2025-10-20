@@ -60,7 +60,12 @@ const teams = {
     { id: 35, name: 'امیرمهدی هدایتی‌پور', role: '', image: 'src/assets/images/team/35.jpg' },
   ],
   'تیم گرافیک و سوشال': [
-    { id: 36, name: 'نرگس کاری', role: 'مسئول تیم', image: 'src/assets/images/team/36.jpg' },
+    {
+      id: 36,
+      name: 'نرگس کاری',
+      role: 'مسئول تیم گرافیک و سوشال',
+      image: 'src/assets/images/team/36.jpg',
+    },
     { id: 37, name: 'سیداحمد موسوی‌اول', role: '', image: 'src/assets/images/team/37.jpg' },
     { id: 38, name: 'محمد مصیبی', role: '', image: 'src/assets/images/team/38.jpg' },
     { id: 39, name: 'معین آعلی', role: '', image: 'src/assets/images/team/39.jpg' },
@@ -81,7 +86,12 @@ const teams = {
     { id: 47, name: 'حسنا شاه‌حیدری', role: '', image: 'src/assets/images/team/47.jpg' },
   ],
   'تیم مارکتینگ': [
-    { id: 48, name: 'سعید فراتی کاشانی', role: '', image: 'src/assets/images/team/48.jpg' },
+    {
+      id: 48,
+      name: 'سعید فراتی کاشانی',
+      role: 'مسئول تیم مارکتینگ',
+      image: 'src/assets/images/team/48.jpg',
+    },
     { id: 49, name: 'محمد ارمیا قاصری', role: '', image: 'src/assets/images/team/49.jpg' },
     { id: 50, name: 'صهیب صادقی', role: '', image: 'src/assets/images/team/50.jpg' },
     { id: 51, name: 'امیرمحمد شربتی', role: '', image: 'src/assets/images/team/51.jpg' },
