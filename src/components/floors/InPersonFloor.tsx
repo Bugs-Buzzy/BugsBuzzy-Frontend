@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react';
-import { FaTrophy } from 'react-icons/fa';
+import { FaTrophy, FaClock, FaCoins } from 'react-icons/fa';
 
 import bgInPerson from '@/assets/bkg-inperson.png';
 import PixelModal from '@/components/modals/PixelModal';
@@ -16,25 +16,84 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
         style={{ backgroundImage: `url(${bgInPerson})` }}
       >
         <div className="flex items-center justify-center h-full px-4">
-          <PixelFrame
-            className="bg-orange-800 bg-opacity-90 max-w-4xl w-full cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => setShowModal(true)}
-          >
-            <div className="text-center">
-              <FaTrophy className="text-4xl md:text-6xl mb-4 md:mb-6 mx-auto" />
-              <h2 className="text-3xl md:text-5xl font-bold text-white font-pixel mb-4 md:mb-6">
-                رقابت حضوری
-              </h2>
-              <p className="text-lg md:text-2xl text-orange-200 font-normal leading-relaxed">
-                یک رقابت هیجان‌انگیز حضوری برای توسعه‌دهندگان
-                <br className="hidden md:block" />
-                با جوایز ویژه و تجربه‌ای فراموش‌نشدنی
-              </p>
-              <p className="text-orange-300 font-pixel text-xs md:text-sm mt-4 md:mt-6">
-                برای اطلاعات بیشتر کلیک کنید
-              </p>
+          <div className="max-w-5xl w-full space-y-6">
+            {/* Prize Banner */}
+            <div className="flex justify-center">
+              <PixelFrame className="bg-sky-600/90 px-8 py-4 transform transition-all duration-300 hover:scale-105">
+                <div className="flex items-center gap-4">
+                  <FaCoins className="text-3xl text-yellow-400 animate-bounce" />
+                  <p className="text-xl md:text-2xl font-bold text-white font-pixel">
+                    بیش از 300 تتر جایزه
+                  </p>
+                </div>
+              </PixelFrame>
             </div>
-          </PixelFrame>
+
+            {/* Unified Timeline */}
+            <div className="relative h-32 mx-auto mb-8">
+              <div className="relative w-full max-w-[90%] md:max-w-3xl mx-auto flex justify-between items-start">
+                {/* Timeline Path */}
+                <div className="absolute w-[calc(100%-12px)] h-0.5 md:h-1 bg-gradient-to-l from-sky-500 to-sky-300 left-1/2 top-[14px] md:top-[18px] -translate-x-1/2 z-0" />
+
+                {/* Registration Step */}
+                <div className="relative text-center group z-10">
+                  <div className="mb-2 md:mb-4 transition-transform duration-300 group-hover:scale-125">
+                    <div className="w-7 h-7 md:w-8 md:h-8 bg-sky-500 rounded-lg animate-pulse group-hover:animate-none group-hover:bg-sky-400">
+                      <FaClock className="w-full h-full p-1.5 text-white" />
+                    </div>
+                  </div>
+                  <div
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 md:mt-3 bg-sky-600/90 backdrop-blur-sm rounded 
+                    px-2 py-1 md:px-3 md:py-2 transform transition-all duration-300 group-hover:scale-110 
+                    group-hover:bg-sky-500/90 min-w-[100px] md:min-w-[120px] whitespace-nowrap"
+                  >
+                    <p className="text-sky-200 text-xs md:text-sm mb-0.5 md:mb-1 group-hover:text-sky-100">
+                      مهلت ثبت‌نام
+                    </p>
+                    <p className="text-white font-bold text-sm md:text-base">6 آبان</p>
+                  </div>
+                </div>
+
+                {/* Event Step */}
+                <div className="relative text-center group z-10">
+                  <div className="mb-2 md:mb-4 transition-transform duration-300 group-hover:scale-125">
+                    <div className="w-7 h-7 md:w-8 md:h-8 bg-sky-500 rounded-lg animate-pulse group-hover:animate-none group-hover:bg-sky-400">
+                      <FaTrophy className="w-full h-full p-1.5 text-white" />
+                    </div>
+                  </div>
+                  <div
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 md:mt-3 bg-sky-600/90 backdrop-blur-sm rounded 
+                    px-2 py-1 md:px-3 md:py-2 transform transition-all duration-300 group-hover:scale-110 
+                    group-hover:bg-sky-500/90 min-w-[100px] md:min-w-[120px] whitespace-nowrap"
+                  >
+                    <p className="text-sky-200 text-xs md:text-sm mb-0.5 md:mb-1 group-hover:text-sky-100">
+                      روزهای برگزاری
+                    </p>
+                    <p className="text-white font-bold text-sm md:text-base">8 و 9 آبان</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Card */}
+            <PixelFrame
+              className="bg-sky-600/90 cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => setShowModal(true)}
+            >
+              <div className="text-center">
+                <FaTrophy className="text-4xl md:text-6xl mb-4 md:mb-6 mx-auto text-sky-300" />
+                <h2 className="text-3xl md:text-5xl font-bold text-white font-pixel mb-4 md:mb-6">
+                  رقابت حضوری
+                </h2>
+                <p className="text-lg md:text-2xl text-sky-200 font-normal leading-relaxed">
+                  با جوایز ویژه و تجربه‌ای فراموش‌نشدنی
+                </p>
+                <p className="text-sky-300 font-pixel text-xs md:text-sm mt-4 md:mt-6">
+                  برای اطلاعات بیشتر کلیک کنید
+                </p>
+              </div>
+            </PixelFrame>
+          </div>
         </div>
       </section>
 
@@ -47,18 +106,18 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
             </h3>
             <div className="font-normal space-y-3 md:space-y-4 text-base md:text-lg leading-7 md:leading-8">
               <p>
-                در این رقابت حضوری، توسعه‌دهندگان به صورت تیمی یا انفرادی در چالش‌های برنامه‌نویسی و
-                توسعه بازی شرکت می‌کنند.
+                رقابت حضوری رویداد با هدف یادگیری در کنار رقابتی مهیج برگزار می‌شود. در این مسابقه،
+                بازی‌هایی ساده از پیش طراحی شده‌اند و بازیکنان می‌توانند با الهام گرفتن از این
+                بازی‌ها، بازی جدید خود را بسازند یا مرحله‌ای جدید از آن بازی را طراحی کنند و در
+                نهایت، بازی‌های همدیگر را بازی کنند، امتیاز بگیرند و نمره بدهند. این مسابقه شامل
+                چندین جایزه در چندین بخش است.
               </p>
-              <p>
-                با حل مسائل پیچیده، ایجاد بازی‌های خلاقانه و رقابت با دیگر توسعه‌دهندگان، شانس کسب
-                جوایز ارزشمند را خواهید داشت.
-              </p>
+              <p>در این مسابقه از موتور بازی‌سازی Godot 4.5 استفاده می‌شود.</p>
               <div className="bg-orange-900 p-3 md:p-4 rounded mt-4 md:mt-6">
                 <h4 className="font-pixel text-lg md:text-xl mb-2 md:mb-3">جوایز ویژه:</h4>
                 <ul className="list-disc list-inside space-y-1 md:space-y-2 text-sm md:text-base">
                   <li>جوایز نقدی</li>
-                  <li>گواهینامه شرکت در رویداد</li>
+                  <li>مسکات رویداد</li>
                   <li>فرصت‌های شغلی</li>
                 </ul>
               </div>
