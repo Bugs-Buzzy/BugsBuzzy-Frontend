@@ -238,6 +238,24 @@
   animation: teamChangeRight 0.4s ease-out;
 }
 
+@keyframes page-change-left {
+  0% { transform: translateX(50px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes page-change-right {
+  0% { transform: translateX(-50px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-page-change-left {
+  animation: page-change-left 0.5s ease forwards;
+}
+
+.animate-page-change-right {
+  animation: page-change-right 0.5s ease forwards;
+}
+
 /* ========================================
    Pixel Input Component
    Usage: <input class="pixel-input" />
@@ -341,4 +359,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.scrollable-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: auto; /* disables delayed momentum on iOS */
+  touch-action: pan-x; /* allows horizontal touch scroll only */
 }

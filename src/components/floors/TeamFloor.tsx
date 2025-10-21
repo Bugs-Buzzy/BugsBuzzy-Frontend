@@ -4,6 +4,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import bgStaff from '@/assets/bkg-staff.png';
 import TeamMemberCard from '@/components/team/TeamMemberCard';
 import { teams, type TeamName } from '@/data/teams';
+import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
   const teamNames = Object.keys(teams) as TeamName[];
@@ -25,88 +26,10 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
     setCurrentTeamIndex((prev) => (prev === 0 ? teamNames.length - 1 : prev - 1));
   }, [teamNames.length]);
 
-  useEffect(() => {
-    const container = listContainerRef.current;
-    if (!container) return;
-
-    let lastHorizontalScroll = 0;
-
-    const handleWheel = (e: WheelEvent) => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const atTop = scrollTop === 0;
-      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
-
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        e.preventDefault();
-        e.stopPropagation();
-        const now = Date.now();
-        if (now - lastHorizontalScroll > 500) {
-          lastHorizontalScroll = now;
-          if (e.deltaX > 0) {
-            nextTeam();
-          } else if (e.deltaX < 0) {
-            prevTeam();
-          }
-        }
-        return;
-      }
-
-      if (!atTop && e.deltaY < 0) {
-        e.stopPropagation();
-      } else if (!atBottom && e.deltaY > 0) {
-        e.stopPropagation();
-      } else if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      const touchEndX = e.changedTouches[0].clientX;
-      const touchEndY = e.changedTouches[0].clientY;
-      const diffX = touchStartX - touchEndX;
-      const diffY = touchStartY - touchEndY;
-
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 100) {
-        e.preventDefault();
-        if (diffX > 0) {
-          nextTeam();
-        } else {
-          prevTeam();
-        }
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        nextTeam();
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        prevTeam();
-      }
-    };
-
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchend', handleTouchEnd);
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      container.removeEventListener('wheel', handleWheel);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [nextTeam, prevTeam]);
+  useScrollInterceptor(listContainerRef, {
+    onLeft: nextTeam,
+    onRight: prevTeam,
+  });
 
   useEffect(() => {
     const checkScroll = () => {
@@ -133,7 +56,7 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
         <div className="flex items-center justify-center gap-6 mb-8 text-white font-pixel">
           <button
             onClick={nextTeam}
-            className="p-3 rounded-full bg-gray-900 hover:bg-gray-700 transition"
+            className="p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition"
             aria-label="بعدی"
           >
             <FaChevronRight className="text-2xl" />
@@ -150,7 +73,7 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
 
           <button
             onClick={prevTeam}
-            className="p-3 rounded-full bg-gray-900 hover:bg-gray-700 transition"
+            className="p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition"
             aria-label="قبلی"
           >
             <FaChevronLeft className="text-2xl" />

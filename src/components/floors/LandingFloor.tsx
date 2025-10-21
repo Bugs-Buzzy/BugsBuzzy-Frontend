@@ -15,7 +15,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
         <div className="text-center space-y-8">
           <img src={nameImg} alt="BugsBuzzy" className="w-[500px] h-auto" />
 
-          <p className="text-2xl text-blue-200 font-pixel">به جنگل بازی ها خوش آمدید</p>
+          <p className="text-2xl text-primary-nonphoto font-pixel">به جنگل بازی ها خوش آمدید</p>
 
           <button className="pixel-btn pixel-btn-secondary py-4 px-8 text-xl">
             ثبت‌نام در رویداد

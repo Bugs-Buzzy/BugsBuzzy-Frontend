@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useState, useEffect, useRef } from 'react';
 import {
   FaGamepad,
   FaClock,
@@ -12,40 +12,42 @@ import {
 
 import bgGameJam from '@/assets/bkg-gamejam.png';
 import PixelFrame from '@/components/PixelFrame';
+import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const [animDirection, setAnimDirection] = useState<'left' | 'right'>('right');
 
   const pages = [
     {
       id: 0,
       content: 'جای خالی یک گیم‌جم بزرگ، حرفه‌ای و ساختارمند در کشور همیشه احساس می‌شده است؛',
-      icon: <FaGamepad className="text-4xl md:text-6xl text-blue-400" />,
+      icon: <FaGamepad className="text-4xl md:text-6xl text-primary-process" />,
     },
     {
       id: 1,
       content:
         'رویدادی که بتواند تیم‌های بازی‌سازی را گرد هم بیاورد و بستر لازم برای بروز خلاقیت، تجربه‌ی عملی و رقابت جدی را فراهم کند.',
-      icon: <FaUsers className="text-4xl md:text-6xl text-blue-400" />,
+      icon: <FaUsers className="text-4xl md:text-6xl text-primary-process" />,
     },
     {
       id: 2,
       content:
         'بخش گیم‌جم مجازی باگز بازی دقیقاً با همین هدف طراحی شده است تا تجربه‌ای نزدیک به گیم‌جم‌های بین‌المللی را برای علاقه‌مندان و فعالان این حوزه رقم بزند.',
-      icon: <FaLightbulb className="text-4xl md:text-6xl text-blue-400" />,
+      icon: <FaLightbulb className="text-4xl md:text-6xl text-primary-process" />,
     },
     {
       id: 3,
       content:
         'در این بخش باگزبازی میتوانید در غالب تیم های 1 الی 6 نفره در مسابقه شرکت کنید و بر اساس تم مسابقه بازی های خود را از ایده تا اجرا پیش ببرید',
-      icon: <FaCode className="text-4xl md:text-6xl text-blue-400" />,
+      icon: <FaCode className="text-4xl md:text-6xl text-primary-process" />,
     },
     {
       id: 4,
       content:
         'در تمامی طول مسیر تیم علمی رویداد کنار شما خواهد بود تا شما را در مسیر توسعه‌ی بازی‌های بهتر هدایت کند، نقاط ضعف را شناسایی کند و به شما کمک کند ایده‌هایتان را به سطح بالاتری برسانید',
-      icon: <FaUsers className="text-4xl md:text-6xl text-blue-400" />,
+      icon: <FaUsers className="text-4xl md:text-6xl text-primary-process" />,
     },
     {
       id: 5,
@@ -125,38 +127,36 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
           </div>
         </div>
       ),
-      icon: <FaClock className="text-4xl md:text-6xl text-blue-400" />,
+      icon: <FaClock className="text-4xl md:text-6xl text-primary-process" />,
     },
   ];
 
   const nextPage = () => {
-    if (!isTransitioning && currentPage < pages.length - 1) {
-      setIsTransitioning(true);
-      setCurrentPage((prev: number) => prev + 1);
-      setTimeout(() => setIsTransitioning(false), 500);
+    if (currentPage < pages.length - 1) {
+      setAnimDirection('right');
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const prevPage = () => {
-    if (!isTransitioning && currentPage > 0) {
-      setIsTransitioning(true);
-      setCurrentPage((prev: number) => prev - 1);
-      setTimeout(() => setIsTransitioning(false), 500);
+    if (currentPage > 0) {
+      setAnimDirection('left');
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        prevPage();
-      } else if (e.key === 'ArrowLeft') {
-        nextPage();
-      }
-    };
+    if (isAnimatingOut) {
+      const timeout = setTimeout(() => {
+        setCurrentPage((prev) => (animDirection === 'right' ? prev + 1 : prev - 1));
+        setIsAnimatingOut(false); // triggers animate in automatically
+      }, 250); // duration of animate-out CSS
+      return () => clearTimeout(timeout);
+    }
+  }, [isAnimatingOut, animDirection]);
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentPage, isTransitioning]);
+  const messageRef = useRef<HTMLDivElement>(null);
+  useScrollInterceptor(messageRef, { onLeft: prevPage, onRight: nextPage });
 
   return (
     <section
@@ -176,39 +176,39 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 w-full max-w-4xl mx-auto flex items-center justify-center relative">
+        <div
+          className="flex-1 w-full max-w-4xl mx-auto flex items-center justify-center relative"
+          ref={messageRef}
+        >
           {/* Navigation Buttons */}
           <button
-            onClick={prevPage}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-blue-900/80 hover:bg-blue-800 transition z-10 ${
-              currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''
+            onClick={nextPage}
+            className={`absolute left-0 p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition z-10 ${
+              currentPage === pages.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
-            disabled={currentPage === 0}
+            disabled={currentPage === pages.length - 1}
           >
             <FaChevronLeft className="text-2xl text-white" />
           </button>
 
-          <PixelFrame className="bg-blue-900/90 w-full mx-12">
-            <div className="p-6 md:p-8">
-              <div className="flex flex-col items-center gap-6 text-center">
-                {pages[currentPage].icon}
-                <div
-                  className={`text-white text-lg md:text-xl leading-relaxed transition-all duration-500 ${
-                    isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-                  }`}
-                >
-                  {pages[currentPage].content}
-                </div>
+          <PixelFrame className="bg-primary-midnight w-full mx-12">
+            <div
+              key={currentPage}
+              className={`p-6 md:p-8 flex flex-col items-center gap-6 text-center animate-page-change-${animDirection}`}
+            >
+              {pages[currentPage].icon}
+              <div className="text-white text-lg md:text-xl leading-relaxed">
+                {pages[currentPage].content}
               </div>
             </div>
           </PixelFrame>
 
           <button
-            onClick={nextPage}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-full bg-blue-900/80 hover:bg-blue-800 transition z-10 ${
-              currentPage === pages.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
+            onClick={prevPage}
+            className={`absolute right-0 p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition z-10 ${
+              currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
-            disabled={currentPage === pages.length - 1}
+            disabled={currentPage === 0}
           >
             <FaChevronRight className="text-2xl text-white" />
           </button>
@@ -220,14 +220,12 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
             <div
               key={page.id}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                currentPage === page.id ? 'bg-blue-400 w-6' : 'bg-blue-900 hover:bg-blue-800'
+                currentPage === page.id
+                  ? 'bg-primary-sky w-6'
+                  : 'bg-primary-oxfordblue hover:bg-primary-midnight'
               }`}
               onClick={() => {
-                if (!isTransitioning) {
-                  setIsTransitioning(true);
-                  setCurrentPage(page.id);
-                  setTimeout(() => setIsTransitioning(false), 500);
-                }
+                setCurrentPage(page.id);
               }}
             />
           ))}

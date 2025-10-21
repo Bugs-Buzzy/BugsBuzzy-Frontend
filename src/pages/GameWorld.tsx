@@ -22,7 +22,7 @@ export default function GameWorld() {
     floorRefs.current[index]?.scrollIntoView({ behavior: 'smooth' });
     setTimeout(() => {
       isScrolling.current = false;
-    }, 1000);
+    }, 250);
   };
 
   useEffect(() => {

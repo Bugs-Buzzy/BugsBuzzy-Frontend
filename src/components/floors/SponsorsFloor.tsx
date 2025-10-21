@@ -1,11 +1,15 @@
-import { forwardRef } from 'react';
+import { forwardRef, useRef } from 'react';
 import { FaGem } from 'react-icons/fa';
 
 import bgSponsor from '@/assets/bkg-sponsor.png';
 import RamzinexLogo from '@/assets/images/sponsors/ramzinex.png'; // مسیر لوگوی رمزینکس
 import PixelFrame from '@/components/PixelFrame';
+import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
+  const messageRef = useRef<HTMLDivElement>(null);
+  useScrollInterceptor(messageRef, {});
+
   return (
     <section
       ref={ref}
@@ -20,7 +24,7 @@ const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
         </h2>
 
         {/* اسپانسر */}
-        <PixelFrame className="bg-secondary-golden bg-opacity-30 p-6 md:p-12 flex flex-col items-center gap-6 hover:scale-105 transition-transform w-full md:w-3/4 ">
+        <PixelFrame className="bg-secondary-golden bg-opacity-30 p-6 md:px-8 md:py-4 flex flex-col items-center gap-6 transition-transform w-full md:w-3/4 ">
           {/* لوگو */}
           <img
             src={RamzinexLogo}
@@ -29,7 +33,10 @@ const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
           />
 
           {/* متن معرفی */}
-          <div className="text-white text-sm md:text-base space-y-4 max-h-60 overflow-y-auto">
+          <div
+            className="text-white text-sm md:text-base space-y-4 max-h-60 overflow-y-auto"
+            ref={messageRef}
+          >
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 mb-4">
               <h3 className="text-2xl md:text-2xl font-bold text-white mb-4">
                 رمزینکس؛ صرافی منتخب بیش از ۴ میلیون کاربر ایرانی <></>
