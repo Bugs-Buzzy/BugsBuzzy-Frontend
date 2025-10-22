@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 import ProtectedRoute from '@/components/ProtectedRoute';
+import LoadingScreen from '@/components/LoadingScreen';
 import { AuthProvider } from '@/context/AuthContext';
 import GameWorld from '@/pages/GameWorld';
 import Panel from '@/pages/Panel';
@@ -10,6 +12,17 @@ import ProfileSettings from '@/pages/panel/ProfileSettings';
 import '@/styles/components.css';
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Loading screen will auto-complete after 3 seconds
+    // You can also trigger it manually if needed
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen onComplete={() => setIsLoading(false)} />;
+  }
+
   return (
     <AuthProvider>
       <BrowserRouter>
