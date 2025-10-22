@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+
 import logo from '@/assets/logo.svg';
-import sharifImg from '@/assets/images/sharif.png';
-import ramzImg from '@/assets/images/ramz.png';
+import ramzImg from '@/assets/ramz.png';
+import sharifImg from '@/assets/sharif.png';
 
 interface LoadingScreenProps {
   onComplete?: () => void;
@@ -72,9 +73,7 @@ export default function LoadingScreen({ onComplete, duration = 3000 }: LoadingSc
         </div>
 
         {/* Progress percentage */}
-        <p className="text-center text-gray-400 font-pixel text-xs mt-2">
-          {Math.round(progress)}%
-        </p>
+        <p className="text-center text-gray-400 font-pixel text-xs mt-2">{Math.round(progress)}%</p>
       </div>
 
       {/* Sponsors/Partners Section */}
