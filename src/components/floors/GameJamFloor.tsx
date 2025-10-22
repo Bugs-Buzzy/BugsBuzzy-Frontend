@@ -16,7 +16,6 @@ import {
 
 import bgGameJam from '@/assets/bkg-gamejam.png';
 import PixelFrame from '@/components/PixelFrame';
-import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -44,7 +43,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     {
       id: 3,
       content:
-        'در این بخش باگزبازی میتوانید در قالب تیم های 1 الی 6 نفره در مسابقه شرکت کنید و بر اساس تم مسابقه بازی های خود را از ایده تا اجرا پیش ببرید',
+        'در این بخش باگزبازی میتوانید در قالب تیم های ۱ الی ۶ نفره در مسابقه شرکت کنید و بر اساس تم مسابقه بازی های خود را از ایده تا اجرا پیش ببرید',
       icon: <FaCode className="text-4xl md:text-6xl text-primary-process" />,
     },
     {
@@ -60,9 +59,9 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
           {/* Prize Cards */}
           <div className="grid grid-cols-3 gap-2 md:gap-4 w-full">
             {[
-              { place: 1, amount: 400, amountFa: '۴۰۰', emoji: '🥇', color: 'yellow' },
-              { place: 2, amount: 200, amountFa: '۲۰۰', emoji: '🥈', color: 'slate' },
-              { place: 3, amount: 100, amountFa: '۱۰۰', emoji: '🥉', color: 'orange' },
+              { place: 1, amount: 400, amountFa: '400', emoji: '🥇', color: 'yellow' },
+              { place: 2, amount: 200, amountFa: '200', emoji: '🥈', color: 'slate' },
+              { place: 3, amount: 100, amountFa: '100', emoji: '🥉', color: 'orange' },
             ].map((prize) => (
               <div key={prize.place} className="flex flex-col items-center group">
                 {/* Trophy Emoji */}
@@ -316,7 +315,6 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   }, [isAnimatingOut, animDirection]);
 
   const messageRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(messageRef, { onLeft: prevPage, onRight: nextPage });
 
   return (
     <section
@@ -341,11 +339,11 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
             <div className="relative inline-block">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-lg blur-lg opacity-75 animate-pulse"></div>
               <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg px-6 md:px-8 py-2 md:py-3 border-2 border-orange-400 shadow-lg">
-                <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">
+                <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold flex justify-center">
                   TOTAL PRIZE POOL
                 </p>
                 <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-sans font-extrabold animate-pulse">
-                  ۷۰۰+ USDT
+                  700+ USDT
                 </p>
               </div>
             </div>

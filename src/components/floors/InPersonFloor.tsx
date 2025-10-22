@@ -53,7 +53,7 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                 <div className="flex items-center gap-4">
                   <FaCoins className="text-3xl text-yellow-400 animate-bounce" />
                   <p className="text-xl md:text-2xl font-bold text-white font-pixel">
-                    بیش از ۳۰۰ تتر جایزه
+                    بیش از ۴۰۰ تتر جایزه
                   </p>
                 </div>
               </PixelFrame>
@@ -120,9 +120,9 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                 <p className="text-lg md:text-2xl text-primary-nonphoto font-normal leading-relaxed">
                   با جوایز ویژه و تجربه‌ای فراموش‌نشدنی
                 </p>
-                  <p className="text-primary-sky font-pixel text-xs md:text-sm mt-4 md:mt-6">
-                    برای اطلاعات بیشتر کلیک کنید
-                  </p>
+                <p className="text-primary-sky font-pixel text-xs md:text-sm mt-4 md:mt-6">
+                  برای اطلاعات بیشتر کلیک کنید
+                </p>
               </div>
             </PixelFrame>
           </div>
@@ -131,11 +131,16 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
 
       {showModal && (
         <PixelModal onClose={() => setShowModal(false)}>
-          <div className="text-white font-pixel" ref={modalRef} tabIndex={-1}>
+          <div
+            className="text-white font-pixel max-h-[70vh] overflow-y-auto p-4 md:p-6"
+            ref={modalRef}
+            tabIndex={-1}
+          >
             <FaTrophy className="text-4xl md:text-6xl mb-4 mx-auto" />
             <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">
               رقابت حضوری Bitcoin Hunt
             </h3>
+
             <div className="font-normal space-y-3 md:space-y-4 text-sm md:text-base md:text-lg leading-7 md:leading-8">
               <p>
                 رقابت حضوری رویداد با هدف یادگیری در کنار رقابتی مهیج برگزار می‌شود. در این مسابقه،
@@ -144,13 +149,28 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                 نهایت، بازی‌های همدیگر را بازی کنند، امتیاز بگیرند و نمره بدهند. این مسابقه شامل
                 چندین جایزه در چندین بخش است.
               </p>
+              <p>
+                این مسابقه در قالب تیم های ۳ نفره برگزار میشود و به شکلی طراحی شده است که کسانی که
+                تجربه زیادی در بازی‌سازی هم ندارند در کنار آشنایی با موتور بازی‌سازی Godot شانس خوبی
+                برای پیروزی و برنده شدن جوایز متعدد داشته باشند. اگر به دنبال یک تجربه مفرح و
+                تکرارنشدنی در کنار یادگیری بازی‌سازی هستید به هیچ عنوان این بخش از رویداد را از دست
+                ندهید.
+              </p>
+              <p>
+                <b>
+                  توجه!!! ظرفیت این بخش محدود می‌باشد و اولویت با افرادی می باشد که تیم خود را
+                  سریعتر تکمیل کنند.
+                </b>
+              </p>
+
               <p>در این مسابقه از موتور بازی‌سازی Godot 4.5 استفاده می‌شود.</p>
+
               <div className="bg-orange-900 p-3 md:p-4 rounded mt-4 md:mt-6">
                 <h4 className="font-pixel text-lg md:text-xl mb-2 md:mb-3">جوایز ویژه:</h4>
                 <ul className="list-disc list-inside space-y-1 md:space-y-2 text-sm md:text-base">
+                  <li>بیت‌کوین</li>
                   <li>جوایز نقدی</li>
                   <li>مسکات رویداد</li>
-                  <li>فرصت‌های شغلی</li>
                 </ul>
               </div>
             </div>

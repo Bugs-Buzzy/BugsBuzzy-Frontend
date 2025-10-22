@@ -10,7 +10,7 @@ interface LoadingScreenProps {
   duration?: number;
 }
 
-export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingScreenProps) {
+export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [dots, setDots] = useState('');
 
@@ -57,7 +57,7 @@ export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingSc
 
       {/* Loading Text with animated dots */}
       <div className="text-center mb-20 md:mb-28">
-        <p 
+        <p
           className="text-5xl md:text-7xl font-pixel text-white tracking-widest min-h-[3.5rem] md:min-h-[6rem]"
           style={{
             textStroke: '2px rgba(0,0,0,0.5)',
@@ -65,7 +65,8 @@ export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingSc
             paintOrder: 'stroke fill',
           }}
         >
-          Loading<span className="inline-block w-20 md:w-32 text-left">{dots}</span>
+          درحال بارگزاری
+          <span className="inline-block w-10 md:w-20 text-right">{dots}</span>
         </p>
       </div>
 
@@ -84,7 +85,9 @@ export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingSc
         </div>
 
         {/* Progress percentage */}
-        <p className="text-center text-gray-300 font-pixel text-base md:text-lg mt-4">{Math.round(progress)}%</p>
+        <p className="text-center text-gray-300 font-pixel text-base md:text-lg mt-4">
+          {Math.round(progress)}%
+        </p>
       </div>
 
       {/* Sponsors/Partners Section */}

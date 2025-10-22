@@ -150,8 +150,8 @@ export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HU
               <FaTimes className="text-2xl" />
             </button>
 
-            <h2 className="font-pixel text-xl text-white mb-4">🎮 مینی‌گیم تستی</h2>
-            <p className="text-gray-300 mb-4">اینجا می‌تونی یه بازی کوچک یا انیمیشن نشون بدی.</p>
+            <h2 className="font-pixel text-xl text-white mb-4">مینی‌گیم</h2>
+            <p className="text-gray-300 mb-4"></p>
 
             {/* داخل قاب بازی */}
             <p>Coming Soon...</p>
