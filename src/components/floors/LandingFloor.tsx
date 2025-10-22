@@ -12,7 +12,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
       style={{ backgroundImage: `url(${bgLanding})` }}
     >
       <div className="flex flex-col items-center justify-center h-full relative">
-        <div className="text-center space-y-8">
+        <div className="text-center space-y-8 -translate-y-12 md:-translate-y-16">
           <img src={nameImg} alt="BugsBuzzy" className="w-[500px] h-auto" />
 
           <button className="pixel-btn pixel-btn-secondary py-4 px-8 text-xl">
