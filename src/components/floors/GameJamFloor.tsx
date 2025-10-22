@@ -102,43 +102,140 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     {
       id: 6,
       content: (
-        <div className="w-full h-full overflow-y-auto px-2 md:px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-3 relative py-6">
-            {/* Horizontal connecting line for desktop only */}
-            <div className="hidden md:block absolute top-1/3 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent transform"></div>
-            
-            {/* Vertical connecting line for mobile */}
-            <div className="md:hidden absolute top-0 bottom-0 left-1/2 w-0.5 bg-gradient-to-b from-transparent via-orange-400 to-transparent transform -translate-x-1/2"></div>
-            
-            {/* Timeline items */}
-            {[
-              { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-base md:text-lg" /> },
-              { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-base md:text-lg" /> },
-              { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-base md:text-lg" /> },
-              { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-base md:text-lg" /> },
-            ].map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center relative pt-6 md:pt-0">
-                {/* Circle with icon */}
-                <div className={`absolute ${idx === 0 ? '-top-3 md:-top-4' : '-top-3 md:top-1/4'} left-1/2 transform -translate-x-1/2 z-10`}>
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-50 animate-pulse"></div>
-                    <div className="relative w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-2 md:border-3 border-gray-900 shadow-lg">
-                      {item.icon}
+        <div className="w-full h-full px-2 md:px-0">
+          {/* Mobile Layout - Vertical timeline */}
+          <div className="md:hidden">
+            <div className="flex flex-col gap-4 py-4 px-2">
+              {[
+                { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-lg" /> },
+                { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-lg" /> },
+                { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-lg" /> },
+                { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-lg" /> },
+              ].map((item, idx) => (
+                <div key={idx} className="flex gap-4 items-start">
+                  {/* Vertical line and circle */}
+                  <div className="flex flex-col items-center">
+                    {idx > 0 && <div className="w-0.5 h-8 bg-gradient-to-b from-orange-400 to-transparent"></div>}
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-50 animate-pulse"></div>
+                      <div className="relative w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-lg">
+                        {item.icon}
+                      </div>
                     </div>
                   </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 bg-gradient-to-br from-blue-900/60 to-blue-800/60 backdrop-blur-sm rounded-lg p-3 border border-blue-700/50 hover:border-orange-400/50 transition-all group mt-1">
+                    <p className="text-orange-400 font-pixel font-bold text-sm group-hover:text-orange-300 transition-colors">
+                      {item.label}
+                    </p>
+                    <p className="text-white font-pixel text-base font-bold mt-1 group-hover:text-orange-200 transition-colors">
+                      {item.date}
+                    </p>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Layout - 2x2 Grid with connecting lines */}
+          <div className="hidden md:flex md:flex-col md:h-full md:justify-center">
+            <div className="relative px-4 py-8">
+              {/* Connecting lines container */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ left: 0, top: 0 }}>
+                {/* Top-left to top-right line */}
+                <line x1="15%" y1="25%" x2="85%" y2="25%" stroke="url(#gradient1)" strokeWidth="2" />
+                {/* Top-right to bottom-right line */}
+                <line x1="85%" y1="25%" x2="85%" y2="75%" stroke="url(#gradient1)" strokeWidth="2" />
+                {/* Bottom-right to bottom-left line */}
+                <line x1="85%" y1="75%" x2="15%" y2="75%" stroke="url(#gradient1)" strokeWidth="2" />
+                {/* Bottom-left to start line */}
+                <line x1="15%" y1="75%" x2="15%" y2="25%" stroke="url(#gradient1)" strokeWidth="2" />
                 
-                {/* Content */}
-                <div className="mt-10 md:mt-2 bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-sm rounded-lg p-2 md:p-4 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center">
-                  <p className="text-orange-400 font-pixel font-bold text-xs md:text-sm group-hover:text-orange-300 transition-colors line-clamp-2">
-                    {item.label}
-                  </p>
-                  <p className="text-white font-pixel text-sm md:text-base font-bold mt-1 group-hover:text-orange-200 transition-colors">
-                    {item.date}
-                  </p>
+                <defs>
+                  <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgb(249, 115, 22)" stopOpacity="1" />
+                    <stop offset="50%" stopColor="rgb(251, 191, 36)" stopOpacity="1" />
+                    <stop offset="100%" stopColor="rgb(249, 115, 22)" stopOpacity="1" />
+                  </linearGradient>
+                </defs>
+              </svg>
+
+              {/* 2x2 Grid */}
+              <div className="grid grid-cols-2 gap-6 relative z-10">
+                {/* Top-Right: پایان ثبت‌نام */}
+                <div className="flex flex-col items-center">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-60 animate-pulse"></div>
+                    <div className="relative w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-3 border-gray-900 shadow-lg">
+                      <FaEdit className="text-white text-xl" />
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-900/70 to-blue-800/70 backdrop-blur-sm rounded-xl p-4 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center min-h-24 flex flex-col justify-center">
+                    <p className="text-orange-400 font-pixel font-bold text-sm group-hover:text-orange-300 transition-colors">
+                      پایان ثبت‌نام
+                    </p>
+                    <p className="text-white font-pixel text-lg font-bold mt-2 group-hover:text-orange-200 transition-colors">
+                      14 آبان
+                    </p>
+                  </div>
+                </div>
+
+                {/* Top-Left: افتتاحیه و اعلام تم */}
+                <div className="flex flex-col items-center">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-60 animate-pulse"></div>
+                    <div className="relative w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-3 border-gray-900 shadow-lg">
+                      <FaFlag className="text-white text-xl" />
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-900/70 to-blue-800/70 backdrop-blur-sm rounded-xl p-4 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center min-h-24 flex flex-col justify-center">
+                    <p className="text-orange-400 font-pixel font-bold text-sm group-hover:text-orange-300 transition-colors">
+                      افتتاحیه و اعلام تم
+                    </p>
+                    <p className="text-white font-pixel text-lg font-bold mt-2 group-hover:text-orange-200 transition-colors">
+                      14 آبان
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom-Left: مهلت ارسال آثار */}
+                <div className="flex flex-col items-center">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-60 animate-pulse"></div>
+                    <div className="relative w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-3 border-gray-900 shadow-lg">
+                      <FaUpload className="text-white text-xl" />
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-900/70 to-blue-800/70 backdrop-blur-sm rounded-xl p-4 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center min-h-24 flex flex-col justify-center">
+                    <p className="text-orange-400 font-pixel font-bold text-sm group-hover:text-orange-300 transition-colors">
+                      مهلت ارسال آثار
+                    </p>
+                    <p className="text-white font-pixel text-lg font-bold mt-2 group-hover:text-orange-200 transition-colors">
+                      24 آبان
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom-Right: اختتامیه و اعلام برندگان */}
+                <div className="flex flex-col items-center">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-60 animate-pulse"></div>
+                    <div className="relative w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-3 border-gray-900 shadow-lg">
+                      <FaMedal className="text-white text-xl" />
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-900/70 to-blue-800/70 backdrop-blur-sm rounded-xl p-4 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center min-h-24 flex flex-col justify-center">
+                    <p className="text-orange-400 font-pixel font-bold text-sm group-hover:text-orange-300 transition-colors">
+                      اختتامیه و اعلام برندگان
+                    </p>
+                    <p className="text-white font-pixel text-lg font-bold mt-2 group-hover:text-orange-200 transition-colors">
+                      28 آبان
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       ),
