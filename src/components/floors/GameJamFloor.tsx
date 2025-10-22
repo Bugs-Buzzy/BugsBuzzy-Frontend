@@ -8,6 +8,10 @@ import {
   FaCode,
   FaChevronLeft,
   FaChevronRight,
+  FaEdit,
+  FaFlag,
+  FaUpload,
+  FaMedal,
 } from 'react-icons/fa';
 
 import bgGameJam from '@/assets/bkg-gamejam.png';
@@ -52,82 +56,91 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     {
       id: 5,
       content: (
-        <div className="grid grid-cols-3 gap-4">
-          {[
-            { place: 1, amount: 400, color: 'yellow' },
-            { place: 2, amount: 200, color: 'slate' },
-            { place: 3, amount: 100, color: 'amber' },
-          ].map((prize) => (
-            <div key={prize.place} className="flex flex-col items-center group">
-              <div className="relative mb-2">
-                <FaTrophy
-                  className={`text-3xl md:text-4xl ${
-                    prize.place === 1
-                      ? 'text-yellow-400'
-                      : prize.place === 2
-                        ? 'text-gray-300'
-                        : 'text-orange-700'
-                  } group-hover:scale-110 transition-transform`}
-                />
-                <span
-                  className={`absolute -top-1 -right-1 w-4 h-4 ${
-                    prize.place === 1
-                      ? 'bg-yellow-400'
-                      : prize.place === 2
-                        ? 'bg-gray-300'
-                        : 'bg-orange-700'
-                  } rounded-full flex items-center justify-center text-xs font-bold`}
-                >
-                  {prize.place}
-                </span>
+        <div className="w-full">
+          <div className="grid grid-cols-3 gap-4 md:gap-6">
+            {[
+              { place: 1, amount: 400, color: 'yellow', emoji: '🥇' },
+              { place: 2, amount: 200, color: 'slate', emoji: '🥈' },
+              { place: 3, amount: 100, color: 'amber', emoji: '🥉' },
+            ].map((prize) => (
+              <div key={prize.place} className="flex flex-col items-center group">
+                {/* Trophy with animation */}
+                <div className="relative mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                  <div className={`absolute inset-0 rounded-full blur-lg opacity-50 animate-pulse ${
+                    prize.place === 1 ? 'bg-yellow-400' : prize.place === 2 ? 'bg-gray-300' : 'bg-orange-500'
+                  }`}></div>
+                  <div className="relative text-4xl md:text-6xl">{prize.emoji}</div>
+                </div>
+                
+                {/* Prize card with glow */}
+                <div className="relative w-full">
+                  <div className={`absolute inset-0 rounded-2xl blur-lg opacity-40 animate-pulse ${
+                    prize.place === 1 ? 'bg-yellow-400' : prize.place === 2 ? 'bg-gray-400' : 'bg-orange-500'
+                  }`}></div>
+                  <div className={`relative bg-gradient-to-br from-blue-900/80 to-blue-950/80 backdrop-blur-sm px-4 py-6 rounded-2xl text-center border-2 group-hover:border-orange-400 transition-all border-${
+                    prize.place === 1 ? 'yellow-400/50' : prize.place === 2 ? 'gray-400/50' : 'orange-500/50'
+                  }`}>
+                    <p className={`text-3xl md:text-4xl font-bold font-pixel ${
+                      prize.place === 1 ? 'text-yellow-400' : prize.place === 2 ? 'text-gray-300' : 'text-orange-500'
+                    }`}>
+                      {prize.amount}
+                    </p>
+                    <p className={`text-xs md:text-sm font-pixel mt-1 ${
+                      prize.place === 1 ? 'text-yellow-300' : prize.place === 2 ? 'text-gray-200' : 'text-orange-400'
+                    }`}>
+                      USDT
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="bg-blue-800/50 backdrop-blur-sm px-3 py-2 rounded-lg text-center">
-                <p
-                  className={`${
-                    prize.place === 1
-                      ? 'text-yellow-400'
-                      : prize.place === 2
-                        ? 'text-gray-300'
-                        : 'text-orange-700'
-                  } font-bold font-pixel text-lg md:text-xl`}
-                >
-                  {prize.amount}
-                </p>
-                <p
-                  className={`${
-                    prize.place === 1
-                      ? 'text-yellow-300'
-                      : prize.place === 2
-                        ? 'text-gray-200'
-                        : 'text-orange-600'
-                  } text-sm`}
-                >
-                  USDT
-                </p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       ),
-      icon: <FaTrophy className="text-4xl md:text-6xl text-yellow-400" />,
+      icon: <FaTrophy className="text-4xl md:text-6xl text-yellow-400 animate-bounce" />,
     },
     {
       id: 6,
       content: (
-        <div className="grid grid-cols-1 gap-4">
-          <div className="grid grid-cols-2 gap-2 text-sm md:text-base">
-            <div className="font-bold">پایان ثبت‌نام:</div>
-            <div>14 آبان</div>
-            <div className="font-bold">افتتاحیه و اعلام تم:</div>
-            <div>14 آبان</div>
-            <div className="font-bold">مهلت ارسال آثار:</div>
-            <div>24 آبان</div>
-            <div className="font-bold">اختتامیه:</div>
-            <div>28 آبان</div>
+        <div className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+            {/* Vertical connecting line for mobile, horizontal for desktop */}
+            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent transform -translate-y-1/2"></div>
+            <div className="md:hidden absolute top-0 bottom-0 left-1/2 w-0.5 bg-gradient-to-b from-transparent via-orange-400 to-transparent transform -translate-x-1/2"></div>
+            
+            {/* Timeline items */}
+            {[
+              { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-lg md:text-2xl" /> },
+              { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-lg md:text-2xl" /> },
+              { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-lg md:text-2xl" /> },
+              { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-lg md:text-2xl" /> },
+            ].map((item, idx) => (
+              <div key={idx} className="flex flex-col items-center relative">
+                {/* Circle with icon */}
+                <div className="absolute -top-3 md:top-1/2 left-1/2 transform -translate-x-1/2 md:-translate-y-1/2 z-10">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-50 animate-pulse"></div>
+                    <div className="relative w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-4 border-gray-900 shadow-lg">
+                      {item.icon}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="mt-10 md:mt-0 bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-blue-700/50 hover:border-orange-400/50 transition-all group">
+                  <p className="text-orange-400 font-pixel font-bold text-sm md:text-base group-hover:text-orange-300 transition-colors">
+                    {item.label}
+                  </p>
+                  <p className="text-white font-pixel text-lg md:text-2xl font-bold mt-2 group-hover:text-orange-200 transition-colors">
+                    {item.date}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       ),
-      icon: <FaClock className="text-4xl md:text-6xl text-primary-process" />,
+      icon: <FaClock className="text-4xl md:text-6xl text-orange-400 animate-pulse" />,
     },
   ];
 
@@ -167,12 +180,38 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
       <div className="relative h-full flex flex-col items-center justify-between py-8 px-4">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-bold text-white font-pixel mb-4 animate-pulse mt-16 md:mt-24">
+        {/* Title with Prize Animation - Only show on first page */}
+        <div className={`text-center mb-8 mt-8 md:mt-12 transition-all duration-500 ${
+          currentPage === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+        }`}>
+          <h1 className="text-6xl md:text-8xl font-bold text-white font-pixel mb-6 animate-pulse">
             Game Jam
           </h1>
-          <div className="w-full max-w-md h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mx-auto"></div>
+          
+          {/* Prize Counter with Animation */}
+          <div className="inline-block">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-2xl blur opacity-75 animate-pulse"></div>
+              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl px-8 py-4 border-2 border-orange-400">
+                <p className="text-orange-400 font-pixel text-sm">TOTAL PRIZE POOL</p>
+                <p className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-pixel mt-2">
+                  700+ USDT
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="w-full max-w-2xl h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mt-6"></div>
+        </div>
+
+        {/* Title - Show on other pages */}
+        <div className={`text-center mb-8 mt-8 md:mt-12 transition-all duration-500 ${
+          currentPage !== 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+        }`}>
+          <h1 className="text-6xl md:text-8xl font-bold text-white font-pixel mb-6 animate-pulse">
+            Game Jam
+          </h1>
+          <div className="w-full max-w-2xl h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto"></div>
         </div>
 
         {/* Content */}
