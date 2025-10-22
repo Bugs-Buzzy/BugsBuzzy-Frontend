@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { FaChevronDown, FaGamepad } from 'react-icons/fa';
+import { FaChevronDown, FaGamepad, FaLinkedin, FaTelegram } from 'react-icons/fa';
 
 import bgLanding from '@/assets/bkg-landing.png';
 import nameImg from '@/assets/name.png'; // 👈 تصویر جدیدت
@@ -15,11 +15,30 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
         <div className="text-center space-y-8">
           <img src={nameImg} alt="BugsBuzzy" className="w-[500px] h-auto" />
 
-          <p className="text-2xl text-primary-nonphoto font-pixel">به جنگل بازی ها خوش آمدید</p>
-
           <button className="pixel-btn pixel-btn-secondary py-4 px-8 text-xl">
             ثبت‌نام در رویداد
           </button>
+
+          <div className="flex gap-6 justify-center mt-8">
+            <a
+              href="https://t.me/BugsBuzzy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+              aria-label="Telegram"
+            >
+              <FaTelegram className="text-4xl md:text-5xl" />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/bugs-buzzy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedin className="text-4xl md:text-5xl" />
+            </a>
+          </div>
         </div>
 
         <div className="absolute bottom-10 animate-bounce flex flex-col items-center gap-1">
