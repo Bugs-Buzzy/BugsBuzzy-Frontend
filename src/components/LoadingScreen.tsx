@@ -51,43 +51,50 @@ export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingSc
       style={{ backgroundImage: `url(${bgLoading})` }}
     >
       {/* Logo */}
-      <div className="mb-8 animate-pulse">
-        <img src={logo} alt="BugsBuzzy" className="w-24 h-24 md:w-32 md:h-32 drop-shadow-lg" />
+      <div className="mb-12 md:mb-16 animate-pulse">
+        <img src={logo} alt="BugsBuzzy" className="w-32 h-32 md:w-48 md:h-48 drop-shadow-lg" />
       </div>
 
       {/* Loading Text with animated dots */}
-      <div className="text-center mb-12">
-        <p className="text-2xl md:text-3xl font-pixel text-white tracking-widest min-h-[2.5rem]">
-          Loading<span className="inline-block w-12 text-left">{dots}</span>
+      <div className="text-center mb-16 md:mb-20">
+        <p 
+          className="text-4xl md:text-6xl font-pixel text-white tracking-widest min-h-[3.5rem] md:min-h-[5rem]"
+          style={{
+            textStroke: '2px rgba(0,0,0,0.5)',
+            WebkitTextStroke: '2px rgba(0,0,0,0.5)',
+            paintOrder: 'stroke fill',
+          }}
+        >
+          Loading<span className="inline-block w-16 md:w-24 text-left">{dots}</span>
         </p>
       </div>
 
       {/* Progress Bar Container */}
-      <div className="w-64 md:w-80 mb-12">
+      <div className="w-72 md:w-96 mb-16 md:mb-20">
         {/* Progress Bar Background */}
-        <div className="relative h-2 bg-gray-700 rounded-full overflow-hidden border border-gray-600 shadow-lg">
-          {/* Progress Bar Fill */}
+        <div className="relative h-3 md:h-4 bg-gray-700 rounded-full overflow-hidden border-2 border-gray-600 shadow-lg">
+          {/* Progress Bar Fill - RTL (Right to Left) */}
           <div
-            className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 rounded-full transition-all duration-100 shadow-lg"
-            style={{ width: `${progress}%` }}
+            className="h-full bg-gradient-to-l from-orange-400 via-orange-500 to-orange-400 rounded-full transition-all duration-100 shadow-lg"
+            style={{ width: `${progress}%`, marginLeft: 'auto' }}
           >
             {/* Shimmer effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer" />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white to-transparent opacity-50 animate-shimmer" />
           </div>
         </div>
 
         {/* Progress percentage */}
-        <p className="text-center text-gray-400 font-pixel text-xs mt-2">{Math.round(progress)}%</p>
+        <p className="text-center text-gray-300 font-pixel text-sm md:text-base mt-3">{Math.round(progress)}%</p>
       </div>
 
       {/* Sponsors/Partners Section */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 mt-8">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-16 mt-12">
         {/* Sharif Image */}
         <div className="flex flex-col items-center">
           <img
             src={sharifImg}
             alt="Sharif University"
-            className="h-16 md:h-20 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
+            className="h-20 md:h-28 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
           />
         </div>
 
@@ -96,7 +103,7 @@ export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingSc
           <img
             src={ramzImg}
             alt="Ramz"
-            className="h-16 md:h-20 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
+            className="h-20 md:h-28 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
           />
         </div>
       </div>
