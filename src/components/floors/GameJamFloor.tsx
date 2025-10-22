@@ -60,9 +60,9 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
           {/* Prize Cards */}
           <div className="grid grid-cols-3 gap-2 md:gap-4 w-full">
             {[
-              { place: 1, amount: 400, emoji: '🥇', color: 'yellow' },
-              { place: 2, amount: 200, emoji: '🥈', color: 'slate' },
-              { place: 3, amount: 100, emoji: '🥉', color: 'orange' },
+              { place: 1, amount: 400, amountFa: '۴۰۰', emoji: '🥇', color: 'yellow' },
+              { place: 2, amount: 200, amountFa: '۲۰۰', emoji: '🥈', color: 'slate' },
+              { place: 3, amount: 100, amountFa: '۱۰۰', emoji: '🥉', color: 'orange' },
             ].map((prize) => (
               <div key={prize.place} className="flex flex-col items-center group">
                 {/* Trophy Emoji */}
@@ -108,7 +108,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                             : 'text-orange-400'
                       }`}
                     >
-                      {prize.amount}
+                      {prize.amountFa}
                     </p>
                     <p
                       className={`text-xs md:text-xs font-pixel ${
@@ -141,22 +141,22 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
               {[
                 {
                   label: 'پایان ثبت‌نام',
-                  date: '14 آبان',
+                  date: '۱۴ آبان',
                   icon: <FaEdit className="text-white text-base" />,
                 },
                 {
                   label: 'افتتاحیه و اعلام تم',
-                  date: '14 آبان',
+                  date: '۱۴ آبان',
                   icon: <FaFlag className="text-white text-base" />,
                 },
                 {
                   label: 'مهلت ارسال آثار',
-                  date: '24 آبان',
+                  date: '۲۴ آبان',
                   icon: <FaUpload className="text-white text-base" />,
                 },
                 {
                   label: 'اختتامیه و اعلام برندگان',
-                  date: '28 آبان',
+                  date: '۲۸ آبان',
                   icon: <FaMedal className="text-white text-base" />,
                 },
               ].map((item, idx) => (
@@ -244,22 +244,22 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                   {[
                     {
                       label: 'پایان ثبت‌نام',
-                      date: '14 آبان',
+                      date: '۱۴ آبان',
                       icon: <FaEdit className="text-white text-lg" />,
                     },
                     {
                       label: 'افتتاحیه و اعلام تم',
-                      date: '14 آبان',
+                      date: '۱۴ آبان',
                       icon: <FaFlag className="text-white text-lg" />,
                     },
                     {
                       label: 'مهلت ارسال آثار',
-                      date: '24 آبان',
+                      date: '۲۴ آبان',
                       icon: <FaUpload className="text-white text-lg" />,
                     },
                     {
                       label: 'اختتامیه و اعلام برندگان',
-                      date: '28 آبان',
+                      date: '۲۸ آبان',
                       icon: <FaMedal className="text-white text-lg" />,
                     },
                   ].map((item, idx) => (
@@ -337,15 +337,17 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
 
         {/* Prize Pool - Always visible except on timeline page */}
         {currentPage !== 6 && (
-          <div className="relative inline-block mb-2">
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-lg blur-lg opacity-75 animate-pulse"></div>
-            <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg px-6 md:px-8 py-2 md:py-3 border-2 border-orange-400 shadow-lg">
-              <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">
-                TOTAL PRIZE POOL
-              </p>
-              <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-sans font-extrabold animate-pulse">
-                700+ USDT
-              </p>
+          <div className="w-full flex justify-center px-4 mb-2">
+            <div className="relative inline-block">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-lg blur-lg opacity-75 animate-pulse"></div>
+              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg px-6 md:px-8 py-2 md:py-3 border-2 border-orange-400 shadow-lg">
+                <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">
+                  TOTAL PRIZE POOL
+                </p>
+                <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-sans font-extrabold animate-pulse">
+                  ۷۰۰+ USDT
+                </p>
+              </div>
             </div>
           </div>
         )}

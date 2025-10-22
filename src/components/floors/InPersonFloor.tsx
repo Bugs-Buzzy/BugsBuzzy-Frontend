@@ -53,7 +53,7 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                 <div className="flex items-center gap-4">
                   <FaCoins className="text-3xl text-yellow-400 animate-bounce" />
                   <p className="text-xl md:text-2xl font-bold text-white font-pixel">
-                    بیش از 300 تتر جایزه
+                    بیش از ۳۰۰ تتر جایزه
                   </p>
                 </div>
               </PixelFrame>
@@ -80,7 +80,7 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                     <p className="text-primary-nonphoto text-xs md:text-sm mb-0.5 md:mb-1 group-hover:text-primary-columbia select-none">
                       مهلت ثبت‌نام
                     </p>
-                    <p className="text-white font-bold text-sm md:text-base select-none">6 آبان</p>
+                    <p className="text-white font-bold text-sm md:text-base select-none">۶ آبان</p>
                   </div>
                 </div>
 
@@ -100,7 +100,7 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                       روزهای برگزاری
                     </p>
                     <p className="text-white font-bold text-sm md:text-base select-none">
-                      8 و 9 آبان
+                      ۸ و ۹ آبان
                     </p>
                   </div>
                 </div>
@@ -120,9 +120,9 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
                 <p className="text-lg md:text-2xl text-primary-nonphoto font-normal leading-relaxed">
                   با جوایز ویژه و تجربه‌ای فراموش‌نشدنی
                 </p>
-                <p className="text-primary-sky font-pixel text-xs md:text-sm mt-4 md:mt-6">
-                  برای اطلاعات بیشتر کلیک کنید
-                </p>
+                  <p className="text-primary-sky font-pixel text-xs md:text-sm mt-4 md:mt-6">
+                    برای اطلاعات بیشتر کلیک کنید
+                  </p>
               </div>
             </PixelFrame>
           </div>
