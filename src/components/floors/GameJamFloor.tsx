@@ -102,36 +102,38 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     {
       id: 6,
       content: (
-        <div className="w-full h-full overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 relative">
-            {/* Vertical connecting line for mobile, horizontal for desktop */}
-            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent transform -translate-y-1/2"></div>
+        <div className="w-full h-full overflow-y-auto px-2 md:px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-3 relative py-6">
+            {/* Horizontal connecting line for desktop only */}
+            <div className="hidden md:block absolute top-1/3 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent transform"></div>
+            
+            {/* Vertical connecting line for mobile */}
             <div className="md:hidden absolute top-0 bottom-0 left-1/2 w-0.5 bg-gradient-to-b from-transparent via-orange-400 to-transparent transform -translate-x-1/2"></div>
             
             {/* Timeline items */}
             {[
-              { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-lg md:text-2xl" /> },
-              { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-lg md:text-2xl" /> },
-              { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-lg md:text-2xl" /> },
-              { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-lg md:text-2xl" /> },
+              { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-base md:text-lg" /> },
+              { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-base md:text-lg" /> },
+              { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-base md:text-lg" /> },
+              { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-base md:text-lg" /> },
             ].map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center relative px-2">
+              <div key={idx} className="flex flex-col items-center relative pt-6 md:pt-0">
                 {/* Circle with icon */}
-                <div className="absolute -top-2 md:top-1/2 left-1/2 transform -translate-x-1/2 md:-translate-y-1/2 z-10">
+                <div className={`absolute ${idx === 0 ? '-top-3 md:-top-4' : '-top-3 md:top-1/4'} left-1/2 transform -translate-x-1/2 z-10`}>
                   <div className="relative">
                     <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-50 animate-pulse"></div>
-                    <div className="relative w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-3 md:border-4 border-gray-900 shadow-lg">
+                    <div className="relative w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-2 md:border-3 border-gray-900 shadow-lg">
                       {item.icon}
                     </div>
                   </div>
                 </div>
                 
                 {/* Content */}
-                <div className="mt-8 md:mt-0 bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-sm rounded-lg md:rounded-xl p-3 md:p-6 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full">
-                  <p className="text-orange-400 font-pixel font-bold text-xs md:text-base group-hover:text-orange-300 transition-colors">
+                <div className="mt-10 md:mt-2 bg-gradient-to-br from-blue-900/50 to-blue-800/50 backdrop-blur-sm rounded-lg p-2 md:p-4 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center">
+                  <p className="text-orange-400 font-pixel font-bold text-xs md:text-sm group-hover:text-orange-300 transition-colors line-clamp-2">
                     {item.label}
                   </p>
-                  <p className="text-white font-pixel text-base md:text-2xl font-bold mt-1 md:mt-2 group-hover:text-orange-200 transition-colors">
+                  <p className="text-white font-pixel text-sm md:text-base font-bold mt-1 group-hover:text-orange-200 transition-colors">
                     {item.date}
                   </p>
                 </div>
@@ -179,24 +181,24 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
-      <div className="relative h-full flex flex-col items-center justify-start py-8 px-4 md:px-8">
-        {/* Always visible title */}
-        <div className="text-center w-full mb-4 md:mb-6">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white font-pixel mb-3 md:mb-4 animate-pulse">
+      <div className="relative h-full flex flex-col items-center justify-start py-4 md:py-8 px-4 md:px-8">
+        {/* Always visible title - lower on mobile */}
+        <div className="text-center w-full mb-2 md:mb-6">
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-bold text-white font-pixel mb-2 md:mb-4 animate-pulse">
             Game Jam
           </h1>
           <div className="w-full max-w-2xl h-0.5 md:h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto"></div>
         </div>
 
         {/* Prize Pool - Only show on first page */}
-        <div className={`transition-all duration-500 mb-4 md:mb-6 ${
+        <div className={`transition-all duration-500 mb-2 md:mb-6 ${
           currentPage === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
         }`}>
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-2xl blur opacity-75 animate-pulse"></div>
-            <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-2xl px-6 md:px-8 py-3 md:py-4 border-2 border-orange-400">
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-xl md:rounded-2xl blur opacity-75 animate-pulse"></div>
+            <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-xl md:rounded-2xl px-4 md:px-8 py-2 md:py-4 border-2 border-orange-400">
               <p className="text-orange-400 font-pixel text-xs md:text-sm">TOTAL PRIZE POOL</p>
-              <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-pixel mt-1">
+              <p className="text-xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-pixel mt-1">
                 700+ USDT
               </p>
             </div>
@@ -211,21 +213,21 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
           {/* Navigation Buttons */}
           <button
             onClick={nextPage}
-            className={`absolute left-0 p-2 md:p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition z-10 flex-shrink-0 ${
+            className={`absolute left-0 p-1.5 md:p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition z-10 flex-shrink-0 ${
               currentPage === pages.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             disabled={currentPage === pages.length - 1}
           >
-            <FaChevronLeft className="text-xl md:text-2xl text-white" />
+            <FaChevronLeft className="text-lg md:text-2xl text-white" />
           </button>
 
-          <PixelFrame className="bg-primary-midnight w-full mx-4 md:mx-12 flex-1 max-h-full overflow-y-auto">
+          <PixelFrame className="bg-primary-midnight w-full md:max-w-2xl mx-2 md:mx-12 flex-1 max-h-full overflow-y-auto">
             <div
               key={currentPage}
-              className={`p-4 md:p-8 flex flex-col items-center gap-4 md:gap-6 text-center animate-page-change-${animDirection}`}
+              className={`p-3 md:p-8 flex flex-col items-center gap-3 md:gap-6 text-center animate-page-change-${animDirection}`}
             >
               {pages[currentPage].icon}
-              <div className="text-white text-base md:text-lg lg:text-xl leading-relaxed overflow-y-auto max-h-96">
+              <div className="text-white text-sm md:text-lg lg:text-xl leading-relaxed overflow-y-auto max-h-96">
                 {pages[currentPage].content}
               </div>
             </div>
@@ -233,17 +235,17 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
 
           <button
             onClick={prevPage}
-            className={`absolute right-0 p-2 md:p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition z-10 flex-shrink-0 ${
+            className={`absolute right-0 p-1.5 md:p-3 rounded-full bg-primary-oxfordblue hover:bg-primary-cerulean transition z-10 flex-shrink-0 ${
               currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             disabled={currentPage === 0}
           >
-            <FaChevronRight className="text-xl md:text-2xl text-white" />
+            <FaChevronRight className="text-lg md:text-2xl text-white" />
           </button>
         </div>
 
         {/* Page Indicators */}
-        <div className="mt-4 md:mt-6 flex gap-2">
+        <div className="mt-3 md:mt-6 flex gap-2">
           {pages.map((page) => (
             <div
               key={page.id}
