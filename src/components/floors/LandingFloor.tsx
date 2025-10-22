@@ -19,12 +19,12 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
             ثبت‌نام در رویداد
           </button>
 
-          <div className="flex gap-6 justify-center mt-8">
+          <div className="flex gap-6 justify-center mt-16">
             <a
               href="https://t.me/BugsBuzzy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 transition-colors"
+              className="text-orange-400 hover:text-orange-300 transition-colors"
               aria-label="Telegram"
             >
               <FaTelegram className="text-4xl md:text-5xl" />
@@ -33,7 +33,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
               href="https://www.linkedin.com/company/bugs-buzzy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 transition-colors"
+              className="text-orange-400 hover:text-orange-300 transition-colors"
               aria-label="LinkedIn"
             >
               <FaLinkedin className="text-4xl md:text-5xl" />
