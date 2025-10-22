@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import logo from '@/assets/logo.svg';
-import sharifImg from '@/assets/images/sharif.png';
-import ramzImg from '@/assets/images/ramz.png';
+import sharifImg from '@/assets/Sharif.png';
+import ramzImg from '@/assets/ramz.png';
+import bgLoading from '@/assets/bkg_loading.png';
 
 interface LoadingScreenProps {
   onComplete?: () => void;
   duration?: number;
 }
 
-export default function LoadingScreen({ onComplete, duration = 3000 }: LoadingScreenProps) {
+export default function LoadingScreen({ onComplete, duration = 7000 }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [dots, setDots] = useState('');
 
@@ -34,7 +35,7 @@ export default function LoadingScreen({ onComplete, duration = 3000 }: LoadingSc
   // Animated dots
   useEffect(() => {
     const dotInterval = setInterval(() => {
-      setDots((prev) => {
+      setDots((prev: string) => {
         if (prev.length < 3) return prev + '.';
         return '';
       });
@@ -44,7 +45,10 @@ export default function LoadingScreen({ onComplete, duration = 3000 }: LoadingSc
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-gray-900 via-black to-gray-900 flex flex-col items-center justify-center z-50">
+    <div 
+      className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-cover bg-center"
+      style={{ backgroundImage: `url(${bgLoading})` }}
+    >
       {/* Logo */}
       <div className="mb-8 animate-pulse">
         <img src={logo} alt="BugsBuzzy" className="w-24 h-24 md:w-32 md:h-32 drop-shadow-lg" />
@@ -84,7 +88,7 @@ export default function LoadingScreen({ onComplete, duration = 3000 }: LoadingSc
           <img
             src={sharifImg}
             alt="Sharif University"
-            className="h-12 md:h-16 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
+            className="h-16 md:h-20 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
           />
         </div>
 
@@ -93,7 +97,7 @@ export default function LoadingScreen({ onComplete, duration = 3000 }: LoadingSc
           <img
             src={ramzImg}
             alt="Ramz"
-            className="h-12 md:h-16 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
+            className="h-16 md:h-20 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
           />
         </div>
       </div>
