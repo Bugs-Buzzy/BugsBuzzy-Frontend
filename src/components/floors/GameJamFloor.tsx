@@ -94,7 +94,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                   <div className={`relative bg-gradient-to-br from-blue-900/80 to-blue-950/80 backdrop-blur-sm px-2 md:px-3 py-2 md:py-3 rounded-lg border border-2 group-hover:border-orange-300 transition-all duration-300 ${
                     prize.place === 1 ? 'border-yellow-400/60' : prize.place === 2 ? 'border-gray-400/60' : 'border-orange-400/60'
                   }`}>
-                    <p className={`text-sm md:text-2xl font-bold font-pixel ${
+                    <p className={`text-sm md:text-2xl font-bold font-sans ${
                       prize.place === 1 ? 'text-yellow-400' : prize.place === 2 ? 'text-gray-300' : 'text-orange-400'
                     }`}>
                       {prize.amount}
@@ -246,12 +246,25 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
 
       <div className="relative h-full flex flex-col items-center justify-between py-8 px-4">
         {/* Title */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h1 className="text-5xl md:text-7xl font-bold text-white font-pixel mb-4 animate-pulse mt-16 md:mt-24">
             Game Jam
           </h1>
           <div className="w-full max-w-md h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mx-auto"></div>
         </div>
+
+        {/* Prize Pool - Always visible except on timeline page */}
+        {currentPage !== 6 && (
+          <div className="relative inline-block mb-2">
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-lg blur-lg opacity-75 animate-pulse"></div>
+            <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg px-6 md:px-8 py-2 md:py-3 border-2 border-orange-400 shadow-lg">
+              <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">TOTAL PRIZE POOL</p>
+              <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-sans font-extrabold animate-pulse">
+                700+ USDT
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         <div
