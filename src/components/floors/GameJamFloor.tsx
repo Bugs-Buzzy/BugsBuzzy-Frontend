@@ -57,19 +57,6 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
       id: 5,
       content: (
         <div className="w-full h-full flex flex-col items-center justify-center gap-6">
-          {/* Prize Pool Header */}
-          <div className="w-full text-center mb-2">
-            <div className="relative inline-block">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-lg blur-lg opacity-75 animate-pulse"></div>
-              <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg px-6 md:px-8 py-2 md:py-3 border-2 border-orange-400 shadow-lg">
-                <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">TOTAL PRIZE POOL</p>
-                <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-pixel animate-pulse">
-                  700+ USDT
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Prize Cards */}
           <div className="grid grid-cols-3 gap-2 md:gap-4 w-full">
             {[
@@ -80,28 +67,58 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
               <div key={prize.place} className="flex flex-col items-center group">
                 {/* Trophy Emoji */}
                 <div className="relative mb-2 md:mb-3 text-2xl md:text-4xl transform group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
-                  <div className={`absolute inset-0 rounded-full blur-lg opacity-50 animate-pulse ${
-                    prize.place === 1 ? 'bg-yellow-400' : prize.place === 2 ? 'bg-gray-300' : 'bg-orange-400'
-                  }`}></div>
+                  <div
+                    className={`absolute inset-0 rounded-full blur-lg opacity-50 animate-pulse ${
+                      prize.place === 1
+                        ? 'bg-yellow-400'
+                        : prize.place === 2
+                          ? 'bg-gray-300'
+                          : 'bg-orange-400'
+                    }`}
+                  ></div>
                   <div className="relative">{prize.emoji}</div>
                 </div>
-                
+
                 {/* Prize Card */}
                 <div className="relative w-full">
-                  <div className={`absolute inset-0 rounded-lg blur-md opacity-40 animate-pulse ${
-                    prize.place === 1 ? 'bg-yellow-400' : prize.place === 2 ? 'bg-gray-400' : 'bg-orange-400'
-                  }`}></div>
-                  <div className={`relative bg-gradient-to-br from-blue-900/80 to-blue-950/80 backdrop-blur-sm px-2 md:px-3 py-2 md:py-3 rounded-lg border border-2 group-hover:border-orange-300 transition-all duration-300 ${
-                    prize.place === 1 ? 'border-yellow-400/60' : prize.place === 2 ? 'border-gray-400/60' : 'border-orange-400/60'
-                  }`}>
-                    <p className={`text-sm md:text-2xl font-bold font-sans ${
-                      prize.place === 1 ? 'text-yellow-400' : prize.place === 2 ? 'text-gray-300' : 'text-orange-400'
-                    }`}>
+                  <div
+                    className={`absolute inset-0 rounded-lg blur-md opacity-40 animate-pulse ${
+                      prize.place === 1
+                        ? 'bg-yellow-400'
+                        : prize.place === 2
+                          ? 'bg-gray-400'
+                          : 'bg-orange-400'
+                    }`}
+                  ></div>
+                  <div
+                    className={`relative bg-gradient-to-br from-blue-900/80 to-blue-950/80 backdrop-blur-sm px-2 md:px-3 py-2 md:py-3 rounded-lg border border-2 group-hover:border-orange-300 transition-all duration-300 ${
+                      prize.place === 1
+                        ? 'border-yellow-400/60'
+                        : prize.place === 2
+                          ? 'border-gray-400/60'
+                          : 'border-orange-400/60'
+                    }`}
+                  >
+                    <p
+                      className={`text-sm md:text-2xl font-bold font-sans ${
+                        prize.place === 1
+                          ? 'text-yellow-400'
+                          : prize.place === 2
+                            ? 'text-gray-300'
+                            : 'text-orange-400'
+                      }`}
+                    >
                       {prize.amount}
                     </p>
-                    <p className={`text-xs md:text-xs font-pixel ${
-                      prize.place === 1 ? 'text-yellow-300' : prize.place === 2 ? 'text-gray-200' : 'text-orange-300'
-                    }`}>
+                    <p
+                      className={`text-xs md:text-xs font-pixel ${
+                        prize.place === 1
+                          ? 'text-yellow-300'
+                          : prize.place === 2
+                            ? 'text-gray-200'
+                            : 'text-orange-300'
+                      }`}
+                    >
                       USDT
                     </p>
                   </div>
@@ -122,14 +139,32 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
             {/* Mobile Layout */}
             <div className="md:hidden flex flex-col gap-3 py-2">
               {[
-                { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-base" /> },
-                { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-base" /> },
-                { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-base" /> },
-                { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-base" /> },
+                {
+                  label: 'پایان ثبت‌نام',
+                  date: '14 آبان',
+                  icon: <FaEdit className="text-white text-base" />,
+                },
+                {
+                  label: 'افتتاحیه و اعلام تم',
+                  date: '14 آبان',
+                  icon: <FaFlag className="text-white text-base" />,
+                },
+                {
+                  label: 'مهلت ارسال آثار',
+                  date: '24 آبان',
+                  icon: <FaUpload className="text-white text-base" />,
+                },
+                {
+                  label: 'اختتامیه و اعلام برندگان',
+                  date: '28 آبان',
+                  icon: <FaMedal className="text-white text-base" />,
+                },
               ].map((item, idx) => (
                 <div key={idx} className="flex gap-3 items-start">
                   <div className="flex flex-col items-center flex-shrink-0 pt-1">
-                    {idx > 0 && <div className="w-0.5 h-4 bg-gradient-to-b from-orange-400 to-transparent mb-1"></div>}
+                    {idx > 0 && (
+                      <div className="w-0.5 h-4 bg-gradient-to-b from-orange-400 to-transparent mb-1"></div>
+                    )}
                     <div className="relative">
                       <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-40 animate-pulse"></div>
                       <div className="relative w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-lg z-10">
@@ -137,7 +172,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 bg-gradient-to-br from-blue-900/60 to-blue-800/60 backdrop-blur-sm rounded-md p-2 border border-blue-700/50 hover:border-orange-400/50 transition-all group">
                     <p className="text-orange-400 font-pixel font-bold text-xs group-hover:text-orange-300 transition-colors">
                       {item.label}
@@ -154,7 +189,10 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
             <div className="hidden md:block">
               <div className="relative w-full py-4 px-2">
                 {/* SVG Connecting Lines */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+                <svg
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  preserveAspectRatio="none"
+                >
                   <defs>
                     <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="rgb(249, 115, 22)" />
@@ -162,24 +200,68 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                       <stop offset="100%" stopColor="rgb(249, 115, 22)" />
                     </linearGradient>
                   </defs>
-                  
+
                   {/* Top line */}
-                  <line x1="12%" y1="22%" x2="88%" y2="22%" stroke="url(#timelineGrad)" strokeWidth="2" />
+                  <line
+                    x1="12%"
+                    y1="22%"
+                    x2="88%"
+                    y2="22%"
+                    stroke="url(#timelineGrad)"
+                    strokeWidth="2"
+                  />
                   {/* Right line */}
-                  <line x1="88%" y1="22%" x2="88%" y2="78%" stroke="url(#timelineGrad)" strokeWidth="2" />
+                  <line
+                    x1="88%"
+                    y1="22%"
+                    x2="88%"
+                    y2="78%"
+                    stroke="url(#timelineGrad)"
+                    strokeWidth="2"
+                  />
                   {/* Bottom line */}
-                  <line x1="88%" y1="78%" x2="12%" y2="78%" stroke="url(#timelineGrad)" strokeWidth="2" />
+                  <line
+                    x1="88%"
+                    y1="78%"
+                    x2="12%"
+                    y2="78%"
+                    stroke="url(#timelineGrad)"
+                    strokeWidth="2"
+                  />
                   {/* Left line */}
-                  <line x1="12%" y1="78%" x2="12%" y2="22%" stroke="url(#timelineGrad)" strokeWidth="2" />
+                  <line
+                    x1="12%"
+                    y1="78%"
+                    x2="12%"
+                    y2="22%"
+                    stroke="url(#timelineGrad)"
+                    strokeWidth="2"
+                  />
                 </svg>
 
                 {/* Timeline Items Grid */}
                 <div className="grid grid-cols-2 gap-6 relative z-10">
                   {[
-                    { label: 'پایان ثبت‌نام', date: '14 آبان', icon: <FaEdit className="text-white text-lg" /> },
-                    { label: 'افتتاحیه و اعلام تم', date: '14 آبان', icon: <FaFlag className="text-white text-lg" /> },
-                    { label: 'مهلت ارسال آثار', date: '24 آبان', icon: <FaUpload className="text-white text-lg" /> },
-                    { label: 'اختتامیه و اعلام برندگان', date: '28 آبان', icon: <FaMedal className="text-white text-lg" /> },
+                    {
+                      label: 'پایان ثبت‌نام',
+                      date: '14 آبان',
+                      icon: <FaEdit className="text-white text-lg" />,
+                    },
+                    {
+                      label: 'افتتاحیه و اعلام تم',
+                      date: '14 آبان',
+                      icon: <FaFlag className="text-white text-lg" />,
+                    },
+                    {
+                      label: 'مهلت ارسال آثار',
+                      date: '24 آبان',
+                      icon: <FaUpload className="text-white text-lg" />,
+                    },
+                    {
+                      label: 'اختتامیه و اعلام برندگان',
+                      date: '28 آبان',
+                      icon: <FaMedal className="text-white text-lg" />,
+                    },
                   ].map((item, idx) => (
                     <div key={idx} className="flex flex-col items-center">
                       <div className="relative mb-3 flex flex-col items-center">
@@ -188,7 +270,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                           {item.icon}
                         </div>
                       </div>
-                      
+
                       <div className="bg-gradient-to-br from-blue-900/70 to-blue-800/70 backdrop-blur-sm rounded-lg p-3 border border-blue-700/50 hover:border-orange-400/50 transition-all group w-full text-center min-h-20 flex flex-col justify-center">
                         <p className="text-orange-400 font-pixel font-bold text-xs group-hover:text-orange-300 transition-colors line-clamp-2">
                           {item.label}
@@ -258,7 +340,9 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
           <div className="relative inline-block mb-2">
             <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-lg blur-lg opacity-75 animate-pulse"></div>
             <div className="relative bg-gradient-to-b from-gray-900 to-black rounded-lg px-6 md:px-8 py-2 md:py-3 border-2 border-orange-400 shadow-lg">
-              <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">TOTAL PRIZE POOL</p>
+              <p className="text-orange-400 font-pixel text-xs md:text-sm font-bold">
+                TOTAL PRIZE POOL
+              </p>
               <p className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 font-sans font-extrabold animate-pulse">
                 700+ USDT
               </p>
