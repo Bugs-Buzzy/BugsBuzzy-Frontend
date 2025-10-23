@@ -9,6 +9,10 @@ export default defineConfig(({ mode }) => {
       react(),
       mode === 'analyze' && visualizer({ filename: 'dist/stats.html', open: true }),
     ].filter(Boolean),
+    server: {
+      host: true,
+      allowedHosts: ['dev.bugsbuzzy', 'localhost', 'bugsbuzzy.ir', 'www.bugsbuzzy.ir'],
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
