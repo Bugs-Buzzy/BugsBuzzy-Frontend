@@ -20,7 +20,7 @@ interface HUDProps {
   onFloorNavigate: (_index: number) => void;
   currentFloor: number;
 }
-export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HUDProps) {
+export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showFastTravel, setShowFastTravel] = useState(true);
   const [showMiniGame, setShowMiniGame] = useState(false);
@@ -77,7 +77,7 @@ export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HU
             <img
               src={coinGif}
               alt="BugsBuzzy Coin"
-              className={`h-6 md:h-20 w-auto select-none ${
+              className={`h-12 md:h-20 w-auto select-none ${
                 isHovering ? 'animate-none opacity-80' : 'opacity-100'
               }`}
               style={{
@@ -96,7 +96,10 @@ export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HU
                 <span className="hidden sm:inline">پنل کاربری</span>
               </Link>
             ) : (
-              <button className="pixel-btn pixel-btn-secondary text-white py-3 px-5 text-2xl font-extrabold rounded-2xl shadow-xl ">
+              <button
+                onClick={() => setShowLoginModal(true)}
+                className="pixel-btn pixel-btn-secondary text-white py-3 px-5 text-2xl font-extrabold rounded-2xl shadow-xl "
+              >
                 <span className="relative z-10"> ورود </span>
               </button>
             )}
@@ -116,11 +119,16 @@ export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HU
           <div className="flex md:flex-col gap-2 md:gap-4">
             {floors.map((floor, index) => {
               const FloorIcon = floor.Icon;
+              const isActive = currentFloor === index;
+              const baseClasses = 'pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80';
+              const activeClasses = isActive
+                ? 'text-orange-400 border-orange-400 border-2'
+                : 'text-white hover:bg-gray-700';
               return (
                 <button
                   key={index}
                   onClick={() => onFloorNavigate(index)}
-                  className="pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80 text-white hover:bg-gray-700"
+                  className={`${baseClasses} ${activeClasses}`}
                   title={floor.name}
                 >
                   <FloorIcon className="text-xl md:text-2xl" />

@@ -1,10 +1,12 @@
 import { forwardRef } from 'react';
 import { FaChevronDown, FaGamepad, FaLinkedin, FaTelegram } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 import bgLanding from '@/assets/bkg-landing.png';
 import nameImg from '@/assets/name.png'; // 👈 تصویر جدیدت
 
 const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
+  const navigate = useNavigate();
   return (
     <section
       ref={ref}
@@ -15,7 +17,10 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
         <div className="text-center space-y-8 -translate-y-12 md:-translate-y-16">
           <img src={nameImg} alt="BugsBuzzy" className="w-[500px] md:w-[800px] h-auto" />
 
-          <button className="pixel-btn pixel-btn-secondary  relative overflow-hidden bg-gradient-to-r  text-white py-5 px-8 text-3xl font-extrabold rounded-2xl shadow-xl animate-pulse hover:scale-110 transition-transform duration-300">
+          <button
+            onClick={() => navigate('/panel')}
+            className="pixel-btn pixel-btn-secondary relative overflow-hidden bg-gradient-to-r text-white py-5 px-8 text-3xl font-extrabold rounded-2xl shadow-xl animate-pulse hover:scale-110 transition-transform duration-300"
+          >
             <span className="relative z-10">ثبت‌نام در رویداد</span>
             <span className="absolute inset-0 bg-white/20 blur-xl opacity-0 hover:opacity-60 transition-opacity duration-700"></span>
           </button>
