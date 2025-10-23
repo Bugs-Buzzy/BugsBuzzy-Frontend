@@ -27,8 +27,8 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
   }, [teamNames.length]);
 
   useScrollInterceptor(listContainerRef, {
-    onLeft: nextTeam,
-    onRight: prevTeam,
+    onLeft: prevTeam,
+    onRight: nextTeam,
   });
 
   useEffect(() => {

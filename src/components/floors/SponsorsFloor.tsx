@@ -13,7 +13,7 @@ const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
   return (
     <section
       ref={ref}
-      className="floor bg-cover bg-center bg-no-repeat py-16 md:py-24 "
+      className="floor bg-cover bg-center bg-no-repeat py-24 md:py-24 "
       style={{ backgroundImage: `url(${bgSponsor})` }}
     >
       <div className="flex flex-col items-center justify-center px-4 text-center max-w-6xl mx-auto ">
@@ -34,11 +34,11 @@ const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
 
           {/* متن معرفی */}
           <div
-            className="text-white text-sm md:text-base space-y-4 max-h-60 overflow-y-auto"
+            className="text-white text-base md:text-xl space-y-4 max-h-80 overflow-y-auto"
             ref={messageRef}
           >
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 mb-4">
-              <h3 className="text-2xl md:text-2xl font-bold text-white mb-4">
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-4">
                 رمزینکس؛ صرافی منتخب بیش از ۴ میلیون کاربر ایرانی <></>
               </h3>
             </div>
@@ -66,12 +66,15 @@ const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
             </div>
           </div>
 
-          {/* لینک فرصت‌های شغلی */}
           <a
             href="https://ramzinex.com/careers/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block bg-white text-black font-bold px-6 py-3 rounded-lg hover:bg-gray-200 transition"
+            className="mt-6 inline-block font-bold px-8 py-4 rounded-xl 
+                      bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 
+                      text-white text-lg md:text-xl shadow-lg transition transform 
+                      hover:scale-105 hover:shadow-2xl
+                      hover:from-yellow-500 hover:via-orange-600 hover:to-red-600"
           >
             فرصت‌های شغلی رمزینکس
           </a>

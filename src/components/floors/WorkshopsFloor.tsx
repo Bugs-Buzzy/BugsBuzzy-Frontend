@@ -2,16 +2,18 @@ import { forwardRef, useEffect, useRef, useState } from 'react';
 import { FaChalkboardTeacher, FaCogs } from 'react-icons/fa';
 
 import bgWorkshops from '@/assets/bkg-workshops.png';
-import img1 from '@/assets/images/presents/1.jpg';
-import img10 from '@/assets/images/presents/10.jpg';
-import img2 from '@/assets/images/presents/2.jpg';
-import img3 from '@/assets/images/presents/3.jpg';
-import img4 from '@/assets/images/presents/4.jpg';
-import img5 from '@/assets/images/presents/5.jpg';
-import img6 from '@/assets/images/presents/6.jpg';
-import img7 from '@/assets/images/presents/7.jpg';
-import img8 from '@/assets/images/presents/8.jpg';
-import img9 from '@/assets/images/presents/9.jpg';
+import img21 from '@/assets/images/presents/coming_soon.jpg';
+import img1 from '@/assets/images/presents/img1.jpg';
+import img10 from '@/assets/images/presents/img10.jpg';
+import img11 from '@/assets/images/presents/img11.jpg';
+import img2 from '@/assets/images/presents/img2.jpg';
+import img3 from '@/assets/images/presents/img3.jpg';
+import img4 from '@/assets/images/presents/img4.jpg';
+import img5 from '@/assets/images/presents/img5.jpg';
+import img6 from '@/assets/images/presents/img6.jpg';
+import img7 from '@/assets/images/presents/img7.jpg';
+import img8 from '@/assets/images/presents/img8.jpg';
+import img9 from '@/assets/images/presents/img9.jpg';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
@@ -104,27 +106,29 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
   }, [selectedCategory]);
 
   const godotWorkshops = [
-    { title: 'قسمت 1: نصب و راه‌اندازی Godot', date: '۱ آبان' },
-    { title: 'قسمت 2: طراحی کاراکتر اصلی', date: '۱ آبان' },
-    { title: 'قسمت 3: حرکت دوربین', date: '۲ آبان' },
-    { title: 'قسمت 4: طراحی محیط بازی', date: '۲ آبان' },
-    { title: 'قسمت 5: پیاده‌سازی منطق بازی', date: '۳ آبان' },
-    { title: 'قسمت 6: شبکه ۱', date: '۳ آبان' },
-    { title: 'قسمت 7: شبکه ۲', date: '۴ آبان' },
-    { title: 'قسمت 8: منو و صداگذاری', date: '۴ آبان' },
+    { title: 'قسمت 1: نصب و راه‌اندازی Godot', date: '۲ آبان' },
+    { title: 'قسمت 2: طراحی کاراکتر اصلی', date: '۲ آبان' },
+    { title: 'قسمت 3: حرکت دوربین', date: '۳ آبان' },
+    { title: 'قسمت 4: طراحی محیط بازی', date: '۳ آبان' },
+    { title: 'قسمت 5: پیاده‌سازی منطق بازی', date: '۴ آبان' },
+    { title: 'قسمت 6: شبکه ۱', date: '۴ آبان' },
+    { title: 'قسمت 7: شبکه ۲', date: '۵ آبان' },
+    { title: 'قسمت 8: منو و صداگذاری', date: '۵ آبان' },
   ];
 
   const presentations = [
-    { img: img1, date: '۱ آبان - ساعت ۱۶' },
-    { img: img2, date: '۲ آبان - ساعت ۱۶' },
-    { img: img3, date: 'به‌زودی' },
-    { img: img4, date: 'به‌زودی' },
-    { img: img5, date: 'به‌زودی' },
-    { img: img6, date: 'به‌زودی' },
-    { img: img7, date: 'به‌زودی' },
-    { img: img8, date: 'به‌زودی' },
-    { img: img9, date: 'به‌زودی' },
-    { img: img10, date: 'به‌زودی' },
+    { img: img1, date: '۵ آبان - ساعت ۱۸' },
+    { img: img2, date: '۶ آبان - ساعت ۱۸' },
+    { img: img3, date: '۷ آبان - ساعت ۱۸' },
+    { img: img4, date: '۱۰ آبان - ساعت ۱۷:۳۰' },
+    { img: img5, date: '۱۰ آبان - ساعت ۱۹' },
+    { img: img6, date: '۱۱ آبان - ساعت ۱۷' },
+    { img: img7, date: '۱۲ آبان - ساعت ۱۸' },
+    { img: img8, date: '۱۳ آبان - ساعت ۱۸' },
+    { img: img9, date: '۱۵ آبان - ساعت ۱۷' },
+    { img: img10, date: '۱۵ آبان - ساعت ۱۸' },
+    { img: img11, date: '۱۶ آبان - ساعت ۱۸' },
+    { img: img21, date: 'به‌زودی' },
   ];
 
   return (
@@ -139,9 +143,9 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
             ارائه‌ها و کارگاه‌ها
           </h2>
           <p className="text-primary-columbia max-w-3xl mb-10 leading-relaxed">
-            کارگاه‌ها و ارائه‌های آموزشی رویداد با هدف ارتقای دانش و مهارت شرکت‌کنندگان در سطوح
-            مختلف طراحی شده‌اند؛ به‌گونه‌ای که هم برای افراد تازه‌کار قابل فهم و کاربردی باشد و هم
-            فرصت یادگیری و ارتقای سطح برای شرکت‌کنندگان با تجربه فراهم شود.
+            کارگاه و ارائه‌های آموزشی باگزبازی با هدف ارتقای دانش و مهارت شرکت‌کنندگان در سطوح مختلف
+            طراحی شده‌اند؛ به‌گونه‌ای که هم برای افراد تازه‌کار قابل فهم و کاربردی باشد و هم فرصت
+            یادگیری و ارتقای سطح برای شرکت‌کنندگان با تجربه فراهم شود.
           </p>
 
           {/* گزینه‌ها */}

@@ -86,7 +86,7 @@ export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HU
             />
           </div>
 
-          <PixelFrame className="bg-black bg-opacity-80">
+          <div>
             {isAuthenticated ? (
               <Link
                 to="/panel"
@@ -96,14 +96,11 @@ export default function HUD({ onFloorNavigate, currentFloor: _currentFloor }: HU
                 <span className="hidden sm:inline">پنل کاربری</span>
               </Link>
             ) : (
-              <button
-                onClick={() => setShowLoginModal(true)}
-                className="pixel-btn pixel-btn-success text-sm md:text-base py-2 px-3 md:py-3 md:px-4"
-              >
-                ورود
+              <button className="pixel-btn pixel-btn-secondary text-white py-3 px-5 text-2xl font-extrabold rounded-2xl shadow-xl ">
+                <span className="relative z-10"> ورود </span>
               </button>
             )}
-          </PixelFrame>
+          </div>
         </div>
       </div>
 

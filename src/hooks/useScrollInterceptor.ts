@@ -37,22 +37,30 @@ export function useScrollInterceptor(
     const container = ref.current;
     if (!container) return;
 
+    let lastScrollTime = 0;
+    const SCROLL_COOLDOWN = 500; // میلی‌ثانیه - تنظیم کن به دلخواه
+
     const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
       const { scrollTop, scrollHeight, clientHeight } = container;
       const atTop = scrollTop === 0;
       const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
 
-      // Detect horizontal scroll
+      // تشخیص اسکرول افقی
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         e.preventDefault();
         e.stopPropagation();
 
-        if (e.deltaX > 0 && onRight) onRight();
-        else if (e.deltaX < 0 && onLeft) onLeft();
+        // جلوگیری از رگباری شدن
+        if (now - lastScrollTime < SCROLL_COOLDOWN) return;
+        lastScrollTime = now;
+
+        if (e.deltaX > 3 && onRight) onRight();
+        else if (e.deltaX < -3 && onLeft) onLeft();
         return;
       }
 
-      // Contain vertical scroll inside the element
+      // محدود کردن اسکرول عمودی درون المنت
       if (lockParentScroll) {
         e.stopPropagation();
         if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
