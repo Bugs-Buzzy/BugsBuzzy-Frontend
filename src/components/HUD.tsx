@@ -120,15 +120,15 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             {floors.map((floor, index) => {
               const FloorIcon = floor.Icon;
               const isActive = currentFloor === index;
+              const baseClasses = 'pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80';
+              const activeClasses = isActive
+                ? 'text-orange-400 border-orange-400 border-2'
+                : 'text-white hover:bg-gray-700';
               return (
                 <button
                   key={index}
                   onClick={() => onFloorNavigate(index)}
-                  className={`pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80 ${
-                    isActive
-                      ? 'text-orange-400 border-orange-400 border-2'
-                      : 'text-white hover:bg-gray-700'
-                  }`}
+                  className={`${baseClasses} ${activeClasses}`}
                   title={floor.name}
                 >
                   <FloorIcon className="text-xl md:text-2xl" />
