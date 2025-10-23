@@ -30,15 +30,14 @@ describe('loadingStateManager', () => {
     loadingStateManager.markLoadingCompleted();
 
     // Mock Date.now to simulate 25 hours passing
-    const originalNow = Date.now;
     const mockNow = Date.now() + 25 * 60 * 60 * 1000;
-    vi.spyOn(Date, 'now').mockImplementation(() => mockNow);
+    const dateSpy = vi.spyOn(Date, 'now').mockImplementation(() => mockNow);
 
     const shouldShow = loadingStateManager.shouldShowLoading();
     expect(shouldShow).toBe(true);
 
     // Restore Date.now
-    Date.now = originalNow;
+    dateSpy.mockRestore();
   });
 
   it('should get time until next loading', () => {
