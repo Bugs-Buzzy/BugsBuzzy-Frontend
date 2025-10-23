@@ -25,9 +25,9 @@ COPY ./nginx.conf /etc/nginx/conf.d/app.conf
 ## Copy build output
 COPY --from=build /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget -qO- http://127.0.0.1/ || exit 1
+    CMD wget -qO- http://127.0.0.1:3000/ || exit 1
 
 ENTRYPOINT ["nginx","-g","daemon off;"]
