@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 
 import bgLoading from '@/assets/bkg_loading.png';
 import logo from '@/assets/logo.svg';
@@ -59,11 +59,12 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
       <div className="text-center mb-20 md:mb-28">
         <p
           className="text-5xl md:text-7xl font-pixel text-white tracking-widest min-h-[3.5rem] md:min-h-[6rem]"
-          style={{
-            textStroke: '2px rgba(0,0,0,0.5)',
-            WebkitTextStroke: '2px rgba(0,0,0,0.5)',
-            paintOrder: 'stroke fill',
-          }}
+          style={
+            {
+              WebkitTextStroke: '2px rgba(0,0,0,0.5)',
+              paintOrder: 'stroke fill',
+            } as CSSProperties
+          }
         >
           درحال بارگزاری
           <span className="inline-block w-10 md:w-20 text-right">{dots}</span>

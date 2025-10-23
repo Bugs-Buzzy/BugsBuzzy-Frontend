@@ -51,7 +51,9 @@ export default function TeamPhase({
     setLoading(true);
     try {
       const teamsData = await teamsService.getAllTeams();
-      const existingTeam = teamsData.teams.find((t) => t.team_type === teamType);
+      const existingTeam = teamsData.teams.find((t) =>
+        teamType === 'inperson' ? t.team_type === 'in_person' : t.team_type === 'online',
+      );
 
       if (existingTeam) {
         setTeam(existingTeam);
