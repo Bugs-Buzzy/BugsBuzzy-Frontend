@@ -48,7 +48,6 @@ export default function TeamMemberCard({ member }: TeamMemberCardProps) {
             style={{ imageRendering: 'auto' }}
             loading="eager"
             decoding="async"
-            fetchPriority="high"
             onError={() => setImgError(true)}
           />
         )}

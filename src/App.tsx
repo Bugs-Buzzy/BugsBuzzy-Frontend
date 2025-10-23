@@ -1,14 +1,19 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import ProtectedRoute from '@/components/ProtectedRoute';
 import LoadingScreen from '@/components/LoadingScreen';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider } from '@/context/AuthContext';
 import GameWorld from '@/pages/GameWorld';
 import Panel from '@/pages/Panel';
-import MyTeam from '@/pages/panel/MyTeam';
-import MyWorkshops from '@/pages/panel/MyWorkshops';
+import Announcements from '@/pages/panel/Announcements';
+import Dashboard from '@/pages/panel/Dashboard';
+import GameJamCompetition from '@/pages/panel/GameJamCompetition';
+import InPersonCompetition from '@/pages/panel/InPersonCompetition';
+import Presentations from '@/pages/panel/Presentations';
 import ProfileSettings from '@/pages/panel/ProfileSettings';
+import PaymentFailed from '@/pages/PaymentFailed';
+import PaymentSuccess from '@/pages/PaymentSuccess';
 import '@/styles/components.css';
 
 export default function App() {
@@ -29,6 +34,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<GameWorld />} />
 
+          {/* Payment callback routes */}
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/failed" element={<PaymentFailed />} />
+
           <Route
             path="/panel"
             element={
@@ -37,10 +46,13 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/panel/profile" replace />} />
+            <Route index element={<Navigate to="/panel/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<ProfileSettings />} />
-            <Route path="workshops" element={<MyWorkshops />} />
-            <Route path="team" element={<MyTeam />} />
+            <Route path="inperson" element={<InPersonCompetition />} />
+            <Route path="gamejam" element={<GameJamCompetition />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="presentations" element={<Presentations />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

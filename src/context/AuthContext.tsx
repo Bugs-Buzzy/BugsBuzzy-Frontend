@@ -1,49 +1,88 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface User {
-  id: string;
-  email: string;
-  is_validated: boolean;
-  token: string;
-  name?: string;
-  phone?: string;
-}
+import type { UserProfile } from '@/services/auth.service';
+import { authService } from '@/services/auth.service';
 
 interface AuthContextType {
-  user: User | null;
+  user: UserProfile | null;
   isAuthenticated: boolean;
-  login: (userData: User) => void;
+  isVerified: boolean;
+  profileCompleted: boolean;
+  loading: boolean;
+  login: (userData: UserProfile, accessToken: string, refreshToken: string) => void;
   logout: () => void;
-  updateUser: (userData: Partial<User>) => void;
+  updateUser: (userData: Partial<UserProfile>) => void;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (data: User) => {
+  useEffect(() => {
+    const initAuth = async () => {
+      const token = authService.getAccessToken();
+      if (token) {
+        try {
+          const profile = await authService.getProfile();
+          setUser(profile);
+        } catch {
+          authService.clearTokens();
+        }
+      }
+      setLoading(false);
+    };
+
+    initAuth();
+  }, []);
+
+  const login = (data: UserProfile, accessToken: string, refreshToken: string) => {
     setUser(data);
-    localStorage.setItem('token', data.token);
+    authService.setTokens(accessToken, refreshToken);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('token');
+    authService.clearTokens();
   };
 
-  const updateUser = (userData: Partial<User>) => {
+  const updateUser = (userData: Partial<UserProfile>) => {
     setUser((prevUser) => (prevUser ? { ...prevUser, ...userData } : null));
   };
+
+  const refreshProfile = async () => {
+    try {
+      const profile = await authService.getProfile();
+      setUser(profile);
+    } catch (error) {
+      logout();
+      throw error;
+    }
+  };
+
+  const isVerified = user?.is_verified || false;
+  const profileCompleted =
+    isVerified &&
+    !!user?.first_name &&
+    !!user?.last_name &&
+    !!user?.national_code &&
+    !!user?.phone_number &&
+    !!user?.gender;
 
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
+        isVerified,
+        profileCompleted,
+        loading,
         login,
         logout,
         updateUser,
+        refreshProfile,
       }}
     >
       {children}

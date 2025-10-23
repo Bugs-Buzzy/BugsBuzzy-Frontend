@@ -5,8 +5,6 @@ import bgWorkshops from '@/assets/bkg-workshops.png';
 import img1 from '@/assets/images/presents/1.jpg';
 import img10 from '@/assets/images/presents/10.jpg';
 import img2 from '@/assets/images/presents/2.jpg';
-
-// ✅ وارد کردن عکس‌ها
 import img3 from '@/assets/images/presents/3.jpg';
 import img4 from '@/assets/images/presents/4.jpg';
 import img5 from '@/assets/images/presents/5.jpg';

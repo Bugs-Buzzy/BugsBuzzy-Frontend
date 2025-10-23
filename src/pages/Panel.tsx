@@ -13,9 +13,12 @@ export default function Panel() {
   };
 
   const menuItems = [
+    { path: '/panel/dashboard', label: 'داشبورد', icon: '📊', enabled: true },
     { path: '/panel/profile', label: 'پروفایل', icon: '👤', enabled: true },
-    { path: '/panel/workshops', label: 'کارگاه‌های من', icon: '🔬', enabled: user?.is_validated },
-    { path: '/panel/team', label: 'تیم من', icon: '👥', enabled: user?.is_validated },
+    { path: '/panel/inperson', label: 'رقابت حضوری', icon: '🏆', enabled: user?.is_verified },
+    { path: '/panel/gamejam', label: 'گیم‌جم مجازی', icon: '🎮', enabled: user?.is_verified },
+    { path: '/panel/announcements', label: 'اطلاعیه‌ها', icon: '📢', enabled: true },
+    { path: '/panel/presentations', label: 'ارائه‌ها', icon: '📺', enabled: true },
   ];
 
   return (
