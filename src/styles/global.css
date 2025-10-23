@@ -1,21 +1,21 @@
+/* Pixel Fonts - Import from Google Fonts FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-	box-sizing: border-box;
-}
 
 /* Persian / Farsi Fonts: IRANSansX, PeydaWeb, Estedad (selected weights) */
-/* IRANSansX */
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-DemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
-@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+/* IRANSansX - Only for Persian/Arabic characters */
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-DemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'IRANSansX'; src: url('../assets/fonts/IRANSansX-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF; }
 
 /* PeydaWeb (note some lowercase filenames) */
 @font-face { font-family: 'PeydaWeb'; src: url('../assets/fonts/PeydaWeb-Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
@@ -39,6 +39,98 @@
 @font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
 @font-face { font-family: 'Estedad'; src: url('../assets/fonts/Estedad-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 
+/* Pixel Fonts */
+/* Unixel - Persian/Farsi Pixel Font (Fallback for Persian text) */
+@font-face {
+  font-family: 'Unixel';
+  src: url('../assets/fonts/unixel-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+:root {
+  /* Pixel Styling */
+  --pixel-border-width: 4px;
+  --pixel-shadow-size: 8px;
+  --pixel-button-border: 3px;
+  --pixel-button-shadow: 4px;
+  
+  /* Brand Colors - Primary (Process Blue) */
+  --color-primary: #2EB1E0;
+  --color-primary-light: #56C0E6;
+  --color-primary-dark: #17789B;
+  
+  /* Brand Colors - Secondary (Ramzinex Orange) */
+  --color-secondary: #FAA61A;
+  --color-secondary-light: #FC7738;
+  --color-secondary-dark: #F14F04;
+  
+  /* Neutral Colors */
+  --color-bg-dark: rgba(0, 0, 0, 0.8);
+  --color-border-light: rgba(255, 255, 255, 0.2);
+}
+
+
+/* ========================================
+   Global Resets & Base Styles
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   Scrollbar Styling
+   ======================================== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) #1a1a1a;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 0;
+  border: 2px solid #1a1a1a;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-light);
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+.image-rendering-pixel {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+
 html,
 body,
 #root {
@@ -47,6 +139,16 @@ body,
 	padding: 0;
 	/* Default stack: IRANSansX for readability, fallback PeydaWeb, then Estedad */
 	font-family: 'IRANSansX', 'PeydaWeb', 'Estedad', system-ui, Arial, sans-serif;
+}
+
+/* RTL Fix for mixed Persian/English text */
+html {
+	direction: rtl;
+}
+
+/* Auto direction for mixed content */
+p, span, div, h1, h2, h3, h4, h5, h6, label, button {
+	unicode-bidi: plaintext;
 }
 
 body {
@@ -71,7 +173,6 @@ body::after {
 	z-index: -1;
 	pointer-events: none;
 	opacity: 0.07;
-	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVQoU2NkYGD4z0ABYCJgYMAEmoCRgTgYhKQJmAqiBSAABk0AQq1wZr4AAAAABJRU5ErkJggg==');
 	background-repeat: repeat;
 }
 

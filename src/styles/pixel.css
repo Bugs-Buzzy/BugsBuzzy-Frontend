@@ -1,0 +1,7 @@
+/* ========================================
+   DEPRECATED - Use components.css instead
+   This file is kept for backward compatibility
+   ======================================== */
+
+/* Import the new component system */
+@import './components.css';

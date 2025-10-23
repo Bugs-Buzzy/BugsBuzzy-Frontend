@@ -1,0 +1,368 @@
+/* ========================================
+   Pixel Art Components Styles
+   Reusable component classes for pixel-art UI
+   ======================================== */
+
+/* ========================================
+   Font System
+   Two font stacks for the entire project:
+   - font-pixel: Pixelify Sans (EN) → Unixel (FA) 
+   - font-normal: Comic Sans (EN) → IRANSansX (FA)
+   ======================================== */
+
+/* ========================================
+   Pixel Button Component
+   Usage: <button class="pixel-btn pixel-btn-primary">Text</button>
+   ======================================== */
+
+.pixel-btn {
+  @apply font-pixel;
+  border: var(--pixel-button-border) solid currentColor;
+  box-shadow: var(--pixel-button-shadow) var(--pixel-button-shadow) 0 rgba(0, 0, 0, 0.5);
+  transition: all 0.1s;
+  image-rendering: pixelated;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  font-weight: normal;
+  position: relative;
+}
+
+.pixel-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.pixel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Button Color Variants */
+.pixel-btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary-dark);
+  color: white;
+}
+
+.pixel-btn-primary:hover {
+  background-color: var(--color-primary-light);
+}
+
+.pixel-btn-secondary {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary-dark);
+  color: white;
+}
+
+.pixel-btn-secondary:hover {
+  background-color: var(--color-secondary-light);
+}
+
+.pixel-btn-success {
+  background-color: #10b981;
+  border-color: #059669;
+  color: white;
+}
+
+.pixel-btn-danger {
+  background-color: #ef4444;
+  border-color: #dc2626;
+  color: white;
+}
+
+.pixel-btn-dark {
+  background-color: #1f2937;
+  border-color: #111827;
+  color: white;
+}
+
+/* ========================================
+   Pixel Card Component
+   Usage: <div class="pixel-card">Content</div>
+   ======================================== */
+
+.pixel-card {
+  border: var(--pixel-border-width) solid currentColor;
+  box-shadow: var(--pixel-shadow-size) var(--pixel-shadow-size) 0 rgba(0, 0, 0, 0.3);
+  image-rendering: pixelated;
+}
+
+.pixel-card-primary {
+  border-color: var(--color-primary);
+}
+
+.pixel-card-secondary {
+  border-color: var(--color-secondary);
+}
+
+.pixel-card-white {
+  border-color: white;
+}
+
+/* Pixel Frame Border (BugsBuzzy Style) */
+.pixel-frame {
+  position: relative;
+  padding: 32px;
+  background-color: transparent;
+}
+
+.pixel-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  
+  /* Layered border effect */
+  box-shadow: 
+    /* Outer dark brown */
+    0 0 0 4px #5a3d0f,
+    /* Middle brown */
+    0 0 0 8px #7d5006,
+    /* Middle-light orange */
+    0 0 0 12px #a86b0c,
+    /* Inner yellow-orange */
+    0 0 0 16px #faa61a,
+    /* Bright yellow accent */
+    0 0 0 18px #f8b84d;
+  
+  border-radius: 4px;
+}
+
+/* Corner decorations for pixel frame */
+.pixel-frame::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background-image: 
+    /* Top-left corner */
+    radial-gradient(circle at 0% 0%, #d48817 0%, transparent 20px),
+    /* Top-right corner */
+    radial-gradient(circle at 100% 0%, #d48817 0%, transparent 20px),
+    /* Bottom-left corner */
+    radial-gradient(circle at 0% 100%, #d48817 0%, transparent 20px),
+    /* Bottom-right corner */
+    radial-gradient(circle at 100% 100%, #d48817 0%, transparent 20px);
+  background-repeat: no-repeat;
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.team-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.3);
+}
+
+.team-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.team-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.team-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+.team-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-light);
+}
+
+/* ========================================
+   Team Animations - ساده و بدون باگ
+   ======================================== */
+
+@keyframes simpleFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes teamChangeLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes teamChangeRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-simple-fade-in {
+  animation: simpleFadeIn 0.3s ease-out;
+}
+
+.animate-team-change-left {
+  animation: teamChangeLeft 0.4s ease-out;
+}
+
+.animate-team-change-right {
+  animation: teamChangeRight 0.4s ease-out;
+}
+
+@keyframes page-change-left {
+  0% { transform: translateX(50px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes page-change-right {
+  0% { transform: translateX(-50px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-page-change-left {
+  animation: page-change-left 0.5s ease forwards;
+}
+
+.animate-page-change-right {
+  animation: page-change-right 0.5s ease forwards;
+}
+
+/* ========================================
+   Pixel Input Component
+   Usage: <input class="pixel-input" />
+   ======================================== */
+
+.pixel-input {
+  @apply font-pixel;
+  border: var(--pixel-button-border) solid currentColor;
+  image-rendering: pixelated;
+  transition: all 0.2s;
+  padding: 0.75rem;
+  background-color: transparent;
+}
+
+.pixel-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(46, 177, 224, 0.5);
+}
+
+/* ========================================
+   HUD Components
+   Fixed UI elements for game world
+   ======================================== */
+
+.hud-panel {
+  @apply pixel-card pixel-card-primary;
+  background-color: var(--color-bg-dark);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+
+.hud-nav-item {
+  @apply pixel-btn;
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.hud-nav-item.active {
+  background-color: #7c3aed;
+  border-color: #5b21b6;
+}
+
+.hud-nav-item:not(.active) {
+  background-color: #374151;
+  border-color: #1f2937;
+}
+
+/* ========================================
+   Floor Components
+   Full-screen sections for scroll-snap
+   ======================================== */
+
+.floor {
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========================================
+   Modal Components
+   ======================================== */
+
+.pixel-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pixel-modal-content {
+  @apply pixel-card pixel-card-white;
+  background-color: #1f2937;
+  padding: 2rem;
+  max-width: 42rem;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.pixel-modal-close {
+  @apply pixel-btn pixel-btn-danger;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrollable-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: auto; /* disables delayed momentum on iOS */
+  touch-action: pan-x; /* allows horizontal touch scroll only */
+}

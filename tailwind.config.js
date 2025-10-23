@@ -13,23 +13,23 @@ export default {
           process: '#2EB1E0',
           cerulean: '#17789B',
           midnight: '#0B3A4B',
+          oxfordblue: '#0B1F47',
         },
         secondary: {
           golden: '#F14F04',
           orangePantone: '#FB5D13',
           orangeCrayola: '#FC7738',
+          ramzinex: '#FAA61A',
         },
       },
       fontFamily: {
-        orbitron: ['"Orbitron"', 'sans-serif'],
-        roboto: ['"Roboto"', 'sans-serif'],
-        iransans: ['"IRANSansX"', '"PeydaWeb"', 'Tahoma', 'Arial', 'sans-serif'], // legacy alias
-        iransansx: ['"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
-        peyda: ['"PeydaWeb"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
-        estedad: ['"Estedad"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
+        pixel: ['"Pixelify Sans"', '"Unixel"', 'monospace'],
+        normal: ['"Comic Sans MS"', '"Comic Sans"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
       },
       animation: {
         glow: 'glow 2s ease-in-out infinite alternate',
+        shimmer: 'shimmer 2s infinite',
+        float: 'float 6s ease-in-out infinite',
       },
       keyframes: {
         glow: {
@@ -41,6 +41,14 @@ export default {
             textShadow:
               '0 0 20px #17789B,0 0 30px #2EB1E0,0 0 40px #56C0E6,0 0 50px #7DCEEC,0 0 60px #A6DEF2,0 0 70px #CEEDF7,0 0 80px #CEEDF7',
           },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)', opacity: '0.1' },
+          '50%': { transform: 'translateY(-20px)', opacity: '0.3' },
         },
       },
     },
