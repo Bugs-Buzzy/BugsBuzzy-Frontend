@@ -398,17 +398,17 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
 
         {/* Page Indicators */}
         <div className="mt-4 md:mt-8 mb-2 md:mb-0 flex gap-2 cursor-pointer">
-          {pages.map((page) => (
+          {pages.map((page, index) => (
             <div
               key={page.id}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                currentPage === page.id
+                currentPage === index
                   ? 'bg-primary-sky w-6'
                   : 'bg-primary-oxfordblue hover:bg-primary-midnight'
               }`}
               onClick={() => {
-                setAnimDirection(page.id > currentPage ? 'right' : 'left');
-                setCurrentPage(page.id);
+                setAnimDirection(index > currentPage ? 'right' : 'left');
+                setCurrentPage(index);
               }}
             />
           ))}
