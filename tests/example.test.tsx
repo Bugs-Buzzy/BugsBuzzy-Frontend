@@ -4,8 +4,8 @@ import { render, screen } from '@testing-library/react';
 import App from '../src/App';
 
 describe('App', () => {
-  it('renders main brand heading', () => {
+  it('renders BugsBuzzy logo', () => {
     render(<App />);
-    expect(screen.getByRole('heading', { level: 1, name: /BugsBuzzy/i })).toBeInTheDocument();
+    expect(screen.getByAltText('BugsBuzzy')).toBeInTheDocument();
   });
 });
