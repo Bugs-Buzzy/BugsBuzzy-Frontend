@@ -205,7 +205,7 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
                   <img
                     src={p.img}
                     alt={`ارائه ${i + 1}`}
-                    className="rounded-2xl w-64 h-64 object-cover mb-2 cursor-pointer hover:scale-105 transition-transform"
+                    className="rounded-2xl w-80 h-80  object-cover mb-2 cursor-pointer hover:scale-105 transition-transform"
                     onClick={() => setSelectedImage(p.img)} // اضافه کردن state جدید
                   />
                   <p className="text-sm text-primary-columbia">{p.date}</p>
