@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -euo pipefail
+set -eu
 
 # Husky v9+ simplified hook (removed deprecated husky.sh sourcing).
 npx lint-staged

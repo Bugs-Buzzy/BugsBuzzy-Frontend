@@ -4,25 +4,43 @@ import bgLoading from '@/assets/bkg_loading.png';
 import logo from '@/assets/logo.svg';
 import ramzImg from '@/assets/ramz.png';
 import sharifImg from '@/assets/Sharif.png';
+import { useImagePreloader } from '@/hooks/useImagePreloader';
 
 interface LoadingScreenProps {
   onComplete?: () => void;
   duration?: number;
+  imagesToPreload?: string[];
 }
 
-export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingScreenProps) {
+export default function LoadingScreen({
+  onComplete,
+  duration = 4000,
+  imagesToPreload = [],
+}: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [dots, setDots] = useState('');
 
-  // Progress bar animation
+  // Preload images during loading screen
+  const { loaded: imagesLoaded, progress: imageProgress } = useImagePreloader(imagesToPreload);
+
+  // Progress bar animation - combines time-based and image loading progress
   useEffect(() => {
     const startTime = Date.now();
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      const newProgress = Math.min((elapsed / duration) * 100, 100);
-      setProgress(newProgress);
+      const timeProgress = Math.min((elapsed / duration) * 100, 100);
 
-      if (newProgress >= 100) {
+      // Combine time progress (70% weight) with image loading progress (30% weight)
+      // This ensures loading completes even if images fail
+      const combinedProgress =
+        imagesToPreload.length > 0 ? timeProgress * 0.7 + imageProgress * 0.3 : timeProgress;
+
+      setProgress(combinedProgress);
+
+      // Complete when both time has elapsed AND images are loaded (or no images to load)
+      const shouldComplete = timeProgress >= 100 && (imagesToPreload.length === 0 || imagesLoaded);
+
+      if (shouldComplete) {
         clearInterval(interval);
         if (onComplete) {
           setTimeout(onComplete, 200);
@@ -31,7 +49,7 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
     }, 16); // ~60fps
 
     return () => clearInterval(interval);
-  }, [duration, onComplete]);
+  }, [duration, onComplete, imageProgress, imagesLoaded, imagesToPreload.length]);
 
   // Animated dots
   useEffect(() => {

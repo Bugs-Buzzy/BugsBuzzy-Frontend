@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -euo pipefail
+set -eu
 
 # Husky v9+ no longer needs sourcing of husky.sh; removed deprecated lines.
 npx --no -- commitlint --edit "$1"
