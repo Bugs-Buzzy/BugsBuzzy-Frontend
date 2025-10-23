@@ -34,7 +34,7 @@ const SponsorsFloor = forwardRef<HTMLElement>((props, ref) => {
 
           {/* متن معرفی */}
           <div
-            className="text-white text-base md:text-xl space-y-4 max-h-80 overflow-y-auto"
+            className="text-white text-base md:text-xl space-y-4 max-h-60 overflow-y-auto"
             ref={messageRef}
           >
             <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 mb-4">
