@@ -22,19 +22,17 @@ import img6 from '@/assets/images/presents/img6.jpg';
 import img7 from '@/assets/images/presents/img7.jpg';
 import img8 from '@/assets/images/presents/img8.jpg';
 import img9 from '@/assets/images/presents/img9.jpg';
-// تصاویر گودوت
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 
 const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
   const [selectedCategory, setSelectedCategory] = useState<'godot' | 'presentations' | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [_selectedGodotImage, _setSelectedGodotImage] = useState<string | null>(null);
 
   const horizontalPresRef = useRef<HTMLDivElement>(null);
   const horizontalGodotRef = useRef<HTMLDivElement>(null);
 
-  // اسکرول نرم برای فلش‌ها
+  // اسکرول نرم برای دکمه‌های فلش
   const scrollContainer = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
     if (!ref.current) return;
     const scrollAmount = ref.current.clientWidth * 0.8;
@@ -44,48 +42,51 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
     });
   };
 
-  // تابع handleWheel برای اسکرول افقی
-  const handleWheel = (e: React.WheelEvent, containerRef: React.RefObject<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    e.preventDefault();
-    containerRef.current.scrollLeft += e.deltaY;
-  };
-
   useEffect(() => {
     if (!selectedCategory) return;
     const container =
       selectedCategory === 'presentations' ? horizontalPresRef.current : horizontalGodotRef.current;
     if (!container) return;
 
+    // Scroll با چرخ موس (دسکتاپ)
     const onWheel = (e: WheelEvent) => {
-      e.stopPropagation();
       if (Math.abs(e.deltaY) > 0) {
-        e.preventDefault();
         container.scrollLeft += e.deltaY;
       }
     };
 
-    let lastTouchX: number | null = null;
-    const onTouchMove = (e: TouchEvent) => {
-      e.stopPropagation();
-      const currentX = e.touches[0].clientX;
-      if (lastTouchX === null) {
-        lastTouchX = currentX;
-        return;
-      }
-      const delta = lastTouchX - currentX;
-      container.scrollLeft += delta;
-      lastTouchX = currentX;
-      e.preventDefault();
+    // لمس برای موبایل (اندروید/iOS)
+    let isTouching = false;
+    let startX = 0;
+    let scrollLeftStart = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      isTouching = true;
+      startX = e.touches[0].pageX - container.offsetLeft;
+      scrollLeftStart = container.scrollLeft;
     };
 
-    container.addEventListener('wheel', onWheel, { passive: false });
-    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    const onTouchMove = (e: TouchEvent) => {
+      if (!isTouching) return;
+      const x = e.touches[0].pageX - container.offsetLeft;
+      const walk = startX - x;
+      container.scrollLeft = scrollLeftStart + walk;
+    };
+
+    const onTouchEnd = () => {
+      isTouching = false;
+    };
+
+    container.addEventListener('wheel', onWheel, { passive: true });
+    container.addEventListener('touchstart', onTouchStart, { passive: true });
+    container.addEventListener('touchmove', onTouchMove, { passive: true });
+    container.addEventListener('touchend', onTouchEnd, { passive: true });
 
     return () => {
       container.removeEventListener('wheel', onWheel);
+      container.removeEventListener('touchstart', onTouchStart);
       container.removeEventListener('touchmove', onTouchMove);
-      lastTouchX = null;
+      container.removeEventListener('touchend', onTouchEnd);
     };
   }, [selectedCategory]);
 
@@ -163,18 +164,19 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
             <div
               className="flex gap-4 overflow-x-auto whitespace-nowrap px-4 py-2 scrollable-x items-stretch"
               ref={horizontalGodotRef}
-              onWheel={(e) => handleWheel(e, horizontalGodotRef)}
             >
               {godotWorkshops.map((w, i) => (
                 <PixelFrame
                   key={i}
-                  className="bg-primary-midnight flex flex-col justify-center items-center flex-shrink-0 w-[65vw] sm:w-[18vw] aspect-square cursor-pointer hover:scale-105 transition-transform"
+                  className="bg-primary-midnight flex flex-col justify-center items-center text-center flex-shrink-0 w-[65vw] sm:w-[18vw] aspect-square cursor-pointer hover:scale-105 transition-transform"
                   onClick={() => setSelectedImage(w.img)}
                 >
-                  <h4 className="text-base sm:text-lg font-bold mb-2 leading-snug break-words">
-                    {w.title}
-                  </h4>
-                  <p className="text-primary-columbia text-sm">{w.date}</p>
+                  <div className="flex flex-col justify-center items-center h-full px-2">
+                    <h4 className="text-base sm:text-lg font-bold mb-2 leading-snug break-words">
+                      {w.title}
+                    </h4>
+                    <p className="text-primary-columbia text-sm">{w.date}</p>
+                  </div>
                 </PixelFrame>
               ))}
             </div>
