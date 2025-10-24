@@ -23,6 +23,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [animDirection, setAnimDirection] = useState<'left' | 'right'>('right');
   const contentRef = useRef<HTMLDivElement>(null);
+  const isChangingPage = useRef(false);
 
   const pages = [
     {
@@ -295,16 +296,26 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   const reversedPages = useMemo(() => [...pages].reverse(), [pages]);
 
   const nextPage = useCallback(() => {
+    if (isChangingPage.current) return;
     if (currentPage < pages.length - 1) {
+      isChangingPage.current = true;
       setAnimDirection('right');
       setCurrentPage((prev) => prev + 1);
+      setTimeout(() => {
+        isChangingPage.current = false;
+      }, 600);
     }
   }, [currentPage, pages.length]);
 
   const prevPage = useCallback(() => {
+    if (isChangingPage.current) return;
     if (currentPage > 0) {
+      isChangingPage.current = true;
       setAnimDirection('left');
       setCurrentPage((prev) => prev - 1);
+      setTimeout(() => {
+        isChangingPage.current = false;
+      }, 600);
     }
   }, [currentPage]);
 

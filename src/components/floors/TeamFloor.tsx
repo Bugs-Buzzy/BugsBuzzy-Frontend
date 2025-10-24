@@ -13,18 +13,29 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
   const [animDirection, setAnimDirection] = useState<'left' | 'right'>('left');
   const [hasScroll, setHasScroll] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
+  const isChangingTeam = useRef(false);
 
   const currentTeamName = teamNames[currentTeamIndex];
   const currentMembers = teams[currentTeamName];
 
   const nextTeam = useCallback(() => {
+    if (isChangingTeam.current) return;
+    isChangingTeam.current = true;
     setAnimDirection('right');
     setCurrentTeamIndex((prev) => (prev + 1) % teamNames.length);
+    setTimeout(() => {
+      isChangingTeam.current = false;
+    }, 600);
   }, [teamNames.length]);
 
   const prevTeam = useCallback(() => {
+    if (isChangingTeam.current) return;
+    isChangingTeam.current = true;
     setAnimDirection('left');
     setCurrentTeamIndex((prev) => (prev === 0 ? teamNames.length - 1 : prev - 1));
+    setTimeout(() => {
+      isChangingTeam.current = false;
+    }, 600);
   }, [teamNames.length]);
 
   useScrollInterceptor(listContainerRef, {
