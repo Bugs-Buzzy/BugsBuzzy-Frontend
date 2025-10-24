@@ -117,6 +117,9 @@ const errorTranslations: Record<string, string> = {
 
   // ========== Payment Errors ==========
   'Payment service failed': 'خطا در سرویس پرداخت. لطفاً دوباره تلاش کنید',
+  'Gateway connection failed': 'خطا در اتصال به درگاه پرداخت. لطفاً دوباره تلاش کنید',
+  'Unexpected payment error': 'خطای غیرمنتظره در ایجاد پرداخت',
+  'Gateway error': 'خطا از درگاه پرداخت',
   'Items are required': 'آیتم‌ها الزامی هستند',
   'Refresh token is required': 'توکن تمدید الزامی است',
   'Invalid or expired refresh token': 'توکن نامعتبر یا منقضی شده است',
