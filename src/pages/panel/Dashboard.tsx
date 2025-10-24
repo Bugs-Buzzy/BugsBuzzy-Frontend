@@ -203,7 +203,7 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center text-sm">
                   <span>تعداد اعضا:</span>
                   <span className="text-primary-aero font-pixel" dir="ltr">
-                    {stats.inPersonTeam.member_count}/5
+                    {stats.inPersonTeam.member_count}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
