@@ -94,7 +94,7 @@ export default function BaseModal({
     // Prevent wheel and touch events only on the overlay itself, not on modal content
     const preventEvent = (e: Event) => {
       // Allow events that originate from modal content or its children
-      if (modalContentElement && modalContentElement.contains(e.target as Node)) {
+      if (modalContentElement && e.target && modalContentElement.contains(e.target as Node)) {
         return;
       }
       e.preventDefault();
