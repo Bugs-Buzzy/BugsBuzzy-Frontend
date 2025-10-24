@@ -9,6 +9,7 @@
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   overscroll-behavior-y: contain;
+  touch-action: pan-y;
 }
 
 /* Note: Individual floor styles are in components.css under .floor class */

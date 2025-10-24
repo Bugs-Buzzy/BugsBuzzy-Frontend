@@ -173,7 +173,7 @@ export default function PaymentSuccess() {
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-green-300 text-lg">مبلغ پرداخت شده:</span>
                   <span className="font-pixel font-bold text-green-400 text-2xl" dir="ltr">
-                    {formatPrice(paymentContext.amount)} تومان
+                    {formatPrice(paymentContext.amount)}
                   </span>
                 </div>
               </div>

@@ -9,28 +9,29 @@ import WorkshopsFloor from '@/components/floors/WorkshopsFloor';
 import HUD from '@/components/HUD';
 import '@/styles/gameworld.css';
 
+const floorNames = ['', 'inperson', 'gamejam', 'workshops', 'sponsors', 'team'];
+
 export default function GameWorld() {
   const floorRefs = useRef<(HTMLElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentFloor, setCurrentFloor] = useState(0);
-  const isScrolling = useRef(false);
+  const isSnapping = useRef(false);
+  const lastFloor = useRef(0);
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const scrollToFloor = (index: number) => {
-    if (isScrolling.current) return;
-    isScrolling.current = true;
     setCurrentFloor(index);
+    lastFloor.current = index;
+    window.history.replaceState(null, '', `#${floorNames[index]}`);
     floorRefs.current[index]?.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => {
-      isScrolling.current = false;
-    }, 250);
   };
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    let lastScrollTime = 0;
-    const scrollDelay = 600;
+    let lastWheelTime = 0;
+    const wheelDelay = 600;
 
     const handleWheel = (e: WheelEvent) => {
       const target = e.target as HTMLElement;
@@ -38,94 +39,99 @@ export default function GameWorld() {
         return;
       }
 
-      if (isScrolling.current) {
-        e.preventDefault();
-        return;
-      }
+      e.preventDefault();
+
+      if (isSnapping.current) return;
 
       const now = Date.now();
-      if (now - lastScrollTime < scrollDelay) {
-        e.preventDefault();
-        return;
-      }
+      if (now - lastWheelTime < wheelDelay) return;
 
       if (Math.abs(e.deltaY) > 10) {
-        e.preventDefault();
-        lastScrollTime = now;
+        lastWheelTime = now;
+        isSnapping.current = true;
 
-        if (e.deltaY > 0 && currentFloor < 5) {
-          scrollToFloor(currentFloor + 1);
-        } else if (e.deltaY < 0 && currentFloor > 0) {
-          scrollToFloor(currentFloor - 1);
+        let targetFloor = lastFloor.current;
+        if (e.deltaY > 0 && lastFloor.current < 5) {
+          targetFloor = lastFloor.current + 1;
+        } else if (e.deltaY < 0 && lastFloor.current > 0) {
+          targetFloor = lastFloor.current - 1;
+        }
+
+        if (targetFloor !== lastFloor.current) {
+          scrollToFloor(targetFloor);
+          setTimeout(() => {
+            isSnapping.current = false;
+          }, 600);
+        } else {
+          isSnapping.current = false;
         }
       }
     };
 
-    let touchStartY = 0;
-    let touchStartTime = 0;
+    const handleScroll = () => {
+      if (isSnapping.current) return;
 
-    const handleTouchStart = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.team-scrollbar')) {
-        return;
-      }
-      touchStartY = e.touches[0].clientY;
-      touchStartTime = Date.now();
-    };
+      clearTimeout(scrollTimeout.current);
 
-    const handleTouchEnd = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.team-scrollbar')) {
-        return;
+      const scrollPosition = container.scrollTop;
+      const viewportHeight = container.clientHeight;
+      const currentPosition = scrollPosition / viewportHeight;
+      let targetFloor = Math.round(currentPosition);
+
+      // محدود کردن به یک طبقه در هر اسکرول
+      const diff = targetFloor - lastFloor.current;
+      if (Math.abs(diff) > 1) {
+        targetFloor = lastFloor.current + (diff > 0 ? 1 : -1);
       }
 
-      if (isScrolling.current) return;
+      targetFloor = Math.max(0, Math.min(5, targetFloor));
 
-      const touchEndY = e.changedTouches[0].clientY;
-      const touchEndTime = Date.now();
-      const diff = touchStartY - touchEndY;
-      const timeDiff = touchEndTime - touchStartTime;
+      scrollTimeout.current = setTimeout(() => {
+        const scrollDiff = Math.abs(currentPosition - targetFloor);
 
-      if (Math.abs(diff) > 80 && timeDiff < 500) {
-        if (diff > 0 && currentFloor < 5) {
-          scrollToFloor(currentFloor + 1);
-        } else if (diff < 0 && currentFloor > 0) {
-          scrollToFloor(currentFloor - 1);
+        if (scrollDiff > 0.05) {
+          isSnapping.current = true;
+          scrollToFloor(targetFloor);
+          setTimeout(() => {
+            isSnapping.current = false;
+          }, 400);
+        } else {
+          if (targetFloor !== lastFloor.current) {
+            lastFloor.current = targetFloor;
+            setCurrentFloor(targetFloor);
+            window.history.replaceState(null, '', `#${floorNames[targetFloor]}`);
+          }
         }
-      }
+      }, 150);
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       container.removeEventListener('wheel', handleWheel);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout.current);
     };
-  }, [currentFloor]);
+  }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-            const index = floorRefs.current.indexOf(entry.target as HTMLElement);
-            if (index !== -1 && index !== currentFloor) {
-              setCurrentFloor(index);
-            }
-          }
-        });
-      },
-      { threshold: [0.5, 0.75, 1.0] },
-    );
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const floorIndex = floorNames.indexOf(hash);
+        if (floorIndex !== -1 && floorIndex !== currentFloor) {
+          setCurrentFloor(floorIndex);
+          setTimeout(() => {
+            floorRefs.current[floorIndex]?.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }
+      }
+    };
 
-    floorRefs.current.forEach((floor) => {
-      if (floor) observer.observe(floor);
-    });
-
-    return () => observer.disconnect();
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, [currentFloor]);
 
   return (

@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useRef } from 'react';
+import { forwardRef, useState, useEffect, useRef, useCallback } from 'react';
 import {
   FaGamepad,
   FaClock,
@@ -16,11 +16,14 @@ import {
 
 import bgGameJam from '@/assets/bkg-gamejam.png';
 import PixelFrame from '@/components/PixelFrame';
+import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [animDirection, setAnimDirection] = useState<'left' | 'right'>('right');
+  const contentRef = useRef<HTMLDivElement>(null);
+  const isChangingPage = useRef(false);
 
   const pages = [
     {
@@ -290,19 +293,35 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     },
   ];
 
-  const nextPage = () => {
+  const nextPage = useCallback(() => {
+    if (isChangingPage.current) return;
     if (currentPage < pages.length - 1) {
+      isChangingPage.current = true;
       setAnimDirection('right');
       setCurrentPage((prev) => prev + 1);
+      setTimeout(() => {
+        isChangingPage.current = false;
+      }, 600);
     }
-  };
+  }, [currentPage, pages.length]);
 
-  const prevPage = () => {
+  const prevPage = useCallback(() => {
+    if (isChangingPage.current) return;
     if (currentPage > 0) {
+      isChangingPage.current = true;
       setAnimDirection('left');
       setCurrentPage((prev) => prev - 1);
+      setTimeout(() => {
+        isChangingPage.current = false;
+      }, 600);
     }
-  };
+  }, [currentPage]);
+
+  // Add swipe/horizontal scroll support
+  useScrollInterceptor(contentRef, {
+    onLeft: nextPage,
+    onRight: prevPage,
+  });
 
   useEffect(() => {
     if (isAnimatingOut) {
@@ -314,8 +333,6 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     }
   }, [isAnimatingOut, animDirection]);
 
-  const messageRef = useRef<HTMLDivElement>(null);
-
   return (
     <section
       ref={ref}
@@ -324,10 +341,10 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
-      <div className="relative h-full flex flex-col items-center justify-between py-8 px-4">
+      <div className="relative h-full flex flex-col items-center justify-between py-4 md:py-8 px-4">
         {/* Title */}
-        <div className="text-center mb-4">
-          <h1 className="text-5xl md:text-7xl font-bold text-white font-pixel mb-4 animate-pulse mt-16 md:mt-24">
+        <div className="text-center mb-2 md:mb-4">
+          <h1 className="text-4xl md:text-7xl font-bold text-white font-pixel mb-2 md:mb-4 animate-pulse mt-8 md:mt-24">
             Game Jam
           </h1>
           <div className="w-full max-w-md h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mx-auto"></div>
@@ -353,7 +370,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
         {/* Content */}
         <div
           className="flex-1 w-full max-w-4xl mx-auto flex items-center justify-center relative"
-          ref={messageRef}
+          ref={contentRef}
         >
           {/* Navigation Buttons */}
           <button
@@ -390,21 +407,27 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
         </div>
 
         {/* Page Indicators */}
-        <div className="mt-8 flex gap-2">
-          {pages.map((page) => (
+        <div className="mt-4 md:mt-8 mb-2 md:mb-0 flex gap-2 cursor-pointer">
+          {pages.map((page, index) => (
             <div
               key={page.id}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                currentPage === page.id
+                currentPage === index
                   ? 'bg-primary-sky w-6'
                   : 'bg-primary-oxfordblue hover:bg-primary-midnight'
               }`}
               onClick={() => {
-                setCurrentPage(page.id);
+                setAnimDirection(index > currentPage ? 'right' : 'left');
+                setCurrentPage(index);
               }}
             />
           ))}
         </div>
+
+        {/* Swipe hint text */}
+        <p className="text-white font-normal text-xs md:text-sm opacity-75 mb-2">
+          → اسکرول افقی برای تغییر صفحه ←
+        </p>
       </div>
     </section>
   );

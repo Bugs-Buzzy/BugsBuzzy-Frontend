@@ -320,7 +320,7 @@ export default function PaymentPhase({
                   </span>
                   {itemPrices[item.id] > 0 && !isPurchased && (
                     <span className="text-primary-aero text-sm font-pixel" dir="ltr">
-                      {formatPrice(itemPrices[item.id])} تومان
+                      {formatPrice(itemPrices[item.id])}
                     </span>
                   )}
                 </label>
@@ -385,7 +385,7 @@ export default function PaymentPhase({
               <div className="flex justify-between text-primary-aero text-sm">
                 <span>• {baseItemLabel}</span>
                 <span className="font-pixel" dir="ltr">
-                  {itemPrices[baseItem] > 0 ? `${formatPrice(itemPrices[baseItem])} تومان` : '...'}
+                  {itemPrices[baseItem] > 0 ? `${formatPrice(itemPrices[baseItem])}` : '...'}
                 </span>
               </div>
             ) : (
@@ -415,7 +415,7 @@ export default function PaymentPhase({
                         <span>✓ پرداخت شده</span>
                       </span>
                     ) : itemPrices[itemId] > 0 ? (
-                      `${formatPrice(itemPrices[itemId])} تومان`
+                      `${formatPrice(itemPrices[itemId])}`
                     ) : (
                       '...'
                     )}
@@ -432,7 +432,7 @@ export default function PaymentPhase({
                   <span>در حال محاسبه...</span>
                 ) : originalPrice !== null ? (
                   <span className="font-pixel" dir="ltr">
-                    {formatPrice(originalPrice)} تومان
+                    {formatPrice(originalPrice)}
                   </span>
                 ) : (
                   <span className="text-red-400">خطا در محاسبه</span>
@@ -446,7 +446,7 @@ export default function PaymentPhase({
                 <div className="flex justify-between text-green-400 text-sm">
                   <span>🎉 تخفیف ({discountPercentage}%):</span>
                   <span className="font-pixel" dir="ltr">
-                    - {formatPrice(originalPrice - calculatedPrice)} تومان
+                    - {formatPrice(originalPrice - calculatedPrice)}
                   </span>
                 </div>
               </div>
@@ -475,7 +475,7 @@ export default function PaymentPhase({
                     }`}
                     dir="ltr"
                   >
-                    {formatPrice(calculatedPrice)} تومان
+                    {formatPrice(calculatedPrice)}
                   </span>
                 ) : (
                   <span className="text-red-400">خطا در محاسبه</span>

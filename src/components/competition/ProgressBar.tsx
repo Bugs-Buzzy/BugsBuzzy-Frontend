@@ -12,84 +12,246 @@ interface ProgressBarProps {
   onPhaseClick: (phaseId: number) => void;
 }
 
-export default function ProgressBar({
-  phases,
-  currentPhase: _currentPhase,
-  onPhaseClick,
-}: ProgressBarProps) {
+export default function ProgressBar({ phases, currentPhase, onPhaseClick }: ProgressBarProps) {
   return (
-    <div className="bg-primary-midnight rounded-lg p-4 border border-primary-cerulean mb-6 overflow-x-auto">
-      <div className="flex items-center justify-between min-w-max gap-2">
-        {phases.map((phase, index) => (
-          <div key={phase.id} className="flex items-center">
-            {/* Phase Circle */}
-            <button
-              onClick={() => phase.isClickable && onPhaseClick(phase.id)}
-              disabled={!phase.isClickable}
-              className={`
-                relative flex flex-col items-center gap-2 px-4 py-2 rounded-lg transition-all
-                ${phase.status === 'locked' && 'opacity-50 cursor-not-allowed'}
-                ${phase.status === 'current' && 'bg-primary-cerulean bg-opacity-20 border-2 border-primary-cerulean'}
-                ${phase.status === 'completed' && 'bg-green-900 bg-opacity-30 border border-green-500'}
-                ${phase.status === 'available' && phase.isClickable && 'hover:bg-primary-oxfordblue cursor-pointer border border-primary-aero'}
-                ${!phase.isClickable && 'cursor-default'}
-              `}
-            >
-              {/* Icon */}
-              <div
-                className={`
-                text-3xl
-                ${phase.status === 'current' && 'animate-bounce'}
-                ${phase.status === 'completed' && 'opacity-100'}
-              `}
-              >
-                {phase.status === 'completed' ? '✅' : phase.icon}
-              </div>
+    <div className="relative">
+      {/* Container with pixel border */}
+      <div className="bg-primary-oxfordblue rounded-lg p-6 border-4 border-primary-cerulean shadow-xl relative overflow-hidden">
+        {/* Decorative background pattern */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div
+            className="absolute top-0 left-0 w-full h-full"
+            style={{
+              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 11px)`,
+            }}
+          />
+        </div>
 
-              {/* Title */}
-              <div className="text-center">
-                <p
-                  className={`
-                  text-sm font-bold whitespace-nowrap
-                  ${phase.status === 'locked' && 'text-gray-500'}
-                  ${phase.status === 'current' && 'text-primary-sky'}
-                  ${phase.status === 'completed' && 'text-green-400'}
-                  ${phase.status === 'available' && 'text-primary-aero'}
-                `}
-                >
-                  {phase.title}
-                </p>
+        {/* Progress Track */}
+        <div className="relative">
+          {/* Desktop View */}
+          <div className="hidden md:flex items-center justify-between gap-4">
+            {phases.map((phase, index) => (
+              <div key={phase.id} className="flex items-center flex-1">
+                {/* Phase Node */}
+                <div className="flex-1 flex flex-col items-center">
+                  <button
+                    onClick={() => phase.isClickable && onPhaseClick(phase.id)}
+                    disabled={!phase.isClickable}
+                    className={`
+                      group relative
+                      ${phase.isClickable ? 'cursor-pointer' : 'cursor-default'}
+                    `}
+                  >
+                    {/* Node Circle */}
+                    <div
+                      className={`
+                      relative w-20 h-20 rounded-lg flex items-center justify-center
+                      border-4 transition-all duration-300
+                      ${phase.status === 'locked' && 'bg-gray-800 border-gray-700 opacity-50'}
+                      ${phase.status === 'available' && 'bg-primary-midnight border-primary-aero'}
+                      ${phase.status === 'current' && 'bg-primary-cerulean border-primary-sky shadow-lg shadow-primary-cerulean/50 animate-pulse'}
+                      ${phase.status === 'completed' && 'bg-green-900 border-green-500 shadow-lg shadow-green-500/30'}
+                      ${phase.isClickable && 'group-hover:scale-110 group-hover:shadow-2xl'}
+                    `}
+                    >
+                      {/* Icon/Status */}
+                      <div
+                        className={`
+                        text-4xl transition-transform
+                        ${phase.status === 'current' && 'animate-bounce'}
+                      `}
+                      >
+                        {phase.status === 'completed'
+                          ? '✅'
+                          : phase.status === 'locked'
+                            ? '🔒'
+                            : phase.icon}
+                      </div>
 
-                {/* Status Badge */}
-                {phase.status === 'locked' && (
-                  <span className="text-xs text-gray-600 mt-1 block">🔒 قفل</span>
+                      {/* Glow effect for current phase */}
+                      {phase.status === 'current' && (
+                        <div className="absolute inset-0 rounded-lg bg-primary-sky opacity-20 animate-pulse" />
+                      )}
+                    </div>
+
+                    {/* Phase Title */}
+                    <div className="mt-3 text-center">
+                      <p
+                        className={`
+                        text-sm font-bold font-pixel whitespace-nowrap
+                        ${phase.status === 'locked' && 'text-gray-600'}
+                        ${phase.status === 'available' && 'text-primary-aero'}
+                        ${phase.status === 'current' && 'text-primary-sky'}
+                        ${phase.status === 'completed' && 'text-green-400'}
+                      `}
+                      >
+                        {phase.title}
+                      </p>
+
+                      {/* Status Badge */}
+                      <div className="mt-1">
+                        {phase.status === 'locked' && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-gray-800 text-gray-500 font-pixel">
+                            قفل
+                          </span>
+                        )}
+                        {phase.status === 'current' && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-primary-cerulean text-white font-pixel animate-pulse">
+                            فعال
+                          </span>
+                        )}
+                        {phase.status === 'available' && phase.isClickable && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-primary-aero bg-opacity-30 text-primary-aero font-pixel">
+                            قابل دسترس
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Connector */}
+                {index < phases.length - 1 && (
+                  <div className="flex-1 px-2 flex items-center">
+                    <div className="w-full relative h-2">
+                      {/* Background track */}
+                      <div className="absolute inset-0 bg-gray-700 rounded-full" />
+
+                      {/* Progress fill */}
+                      <div
+                        className={`
+                          absolute inset-0 rounded-full transition-all duration-500
+                          ${
+                            phase.status === 'completed' ||
+                            phases[index + 1].status === 'current' ||
+                            phases[index + 1].status === 'completed'
+                              ? 'bg-gradient-to-r from-green-500 to-green-400 shadow-lg shadow-green-500/50'
+                              : 'bg-gray-700'
+                          }
+                        `}
+                      />
+
+                      {/* Animated dots for active connection */}
+                      {phase.status === 'current' && phases[index + 1].status !== 'locked' && (
+                        <div className="absolute inset-0 flex items-center justify-around">
+                          {[...Array(3)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="w-1 h-1 bg-white rounded-full animate-pulse"
+                              style={{
+                                animationDelay: `${i * 0.2}s`,
+                              }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
-                {phase.status === 'current' && (
-                  <span className="text-xs text-primary-cerulean mt-1 block">▶ فعلی</span>
-                )}
               </div>
-            </button>
-
-            {/* Connector Line */}
-            {index < phases.length - 1 && (
-              <div
-                className={`
-                h-0.5 w-8 mx-2
-                ${
-                  phases[index + 1].status === 'completed' || phases[index + 1].status === 'current'
-                    ? 'bg-green-500'
-                    : 'bg-gray-600'
-                }
-              `}
-              />
-            )}
+            ))}
           </div>
-        ))}
+
+          {/* Mobile View - Horizontal Scroll */}
+          <div className="md:hidden overflow-x-auto pb-4">
+            <div className="flex items-center gap-3 min-w-max px-2">
+              {phases.map((phase, index) => (
+                <div key={phase.id} className="flex items-center">
+                  <button
+                    onClick={() => phase.isClickable && onPhaseClick(phase.id)}
+                    disabled={!phase.isClickable}
+                    className={`
+                      flex flex-col items-center gap-2 min-w-[80px]
+                      ${phase.isClickable ? 'cursor-pointer' : 'cursor-default'}
+                    `}
+                  >
+                    {/* Compact Node */}
+                    <div
+                      className={`
+                      w-16 h-16 rounded-lg flex items-center justify-center
+                      border-3 transition-all
+                      ${phase.status === 'locked' && 'bg-gray-800 border-gray-700 opacity-50'}
+                      ${phase.status === 'available' && 'bg-primary-midnight border-primary-aero'}
+                      ${phase.status === 'current' && 'bg-primary-cerulean border-primary-sky shadow-lg'}
+                      ${phase.status === 'completed' && 'bg-green-900 border-green-500'}
+                    `}
+                    >
+                      <div className="text-2xl">
+                        {phase.status === 'completed'
+                          ? '✅'
+                          : phase.status === 'locked'
+                            ? '🔒'
+                            : phase.icon}
+                      </div>
+                    </div>
+
+                    {/* Compact Title */}
+                    <p
+                      className={`
+                      text-xs font-bold font-pixel text-center max-w-[80px]
+                      ${phase.status === 'locked' && 'text-gray-600'}
+                      ${phase.status === 'available' && 'text-primary-aero'}
+                      ${phase.status === 'current' && 'text-primary-sky'}
+                      ${phase.status === 'completed' && 'text-green-400'}
+                    `}
+                    >
+                      {phase.title}
+                    </p>
+                  </button>
+
+                  {/* Mobile Connector */}
+                  {index < phases.length - 1 && (
+                    <div className="flex items-center px-1">
+                      <div
+                        className={`
+                        w-8 h-1 rounded-full
+                        ${
+                          phase.status === 'completed' || phases[index + 1].status === 'current'
+                            ? 'bg-green-500'
+                            : 'bg-gray-700'
+                        }
+                      `}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Helper Text */}
+        <div className="mt-4 text-center">
+          <p className="text-xs text-primary-aero font-pixel">
+            {phases.find((p) => p.id === currentPhase)?.status === 'current' && (
+              <span className="inline-flex items-center gap-1">
+                <span className="animate-ping inline-block w-2 h-2 rounded-full bg-primary-sky"></span>
+                <span>در حال انجام: {phases.find((p) => p.id === currentPhase)?.title}</span>
+              </span>
+            )}
+          </p>
+        </div>
       </div>
 
-      {/* Mobile Hint */}
-      <div className="md:hidden mt-3 text-center text-xs text-gray-500">
-        ← برای دیدن مراحل بیشتر، به چپ و راست بکشید →
+      {/* Legend - Only on Desktop */}
+      <div className="hidden md:flex items-center justify-center gap-6 mt-3 text-xs">
+        <div className="flex items-center gap-2 text-gray-500">
+          <div className="w-3 h-3 rounded bg-gray-800 border border-gray-700"></div>
+          <span className="font-pixel">قفل</span>
+        </div>
+        <div className="flex items-center gap-2 text-primary-aero">
+          <div className="w-3 h-3 rounded bg-primary-midnight border border-primary-aero"></div>
+          <span className="font-pixel">قابل دسترس</span>
+        </div>
+        <div className="flex items-center gap-2 text-primary-sky">
+          <div className="w-3 h-3 rounded bg-primary-cerulean border border-primary-sky"></div>
+          <span className="font-pixel">در حال انجام</span>
+        </div>
+        <div className="flex items-center gap-2 text-green-400">
+          <div className="w-3 h-3 rounded bg-green-900 border border-green-500"></div>
+          <span className="font-pixel">تکمیل شده</span>
+        </div>
       </div>
     </div>
   );

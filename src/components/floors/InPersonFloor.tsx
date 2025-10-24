@@ -1,55 +1,12 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { FaTrophy, FaClock, FaCoins } from 'react-icons/fa';
 
 import bgInPerson from '@/assets/bkg-inperson.png';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
-import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
   const [showModal, setShowModal] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(modalRef, {});
-
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    const body = document.body;
-    const modal = modalRef.current;
-
-    if (showModal) {
-      // قفل کردن پس‌زمینه
-      body.style.position = 'fixed';
-      body.style.top = `-${scrollY}px`;
-      body.style.left = '0';
-      body.style.right = '0';
-      body.style.overflow = 'hidden';
-
-      // جلوگیری از bubble شدن اسکرول از مودال به body
-      const handleWheel = (e: WheelEvent) => {
-        if (!modal) return;
-
-        const atTop = modal.scrollTop === 0;
-        const atBottom = modal.scrollHeight - modal.scrollTop === modal.clientHeight;
-
-        // جلوگیری از اسکرول اضافه بالا یا پایین
-        if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
-          e.preventDefault();
-        }
-      };
-
-      modal?.addEventListener('wheel', handleWheel, { passive: false });
-
-      return () => {
-        modal?.removeEventListener('wheel', handleWheel);
-        body.style.position = '';
-        body.style.top = '';
-        body.style.left = '';
-        body.style.right = '';
-        body.style.overflow = '';
-        window.scrollTo(0, scrollY);
-      };
-    }
-  }, [showModal]);
 
   return (
     <>
@@ -144,11 +101,7 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
 
       {showModal && (
         <PixelModal onClose={() => setShowModal(false)}>
-          <div
-            className="text-white font-pixel max-h-[70vh] overflow-y-auto p-4 md:p-6"
-            ref={modalRef}
-            tabIndex={-1}
-          >
+          <div className="text-white font-pixel p-4 md:p-6">
             <FaTrophy className="text-4xl md:text-6xl mb-4 mx-auto" />
             <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">
               رقابت حضوری Bitcoin Hunt

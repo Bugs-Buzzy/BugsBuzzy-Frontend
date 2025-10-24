@@ -97,12 +97,12 @@ export function useScrollInterceptor(
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isActiveRef.current) return;
-      if (e.key === 'ArrowLeft' && onRight) {
-        e.preventDefault();
-        onRight();
-      } else if (e.key === 'ArrowRight' && onLeft) {
+      if (e.key === 'ArrowLeft' && onLeft) {
         e.preventDefault();
         onLeft();
+      } else if (e.key === 'ArrowRight' && onRight) {
+        e.preventDefault();
+        onRight();
       }
     };
 

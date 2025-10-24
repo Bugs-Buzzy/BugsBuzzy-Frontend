@@ -16,44 +16,13 @@ import img8 from '@/assets/images/presents/img8.jpg';
 import img9 from '@/assets/images/presents/img9.jpg';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
-import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
   const [selectedCategory, setSelectedCategory] = useState<'godot' | 'presentations' | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const presentationRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(presentationRef, {});
-  const godotRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(godotRef, {});
   const horizontalPresRef = useRef<HTMLDivElement>(null);
   const horizontalGodotRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!selectedCategory) return;
-
-    const container =
-      selectedCategory == 'presentations' ? presentationRef.current : godotRef.current;
-    if (!container) return;
-
-    document.body.style.overflow = 'hidden';
-    container.focus();
-
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    container.addEventListener('wheel', preventScroll, { passive: false });
-    container.addEventListener('touchmove', preventScroll, { passive: false });
-    container.addEventListener('keydown', preventScroll, { passive: false });
-
-    return () => {
-      document.body.style.overflow = '';
-      container.removeEventListener('wheel', preventScroll);
-      container.removeEventListener('touchmove', preventScroll);
-      container.removeEventListener('keydown', preventScroll);
-    };
-  }, [selectedCategory]);
 
   useEffect(() => {
     if (!selectedCategory) return;
@@ -71,37 +40,30 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
 
     let lastTouchX: number | null = null;
 
-    const onTouchStart = (e: TouchEvent) => {
-      e.stopPropagation();
-      lastTouchX = e.touches[0].clientX;
-    };
-
     const onTouchMove = (e: TouchEvent) => {
       e.stopPropagation();
-      if (lastTouchX === null) return;
+
       const currentX = e.touches[0].clientX;
+
+      // Initialize on first move
+      if (lastTouchX === null) {
+        lastTouchX = currentX;
+        return;
+      }
+
       const delta = lastTouchX - currentX;
       container.scrollLeft += delta;
       lastTouchX = currentX;
       e.preventDefault();
     };
 
-    const onTouchEnd = () => {
-      lastTouchX = null;
-    };
-
     container.addEventListener('wheel', onWheel, { passive: false });
-    container.addEventListener('touchstart', onTouchStart, { passive: true });
     container.addEventListener('touchmove', onTouchMove, { passive: false });
-    container.addEventListener('touchend', onTouchEnd);
-    container.addEventListener('touchcancel', onTouchEnd);
 
     return () => {
       container.removeEventListener('wheel', onWheel);
-      container.removeEventListener('touchstart', onTouchStart);
       container.removeEventListener('touchmove', onTouchMove);
-      container.removeEventListener('touchend', onTouchEnd);
-      container.removeEventListener('touchcancel', onTouchEnd);
+      lastTouchX = null; // Reset on cleanup
     };
   }, [selectedCategory]);
 
@@ -175,7 +137,7 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       {/* Godot Workshops Modal */}
       {selectedCategory === 'godot' && (
         <PixelModal onClose={() => setSelectedCategory(null)}>
-          <div className="text-white font-pixel text-center" ref={godotRef}>
+          <div className="text-white font-pixel text-center">
             <h3 className="text-2xl md:text-3xl mb-6 font-bold"> سری کارگاه‌های Godot</h3>
             <div
               className="flex gap-4 overflow-x-auto whitespace-nowrap px-4 py-2 scrollable-x"
@@ -194,7 +156,7 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       {/* Modal: Presentations */}
       {selectedCategory === 'presentations' && (
         <PixelModal onClose={() => setSelectedCategory(null)}>
-          <div className="text-white font-pixel text-center" ref={presentationRef}>
+          <div className="text-white font-pixel text-center">
             <h3 className="text-4xl md:text-3xl mb-6 font-bold"> ارائه‌ها</h3>
             <div
               className="flex gap-4 overflow-x-auto whitespace-nowrap px-4 py-2 scrollable-x"

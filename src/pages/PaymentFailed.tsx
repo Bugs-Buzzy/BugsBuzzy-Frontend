@@ -96,7 +96,7 @@ export default function PaymentFailed() {
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-red-300 text-lg">مبلغ:</span>
                   <span className="font-pixel font-bold text-red-400 text-2xl" dir="ltr">
-                    {formatPrice(paymentContext.amount)} تومان
+                    {formatPrice(paymentContext.amount)}
                   </span>
                 </div>
               </div>

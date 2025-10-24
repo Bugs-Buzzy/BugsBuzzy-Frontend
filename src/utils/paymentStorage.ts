@@ -85,8 +85,8 @@ export const getItemDisplayName = (itemName: string): string => {
     // Competition items
     inperson: 'ثبت‌نام رقابت حضوری',
     gamejam: 'ثبت‌نام گیم‌جم مجازی',
-    thursday_lunch: 'ناهار پنجشنبه',
-    friday_lunch: 'ناهار جمعه',
+    thursday_lunch: 'ناهار روز اول (پنجشنبه)',
+    friday_lunch: 'ناهار روز دوم (جمعه)',
 
     // Workshop items (pattern: workshop-{id})
     // These will be handled dynamically if needed
@@ -94,7 +94,7 @@ export const getItemDisplayName = (itemName: string): string => {
 
   // Check if it's a workshop item
   if (itemName.startsWith('workshop-')) {
-    return `ثبت‌نام ورکشاپ`;
+    return `ثبت‌نام کارگاه`;
   }
 
   return itemNames[itemName] || itemName;
@@ -104,5 +104,5 @@ export const getItemDisplayName = (itemName: string): string => {
  * Helper to format price in Persian
  */
 export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('fa-IR').format(price);
+  return new Intl.NumberFormat('fa-IR').format(price / 10) + 'تومان';
 };
