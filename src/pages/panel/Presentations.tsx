@@ -11,35 +11,7 @@ interface Presentation {
   status: 'upcoming' | 'live' | 'completed';
 }
 
-const mockPresentations: Presentation[] = [
-  {
-    id: 1,
-    title: 'مقدمه‌ای بر Unity برای مبتدی‌ها',
-    speaker: 'علی احمدی',
-    date: '۱۴۰۴/۰۱/۲۵',
-    time: '۱۸:۰۰',
-    platform: 'Google Meet',
-    status: 'upcoming',
-  },
-  {
-    id: 2,
-    title: 'طراحی گیم‌پلی جذاب',
-    speaker: 'مریم حسینی',
-    date: '۱۴۰۴/۰۱/۲۶',
-    time: '۱۹:۰۰',
-    platform: 'Zoom',
-    status: 'upcoming',
-  },
-  {
-    id: 3,
-    title: 'هنر و گرافیک در بازی‌سازی',
-    speaker: 'رضا کریمی',
-    date: '۱۴۰۴/۰۱/۲۷',
-    time: '۲۰:۰۰',
-    platform: 'Google Meet',
-    status: 'upcoming',
-  },
-];
+const mockPresentations: Presentation[] = [];
 
 export default function Presentations() {
   const getStatusBadge = (status: Presentation['status']) => {

@@ -12,30 +12,43 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
   useScrollInterceptor(modalRef, {});
 
   useEffect(() => {
-    const container = modalRef.current;
-    if (!container) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const modal = modalRef.current;
 
     if (showModal) {
-      document.body.style.overflow = 'hidden';
-      container.focus();
-    } else {
-      document.body.style.overflow = '';
+      // قفل کردن پس‌زمینه
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.overflow = 'hidden';
+
+      // جلوگیری از bubble شدن اسکرول از مودال به body
+      const handleWheel = (e: WheelEvent) => {
+        if (!modal) return;
+
+        const atTop = modal.scrollTop === 0;
+        const atBottom = modal.scrollHeight - modal.scrollTop === modal.clientHeight;
+
+        // جلوگیری از اسکرول اضافه بالا یا پایین
+        if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+          e.preventDefault();
+        }
+      };
+
+      modal?.addEventListener('wheel', handleWheel, { passive: false });
+
+      return () => {
+        modal?.removeEventListener('wheel', handleWheel);
+        body.style.position = '';
+        body.style.top = '';
+        body.style.left = '';
+        body.style.right = '';
+        body.style.overflow = '';
+        window.scrollTo(0, scrollY);
+      };
     }
-
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    container.addEventListener('wheel', preventScroll, { passive: false });
-    container.addEventListener('touchmove', preventScroll, { passive: false });
-    container.addEventListener('keydown', preventScroll, { passive: false });
-
-    return () => {
-      document.body.style.overflow = '';
-      container.removeEventListener('wheel', preventScroll);
-      container.removeEventListener('touchmove', preventScroll);
-      container.removeEventListener('keydown', preventScroll);
-    };
   }, [showModal]);
 
   return (

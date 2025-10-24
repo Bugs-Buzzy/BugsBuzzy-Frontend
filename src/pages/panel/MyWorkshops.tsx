@@ -4,9 +4,9 @@ export default function MyWorkshops() {
   const workshops = [
     {
       id: 1,
-      title: 'کارگاه Unity',
-      status: 'ثبت‌نام شده',
-      date: '۱۴۰۳/۰۸/۱۵',
+      title: '',
+      status: '',
+      date: '',
     },
   ];
 
