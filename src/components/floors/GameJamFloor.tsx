@@ -310,8 +310,8 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
 
   // Add swipe/horizontal scroll support
   useScrollInterceptor(contentRef, {
-    onLeft: prevPage,
-    onRight: nextPage,
+    onLeft: nextPage,
+    onRight: prevPage,
     lockParentScroll: false,
   });
 
