@@ -92,12 +92,14 @@ export default function ProfileSettings() {
       setPasswordError('برای تکمیل پروفایل، باید رمز عبور تنظیم کنید');
       setShowPasswordSection(true);
       validationErrors.password = 'رمز عبور الزامی است';
+      toast.warning('برای تکمیل پروفایل، باید رمز عبور تنظیم کنید');
     }
 
     // اگر validation error داشتیم، نشون بده و submit نکن
     if (Object.keys(validationErrors).length > 0) {
       setFieldErrors(validationErrors);
       setError('لطفاً خطاهای فرم را بررسی و اصلاح کنید');
+      toast.error('لطفاً خطاهای فرم را بررسی و اصلاح کنید');
       setLoading(false);
       return;
     }
