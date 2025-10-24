@@ -312,7 +312,6 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
   useScrollInterceptor(contentRef, {
     onLeft: nextPage,
     onRight: prevPage,
-    lockParentScroll: false,
   });
 
   useEffect(() => {
