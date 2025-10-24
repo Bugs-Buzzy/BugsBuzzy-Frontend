@@ -1,18 +1,10 @@
 import { useState, useEffect } from 'react';
-import {
-  FaHome,
-  FaTrophy,
-  FaGamepad,
-  FaLaptopCode,
-  FaGem,
-  FaUsers,
-  FaUser,
-  FaTimes,
-} from 'react-icons/fa';
+import { FaHome, FaTrophy, FaGamepad, FaLaptopCode, FaGem, FaUsers, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import coinGif from '@/assets/coin.gif';
 import LoginModal from '@/components/modals/LoginModal';
+import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
 
@@ -120,7 +112,8 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             {floors.map((floor, index) => {
               const FloorIcon = floor.Icon;
               const isActive = currentFloor === index;
-              const baseClasses = 'pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80';
+              const baseClasses =
+                'pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80';
               const activeClasses = isActive
                 ? 'text-orange-400 border-orange-400 border-2'
                 : 'text-white hover:bg-gray-700';
@@ -144,24 +137,15 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
 
       {/* 🎮 Mini Game Modal */}
       {showMiniGame && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          {/* قاب اصلی مودال */}
-          <PixelFrame className="relative bg-gray-900 border-4  rounded-2xl shadow-lg w-[90%] max-w-md p-6 text-center">
-            {/* دکمه بستن */}
-            <button
-              onClick={() => setShowMiniGame(false)}
-              className="absolute top-3 right-3 text-white hover:text-red-400 transition"
-            >
-              <FaTimes className="text-2xl" />
-            </button>
-
+        <PixelModal onClose={() => setShowMiniGame(false)}>
+          <div className="text-center">
             <h2 className="font-pixel text-xl text-white mb-4">مینی‌گیم</h2>
             <p className="text-gray-300 mb-4"></p>
 
             {/* داخل قاب بازی */}
             <p>Coming Soon...</p>
-          </PixelFrame>
-        </div>
+          </div>
+        </PixelModal>
       )}
     </>
   );
