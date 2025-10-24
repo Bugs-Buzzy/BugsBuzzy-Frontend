@@ -122,7 +122,7 @@ export default function BaseModal({
     // Add event listeners with passive: false to allow preventDefault
     modalElement.addEventListener('wheel', preventWheelPropagation, { passive: false });
     modalElement.addEventListener('touchmove', preventTouchPropagation, { passive: false });
-    modalElement.addEventListener('touchstart', preventTouchPropagation, { passive: true });
+    modalElement.addEventListener('touchstart', preventTouchPropagation, { passive: false });
 
     return () => {
       modalElement.removeEventListener('wheel', preventWheelPropagation);
