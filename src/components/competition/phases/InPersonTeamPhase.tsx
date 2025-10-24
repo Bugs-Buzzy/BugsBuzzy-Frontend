@@ -389,13 +389,18 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
             <h3 className="text-xl font-bold text-primary-sky mb-4">اعضای تیم</h3>
             <div className="space-y-3">
               <div className="bg-primary-midnight rounded p-4 flex items-center justify-between border border-primary-cerulean">
-                <div>
+                <div className="flex-1">
                   <p className="text-primary-sky font-bold">
                     {team.leader.first_name} {team.leader.last_name}
                   </p>
                   <p className="text-primary-aero text-sm">{team.leader.email}</p>
                 </div>
-                <span className="pixel-btn pixel-btn-primary px-3 py-1 text-sm">سرتیم</span>
+                <div className="flex gap-2 items-center">
+                  <span className="pixel-btn pixel-btn-success px-3 py-1 text-sm">
+                    ✅ پرداخت شده
+                  </span>
+                  <span className="pixel-btn pixel-btn-primary px-3 py-1 text-sm">سرتیم</span>
+                </div>
               </div>
 
               {members.map((member) => (
@@ -611,7 +616,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   <FaImage />
                   <span>{teamAvatar ? 'تغییر تصویر' : 'افزودن تصویر'}</span>
                 </button>
-                <p className="text-xs text-gray-400">(حداکثر 10MB - تبدیل خودکار به 256×256)</p>
+                <p className="text-xs text-gray-400">(حداکثر 10MB - تبدیل خودکار به 128×128)</p>
               </div>
 
               <div>

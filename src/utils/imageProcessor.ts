@@ -22,7 +22,7 @@ export class ImageProcessor {
             return;
           }
 
-          const targetSize = 256;
+          const targetSize = 128;
           canvas.width = targetSize;
           canvas.height = targetSize;
 

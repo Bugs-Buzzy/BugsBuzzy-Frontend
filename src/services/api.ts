@@ -104,9 +104,7 @@ class ApiClient {
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: 'خطای نامشخص',
-      }));
+      const errorData = await response.json().catch(() => ({}));
 
       console.error('API Error Response:', {
         status: response.status,
@@ -117,9 +115,32 @@ class ApiClient {
       // Better error message extraction
       let errorMessage = errorData.detail || errorData.message || errorData.error;
 
-      // Handle nested messages array
+      // Handle nested messages array (JWT errors)
       if (errorData.messages && Array.isArray(errorData.messages)) {
         errorMessage = errorData.messages.map((m: any) => m.message).join(', ');
+      }
+
+      // Handle 401 authentication errors
+      if (response.status === 401) {
+        if (
+          errorData.code === 'token_not_valid' ||
+          errorMessage?.includes('token') ||
+          errorMessage?.includes('expired')
+        ) {
+          errorMessage = 'نشست شما منقضی شده است. لطفاً دوباره وارد شوید';
+        } else if (!errorMessage) {
+          errorMessage = 'احراز هویت انجام نشده است. لطفاً وارد شوید';
+        }
+      }
+
+      // Fallback for empty error messages
+      if (!errorMessage) {
+        errorMessage =
+          response.status === 500
+            ? 'خطای سرور. لطفاً بعداً تلاش کنید'
+            : response.status === 403
+              ? 'شما مجوز انجام این عملیات را ندارید'
+              : 'خطا در ارتباط با سرور';
       }
 
       throw {
