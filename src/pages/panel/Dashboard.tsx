@@ -90,11 +90,11 @@ export default function Dashboard() {
   }
 
   const nextPresentation = {
-    title: 'مقدمه‌ای بر Unity برای مبتدی‌ها',
-    speaker: 'علی احمدی',
-    date: '۱۴۰۴/۰۱/۲۵',
-    time: '۱۸:۰۰',
-    platform: 'Google Meet',
+    title: '',
+    speaker: '',
+    date: '',
+    time: '',
+    platform: '',
   };
 
   return (
