@@ -88,10 +88,15 @@ export default function BaseModal({
 
   useEffect(() => {
     const overlayElement = overlayRef.current;
+    const modalContentElement = modalContentRef.current;
     if (!overlayElement) return;
 
-    // Prevent all wheel and touch events on the overlay from propagating
+    // Prevent wheel and touch events only on the overlay itself, not on modal content
     const preventEvent = (e: Event) => {
+      // Allow events that originate from modal content or its children
+      if (modalContentElement && modalContentElement.contains(e.target as Node)) {
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
     };
