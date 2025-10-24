@@ -336,35 +336,37 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
               </div>
             </div>
 
-            <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
-              <div className="flex justify-between items-start mb-2">
-                <p className="text-primary-aero">کد دعوت:</p>
+            {team.status === 'incomplete' && (
+              <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-primary-aero">کد دعوت:</p>
+                  {team.is_leader && (
+                    <button
+                      onClick={() => setShowRevokeModal(true)}
+                      className="pixel-btn pixel-btn-warning px-3 py-1 text-xs flex items-center gap-1"
+                      title="باطل کردن و ساخت کد جدید"
+                    >
+                      <span>🔄</span>
+                      <span>کد جدید</span>
+                    </button>
+                  )}
+                </div>
+                <p
+                  className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
+                  dir="ltr"
+                >
+                  {team.invite_code}
+                </p>
+                <p className="text-primary-aero text-sm mt-2 text-center">
+                  این کد را با دوستان خود به اشتراک بگذارید
+                </p>
                 {team.is_leader && (
-                  <button
-                    onClick={() => setShowRevokeModal(true)}
-                    className="pixel-btn pixel-btn-warning px-3 py-1 text-xs flex items-center gap-1"
-                    title="باطل کردن و ساخت کد جدید"
-                  >
-                    <span>🔄</span>
-                    <span>کد جدید</span>
-                  </button>
+                  <p className="text-yellow-400 text-xs mt-2 text-center">
+                    💡 می‌توانید کد را باطل و یک کد جدید دریافت کنید
+                  </p>
                 )}
               </div>
-              <p
-                className="text-primary-sky text-2xl font-bold tracking-widest text-center font-pixel"
-                dir="ltr"
-              >
-                {team.invite_code}
-              </p>
-              <p className="text-primary-aero text-sm mt-2 text-center">
-                این کد را با دوستان خود به اشتراک بگذارید
-              </p>
-              {team.is_leader && (
-                <p className="text-yellow-400 text-xs mt-2 text-center">
-                  💡 می‌توانید کد را باطل و یک کد جدید دریافت کنید
-                </p>
-              )}
-            </div>
+            )}
 
             {team.status === 'incomplete' && (
               <div className="bg-yellow-900 bg-opacity-30 rounded p-4 mb-4 border border-yellow-700">
@@ -549,7 +551,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                     }}
                     placeholder="کد 8 کاراکتری (مثلاً BG2024AB)"
                     maxLength={8}
-                    className="w-full pixel-input bg-primary-midnight text-primary-aero border-primary-cerulean p-3 text-center text-xl tracking-widest font-pixel"
+                    className="w-full pixel-input bg-primary-midnight text-primary-aero border-primary-cerulean p-3 text-center text-xl tracking-widest font-mono"
                     dir="ltr"
                     required
                   />
@@ -694,7 +696,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
               <div className="bg-primary-midnight rounded p-4 border border-primary-cerulean">
                 <p className="text-primary-aero text-sm mb-2">کد فعلی:</p>
                 <p
-                  className="text-primary-sky text-xl font-bold tracking-widest text-center font-pixel"
+                  className="text-primary-sky text-xl font-bold tracking-widest text-center font-mono"
                   dir="ltr"
                 >
                   {team.invite_code}
