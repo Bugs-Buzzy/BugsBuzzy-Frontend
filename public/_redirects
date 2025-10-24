@@ -1,0 +1,4 @@
+# SPA fallback for all routes
+# This ensures that client-side routing works on Netlify/Vercel
+# All routes should fall back to index.html for React Router to handle
+/*    /index.html   200
