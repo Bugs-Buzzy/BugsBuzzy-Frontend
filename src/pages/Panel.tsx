@@ -1,24 +1,38 @@
+import {
+  FaChartBar,
+  FaUser,
+  FaTrophy,
+  FaGamepad,
+  FaBullhorn,
+  FaDesktop,
+  FaArrowLeft,
+  FaSignOutAlt,
+  FaLock,
+} from 'react-icons/fa';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
 
 export default function Panel() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { info } = useToast();
 
   const handleLogout = () => {
     logout();
+    info('خارج شدید');
     navigate('/');
   };
 
   const menuItems = [
-    { path: '/panel/dashboard', label: 'داشبورد', icon: '📊', enabled: true },
-    { path: '/panel/profile', label: 'پروفایل', icon: '👤', enabled: true },
-    { path: '/panel/inperson', label: 'رقابت حضوری', icon: '🏆', enabled: user?.is_verified },
-    { path: '/panel/gamejam', label: 'گیم‌جم مجازی', icon: '🎮', enabled: user?.is_verified },
-    { path: '/panel/announcements', label: 'اطلاعیه‌ها', icon: '📢', enabled: true },
-    { path: '/panel/presentations', label: 'ارائه‌ها', icon: '📺', enabled: true },
+    { path: '/panel/dashboard', label: 'داشبورد', icon: FaChartBar, enabled: true },
+    { path: '/panel/profile', label: 'پروفایل', icon: FaUser, enabled: true },
+    { path: '/panel/inperson', label: 'رقابت حضوری', icon: FaTrophy, enabled: user?.is_verified },
+    { path: '/panel/gamejam', label: 'گیم‌جم مجازی', icon: FaGamepad, enabled: user?.is_verified },
+    { path: '/panel/announcements', label: 'اطلاعیه‌ها', icon: FaBullhorn, enabled: true },
+    { path: '/panel/presentations', label: 'ارائه‌ها', icon: FaDesktop, enabled: true },
   ];
 
   return (
@@ -33,39 +47,44 @@ export default function Panel() {
           </div>
 
           <nav className="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-visible flex-1">
-            {menuItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`
-                  flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded pixel-btn font-pixel whitespace-nowrap
-                  ${
-                    item.enabled
-                      ? 'pixel-btn-primary'
-                      : 'bg-gray-800 text-gray-500 cursor-not-allowed pointer-events-none border-gray-700'
-                  }
-                `}
-              >
-                <span className="text-xl md:text-2xl">{item.icon}</span>
-                <span className="font-bold text-xs md:text-base">{item.label}</span>
-                {!item.enabled && <span className="md:mr-auto">🔒</span>}
-              </Link>
-            ))}
+            {menuItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`
+									flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded pixel-btn font-normal whitespace-nowrap
+                    ${
+                      item.enabled
+                        ? 'pixel-btn-primary'
+                        : 'bg-gray-800 text-gray-500 cursor-not-allowed pointer-events-none border-gray-700'
+                    }
+                  `}
+                >
+                  <IconComponent className="text-xl md:text-2xl" />
+                  <span className="font-bold text-xs md:text-base">{item.label}</span>
+                  {!item.enabled && <FaLock className="md:mr-auto" />}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="flex md:flex-col gap-2 mt-4 md:mt-8">
             <Link
               to="/"
-              className="flex-1 md:w-full pixel-btn pixel-btn-primary text-center py-2 md:py-3 text-sm md:text-base"
+              className="flex-1 md:w-full pixel-btn pixel-btn-primary text-center py-2 md:py-3 text-sm md:text-base flex items-center justify-center gap-2"
             >
-              🎮 بازگشت
+              <FaArrowLeft />
+              <span>بازگشت</span>
             </Link>
 
             <button
               onClick={handleLogout}
-              className="flex-1 md:w-full pixel-btn pixel-btn-danger py-2 md:py-3 text-sm md:text-base"
+              className="flex-1 md:w-full pixel-btn pixel-btn-danger py-2 md:py-3 text-sm md:text-base flex items-center justify-center gap-2"
             >
-              🚪 خروج
+              <FaSignOutAlt />
+              <span>خروج</span>
             </button>
           </div>
         </PixelFrame>

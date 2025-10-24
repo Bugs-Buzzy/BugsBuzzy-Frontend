@@ -64,7 +64,19 @@ export default function PaymentPhase({
   const fetchPurchasedItems = async () => {
     try {
       const result = await paymentsService.getPurchasedItems();
-      setPurchasedItems(new Set(result.purchased_items));
+      const purchased = new Set(result.purchased_items);
+      setPurchasedItems(purchased);
+
+      // Initialize selectedAdditionalItems with already purchased items
+      const purchasedAdditionalItems = additionalItems
+        .filter((item) => purchased.has(item.id))
+        .map((item) => item.id);
+
+      setSelectedAdditionalItems((prev) => {
+        const updated = new Set(prev);
+        purchasedAdditionalItems.forEach((itemId) => updated.add(itemId));
+        return updated;
+      });
     } catch (err) {
       console.error('Failed to fetch purchased items:', err);
     }

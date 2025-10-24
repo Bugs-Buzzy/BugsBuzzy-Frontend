@@ -61,7 +61,7 @@ export default function GameWorld() {
           scrollToFloor(targetFloor);
           setTimeout(() => {
             isSnapping.current = false;
-          }, 600);
+          }, 500);
         } else {
           isSnapping.current = false;
         }
@@ -94,7 +94,7 @@ export default function GameWorld() {
           scrollToFloor(targetFloor);
           setTimeout(() => {
             isSnapping.current = false;
-          }, 400);
+          }, 200);
         } else {
           if (targetFloor !== lastFloor.current) {
             lastFloor.current = targetFloor;

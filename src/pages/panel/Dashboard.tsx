@@ -1,4 +1,16 @@
 import { useEffect, useState } from 'react';
+import {
+  FaChartBar,
+  FaExclamationTriangle,
+  FaTrophy,
+  FaGamepad,
+  FaBullhorn,
+  FaDesktop,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaUsers,
+  FaUtensils,
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import PixelFrame from '@/components/PixelFrame';
@@ -70,7 +82,10 @@ export default function Dashboard() {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="text-center py-8">
-          <h2 className="text-2xl font-bold text-primary-sky mb-4">⚠️ ایمیل تایید نشده</h2>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <FaExclamationTriangle className="text-secondary-orangeCrayola text-xl" />
+            <h2 className="text-2xl font-bold text-primary-sky">ایمیل تایید نشده</h2>
+          </div>
           <p className="text-primary-aero mb-4">
             لطفاً ابتدا ایمیل خود را تایید کنید تا به امکانات پنل دسترسی داشته باشید.
           </p>
@@ -102,9 +117,12 @@ export default function Dashboard() {
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-primary-sky mb-2">📊 داشبورد</h1>
+            <div className="flex items-center gap-2 mb-2">
+              <FaChartBar className="text-primary-sky text-2xl" />
+              <h1 className="text-3xl font-bold text-primary-sky">داشبورد</h1>
+            </div>
             <p className="text-primary-aero">
-              به پنل کاربری BugsBuzzy خوش آمدید، <span className="font-pixel">{user?.email}</span>
+              <span className="font-pixel">{user?.email}</span>
             </p>
           </div>
           <div className="text-left">
@@ -127,7 +145,7 @@ export default function Dashboard() {
       {!profileCompleted && (
         <PixelFrame className="bg-secondary-golden bg-opacity-20 border-secondary-orangePantone">
           <div className="flex items-start gap-4">
-            <span className="text-3xl">⚠️</span>
+            <FaExclamationTriangle className="text-secondary-orangeCrayola text-2xl mt-1 flex-shrink-0" />
             <div className="flex-1">
               <h3 className="text-xl font-bold text-secondary-orangeCrayola mb-2">
                 پروفایل تکمیل نشده
@@ -149,34 +167,46 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">🏆</span>
+            <FaTrophy className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">رقابت حضوری</h2>
           </div>
           <div className="space-y-2 text-primary-aero">
             <div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span>وضعیت پرداخت:</span>
-                <span className={stats.inPersonPaid ? 'text-green-400' : 'text-gray-400'}>
-                  {stats.inPersonPaid ? '✅ پرداخت شده' : '❌ پرداخت نشده'}
+                <span
+                  className={`flex items-center gap-1 ${stats.inPersonPaid ? 'text-green-400' : 'text-gray-400'}`}
+                >
+                  {stats.inPersonPaid ? <FaCheckCircle /> : <FaTimesCircle />}
+                  {stats.inPersonPaid ? 'پرداخت شده' : 'پرداخت نشده'}
                 </span>
               </div>
               {stats.inPersonPaid && (
-                <p className="text-xs text-primary-aero mt-1">
-                  ناهار: روز اول {stats.purchasedItems.includes('thursday_lunch') ? '✓' : '✗'} | روز
-                  دوم {stats.purchasedItems.includes('friday_lunch') ? '✓' : '✗'}
-                </p>
+                <div className="flex items-center gap-2 text-xs text-primary-aero mt-1">
+                  <FaUtensils />
+                  <span>
+                    ناهار: روز اول {stats.purchasedItems.includes('thursday_lunch') ? '✓' : '✗'} |
+                    روز دوم {stats.purchasedItems.includes('friday_lunch') ? '✓' : '✗'}
+                  </span>
+                </div>
               )}
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span>وضعیت تیم:</span>
-              <span className={stats.inPersonRegistered ? 'text-green-400' : 'text-gray-400'}>
-                {stats.inPersonRegistered ? '✅ دارد' : '❌ ندارد'}
+              <span
+                className={`flex items-center gap-1 ${stats.inPersonRegistered ? 'text-green-400' : 'text-gray-400'}`}
+              >
+                {stats.inPersonRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
+                {stats.inPersonRegistered ? 'دارد' : 'ندارد'}
               </span>
             </div>
             {stats.inPersonTeam && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between items-center text-sm">
                 <span>نام تیم:</span>
-                <span className="text-white font-normal">{stats.inPersonTeam.name}</span>
+                <span className="text-white font-normal flex items-center gap-1">
+                  <FaUsers className="text-primary-aero" />
+                  {stats.inPersonTeam.name}
+                </span>
               </div>
             )}
           </div>
@@ -192,26 +222,32 @@ export default function Dashboard() {
 
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">🎮</span>
+            <FaGamepad className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">گیم‌جم مجازی</h2>
           </div>
           <div className="space-y-2 text-primary-aero">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span>وضعیت تیم:</span>
-              <span className={stats.onlineRegistered ? 'text-green-400' : 'text-gray-400'}>
-                {stats.onlineRegistered ? '✅ دارد' : '❌ ندارد'}
+              <span
+                className={`flex items-center gap-1 ${stats.onlineRegistered ? 'text-green-400' : 'text-gray-400'}`}
+              >
+                {stats.onlineRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
+                {stats.onlineRegistered ? 'دارد' : 'ندارد'}
               </span>
             </div>
             {stats.onlineTeam && (
               <>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between items-center text-sm">
                   <span>نام تیم:</span>
-                  <span className="text-white font-normal">{stats.onlineTeam.name}</span>
+                  <span className="text-white font-normal flex items-center gap-1">
+                    <FaUsers className="text-primary-aero" />
+                    {stats.onlineTeam.name}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>نوع:</span>
                   <span className="text-primary-aero">
-                    {stats.onlinePaid ? '💰 تیم پولی (سازنده)' : '🆓 تیم رایگان (عضو)'}
+                    {stats.onlinePaid ? 'تیم پولی (سازنده)' : 'تیم رایگان (عضو)'}
                   </span>
                 </div>
               </>
@@ -229,7 +265,7 @@ export default function Dashboard() {
 
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">📢</span>
+            <FaBullhorn className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">اطلاعیه‌ها</h2>
           </div>
           <p className="text-primary-aero mb-4">آخرین اخبار و اطلاعیه‌های رویداد</p>
@@ -243,18 +279,18 @@ export default function Dashboard() {
 
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">📺</span>
+            <FaDesktop className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">ارائه پیش‌رو</h2>
           </div>
           <div className="space-y-3">
             <div>
               <h3 className="text-white font-bold mb-2">{nextPresentation.title}</h3>
               <div className="text-primary-aero text-sm space-y-1">
-                <p>👤 {nextPresentation.speaker}</p>
+                <p>{nextPresentation.speaker}</p>
                 <p className="font-pixel" dir="ltr">
-                  📅 {nextPresentation.date} | ⏰ {nextPresentation.time}
+                  {nextPresentation.date} | {nextPresentation.time}
                 </p>
-                <p>🎥 {nextPresentation.platform}</p>
+                <p>{nextPresentation.platform}</p>
               </div>
             </div>
             <Link

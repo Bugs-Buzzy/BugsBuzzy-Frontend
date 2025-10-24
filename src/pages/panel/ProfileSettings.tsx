@@ -1,7 +1,17 @@
 import { FormEvent, useState, useEffect } from 'react';
+import {
+  FaCog,
+  FaExclamationTriangle,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaLock,
+  FaKey,
+  FaSave,
+} from 'react-icons/fa';
 
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { authService, type UpdateProfileData } from '@/services/auth.service';
 import { extractFieldErrors } from '@/utils/errorMessages';
@@ -9,6 +19,7 @@ import { getPersianNameError, getPhoneNumberError, getNationalCodeError } from '
 
 export default function ProfileSettings() {
   const { user, refreshProfile, profileCompleted } = useAuth();
+  const toast = useToast();
   const [formData, setFormData] = useState<UpdateProfileData>({
     first_name: '',
     last_name: '',
@@ -81,12 +92,14 @@ export default function ProfileSettings() {
       setPasswordError('برای تکمیل پروفایل، باید رمز عبور تنظیم کنید');
       setShowPasswordSection(true);
       validationErrors.password = 'رمز عبور الزامی است';
+      toast.warning('برای تکمیل پروفایل، باید رمز عبور تنظیم کنید');
     }
 
     // اگر validation error داشتیم، نشون بده و submit نکن
     if (Object.keys(validationErrors).length > 0) {
       setFieldErrors(validationErrors);
       setError('لطفاً خطاهای فرم را بررسی و اصلاح کنید');
+      toast.error('لطفاً خطاهای فرم را بررسی و اصلاح کنید');
       setLoading(false);
       return;
     }
@@ -105,6 +118,7 @@ export default function ProfileSettings() {
       await authService.updateProfile(formData);
       await refreshProfile();
       setSuccess(true);
+      toast.success('اطلاعات با موفقیت ذخیره شد');
       setTimeout(() => setSuccess(false), 3000);
 
       // پاک کردن فیلدهای رمز
@@ -119,6 +133,7 @@ export default function ProfileSettings() {
 
       setFieldErrors(fieldErrors);
       setError(message);
+      toast.error(message || 'خطا در به‌روزرسانی پروفایل');
     } finally {
       setLoading(false);
     }
@@ -149,6 +164,7 @@ export default function ProfileSettings() {
 
       await refreshProfile();
       setPasswordSuccess(true);
+      toast.success('رمز عبور با موفقیت تغییر کرد');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -159,6 +175,7 @@ export default function ProfileSettings() {
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
       setPasswordError(message || 'خطا در تغییر رمز عبور');
+      toast.error(message || 'خطا در تغییر رمز عبور');
     } finally {
       setPasswordLoading(false);
     }
@@ -197,46 +214,61 @@ export default function ProfileSettings() {
   return (
     <div className="max-w-3xl mx-auto">
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-        <h2 className="text-3xl font-bold text-primary-sky font-pixel mb-6">⚙️ تنظیمات پروفایل</h2>
+        <div className="flex items-center gap-3 mb-6">
+          <FaCog className="text-primary-sky text-2xl" />
+          <h2 className="text-3xl font-bold text-primary-sky font-pixel">تنظیمات پروفایل</h2>
+        </div>
 
         {!profileCompleted && (
           <PixelFrame className="bg-secondary-golden bg-opacity-20 border-secondary-orangePantone mb-6">
-            <p className="text-secondary-orangeCrayola text-sm font-normal">
-              ⚠️ برای دسترسی به امکانات ثبت‌نام و تیم‌سازی، ابتدا فیلدهای ستاره‌دار را تکمیل کنید.
-              {!user?.has_usable_password && (
-                <span className="block mt-2 font-bold">🔐 همچنین باید رمز عبور تنظیم کنید.</span>
-              )}
-            </p>
+            <div className="flex items-start gap-3">
+              <FaExclamationTriangle className="text-secondary-orangeCrayola text-lg mt-0.5 flex-shrink-0" />
+              <div className="text-secondary-orangeCrayola text-sm font-normal">
+                برای دسترسی به امکانات ثبت‌نام و تیم‌سازی، ابتدا فیلدهای ستاره‌دار را تکمیل کنید.
+                {!user?.has_usable_password && (
+                  <span className="flex items-center gap-2 mt-2 font-bold">
+                    <FaLock className="flex-shrink-0" />
+                    <span>همچنین باید رمز عبور تنظیم کنید.</span>
+                  </span>
+                )}
+              </div>
+            </div>
           </PixelFrame>
         )}
 
         {success && (
-          <PixelFrame className="bg-green-900 bg-opacity-30 border-green-500 mb-6">
-            <p className="text-green-300 text-sm font-normal">✅ اطلاعات با موفقیت ذخیره شد</p>
-          </PixelFrame>
+          <div className="flex items-center gap-2 bg-green-900 bg-opacity-20 border border-green-700 rounded p-3 mb-6">
+            <FaCheckCircle className="text-green-400 flex-shrink-0" />
+            <p className="text-green-300 text-sm font-normal">اطلاعات ذخیره شد</p>
+          </div>
         )}
 
         {passwordSuccess && (
-          <PixelFrame className="bg-green-900 bg-opacity-30 border-green-500 mb-6">
-            <p className="text-green-300 text-sm font-normal">✅ رمز عبور با موفقیت تغییر کرد</p>
-          </PixelFrame>
+          <div className="flex items-center gap-2 bg-green-900 bg-opacity-20 border border-green-700 rounded p-3 mb-6">
+            <FaCheckCircle className="text-green-400 flex-shrink-0" />
+            <p className="text-green-300 text-sm font-normal">رمز عبور تغییر کرد</p>
+          </div>
         )}
 
         {error && (
-          <PixelFrame className="bg-red-900 bg-opacity-30 border-red-500 mb-6">
-            <p className="text-red-300 text-sm font-normal">❌ {error}</p>
-          </PixelFrame>
+          <div className="flex items-center gap-2 bg-red-900 bg-opacity-20 border border-red-700 rounded p-3 mb-6">
+            <FaTimesCircle className="text-red-400 flex-shrink-0" />
+            <p className="text-red-300 text-sm font-normal">{error}</p>
+          </div>
         )}
 
         {/* Password Change Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-primary-sky font-pixel">
-              🔐 {user?.has_usable_password ? 'تغییر رمز عبور' : 'تنظیم رمز عبور'}
-              {!user?.has_usable_password && (
-                <span className="text-secondary-orangePantone text-lg"> *</span>
-              )}
-            </h3>
+            <div className="flex items-center gap-2">
+              <FaKey className="text-primary-sky" />
+              <h3 className="text-xl font-bold text-primary-sky font-pixel">
+                {user?.has_usable_password ? 'تغییر رمز عبور' : 'تنظیم رمز عبور'}
+                {!user?.has_usable_password && (
+                  <span className="text-secondary-orangePantone text-lg"> *</span>
+                )}
+              </h3>
+            </div>
             {!showPasswordSection && (
               <button
                 onClick={() => setShowPasswordSection(true)}
@@ -254,9 +286,10 @@ export default function ProfileSettings() {
           {showPasswordSection ? (
             <form onSubmit={handlePasswordChange} className="space-y-4">
               {passwordError && (
-                <PixelFrame className="bg-red-900 bg-opacity-30 border-red-500">
-                  <p className="text-red-300 text-sm font-normal">❌ {passwordError}</p>
-                </PixelFrame>
+                <div className="flex items-center gap-2 bg-red-900 bg-opacity-20 border border-red-700 rounded p-3">
+                  <FaTimesCircle className="text-red-400 flex-shrink-0" />
+                  <p className="text-red-300 text-sm font-normal">{passwordError}</p>
+                </div>
               )}
 
               {user?.has_usable_password && (
@@ -508,9 +541,10 @@ export default function ProfileSettings() {
           <button
             type="submit"
             disabled={loading}
-            className="pixel-btn pixel-btn-success py-3 px-8 w-full md:w-auto"
+            className="pixel-btn pixel-btn-success py-3 px-8 w-full md:w-auto flex items-center justify-center gap-2"
           >
-            {loading ? 'در حال ذخیره...' : '💾 ذخیره اطلاعات'}
+            <FaSave />
+            <span>{loading ? 'در حال ذخیره...' : 'ذخیره اطلاعات'}</span>
           </button>
         </form>
       </PixelFrame>

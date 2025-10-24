@@ -10,6 +10,7 @@ import bgWorkshops from '@/assets/bkg-workshops.png';
 import LoadingScreen from '@/components/LoadingScreen';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { ToastProvider } from '@/context/ToastContext';
 import GameWorld from '@/pages/GameWorld';
 import Panel from '@/pages/Panel';
 import Announcements from '@/pages/panel/Announcements';
@@ -85,10 +86,12 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
+    </ToastProvider>
   );
 }

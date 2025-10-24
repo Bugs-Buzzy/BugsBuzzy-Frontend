@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
-import { FaHome, FaTrophy, FaGamepad, FaLaptopCode, FaGem, FaUsers, FaUser } from 'react-icons/fa';
+import {
+  FaHome,
+  FaTrophy,
+  FaGamepad,
+  FaLaptopCode,
+  FaGem,
+  FaUsers,
+  FaUser,
+  FaSignInAlt,
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import coinGif from '@/assets/coin.gif';
@@ -82,7 +91,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             {isAuthenticated ? (
               <Link
                 to="/panel"
-                className="pixel-btn pixel-btn-primary flex items-center gap-1 md:gap-2 text-sm md:text-base py-2 px-3 md:py-3 md:px-4"
+                className="pixel-btn pixel-btn-primary flex items-center gap-1 md:gap-2 text-sm md:text-base py-2 px-3 md:py-3 md:px-4 font-normal"
               >
                 <FaUser />
                 <span className="hidden sm:inline">پنل کاربری</span>
@@ -90,9 +99,10 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             ) : (
               <button
                 onClick={() => setShowLoginModal(true)}
-                className="pixel-btn pixel-btn-secondary text-white py-3 px-5 text-2xl font-extrabold rounded-2xl shadow-xl "
+                className="pixel-btn pixel-btn-secondary flex items-center gap-1 md:gap-2 text-sm md:text-base py-2 px-3 md:py-3 md:px-4 font-normal"
               >
-                <span className="relative z-10"> ورود </span>
+                <FaSignInAlt />
+                <span className="hidden sm:inline">ورود</span>
               </button>
             )}
           </div>
@@ -125,7 +135,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
                   title={floor.name}
                 >
                   <FloorIcon className="text-xl md:text-2xl" />
-                  <span className="font-pixel hidden md:block">{floor.name}</span>
+                  <span className="font-normal hidden md:block text-xs">{floor.name}</span>
                 </button>
               );
             })}
