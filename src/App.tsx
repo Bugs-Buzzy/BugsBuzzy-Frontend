@@ -1,6 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+import bgGameJam from '@/assets/bkg-gamejam.png';
+import bgInPerson from '@/assets/bkg-inperson.png';
+import bgLanding from '@/assets/bkg-landing.png';
+import bgSponsor from '@/assets/bkg-sponsor.png';
+import bgStaff from '@/assets/bkg-staff.png';
+import bgWorkshops from '@/assets/bkg-workshops.png';
 import LoadingScreen from '@/components/LoadingScreen';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider } from '@/context/AuthContext';
@@ -14,18 +20,24 @@ import Presentations from '@/pages/panel/Presentations';
 import ProfileSettings from '@/pages/panel/ProfileSettings';
 import PaymentFailed from '@/pages/PaymentFailed';
 import PaymentSuccess from '@/pages/PaymentSuccess';
+import { loadingStateManager } from '@/utils/loadingState';
 import '@/styles/components.css';
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  // Check if loading screen should be shown based on state manager
+  const [isLoading, setIsLoading] = useState(() => loadingStateManager.shouldShowLoading());
 
-  useEffect(() => {
-    // Loading screen will auto-complete after 3 seconds
-    // You can also trigger it manually if needed
-  }, []);
+  // Images to preload during loading screen
+  const imagesToPreload = [bgLanding, bgGameJam, bgInPerson, bgSponsor, bgStaff, bgWorkshops];
+
+  const handleLoadingComplete = () => {
+    // Mark loading as completed in localStorage
+    loadingStateManager.markLoadingCompleted();
+    setIsLoading(false);
+  };
 
   if (isLoading) {
-    return <LoadingScreen onComplete={() => setIsLoading(false)} />;
+    return <LoadingScreen onComplete={handleLoadingComplete} imagesToPreload={imagesToPreload} />;
   }
 
   return (
