@@ -20,15 +20,16 @@ export default function PixelModal({ children, onClose, showCloseButton = true }
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="absolute top-2 left-2 md:top-3 md:left-3 w-7 h-7 md:w-8 md:h-8 flex items-center justify-center z-10 transition-all duration-200 hover:scale-110 active:scale-95 group"
+            className="absolute top-3 left-3 md:top-4 md:left-4 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center z-10 transition-all duration-150 hover:brightness-110 active:translate-y-0.5 group pixel-close-btn"
             aria-label="Close modal"
             style={{
-              background: 'linear-gradient(135deg, #374151 0%, #1f2937 100%)',
-              border: '2px solid #4b5563',
-              boxShadow: '2px 2px 0 rgba(0,0,0,0.5), inset 1px 1px 0 rgba(255,255,255,0.1)',
+              background: '#dc2626',
+              border: '3px solid #991b1b',
+              boxShadow: '0 4px 0 #7f1d1d, 0 0 0 1px #fca5a5 inset',
+              imageRendering: 'pixelated',
             }}
           >
-            <span className="text-gray-300 group-hover:text-white font-bold text-lg leading-none">
+            <span className="text-white font-bold text-xl md:text-2xl leading-none select-none pixel-text">
               ✕
             </span>
           </button>
