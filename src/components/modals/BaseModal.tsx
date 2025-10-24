@@ -91,14 +91,68 @@ export default function BaseModal({
     const modalContentElement = modalContentRef.current;
     if (!overlayElement) return;
 
-    // Prevent wheel and touch events only on the overlay itself, not on modal content
+    // Prevent wheel and touch events from propagating to background
     const preventEvent = (e: Event) => {
-      // Allow events that originate from modal content or its children
-      if (modalContentElement && e.target && modalContentElement.contains(e.target as Node)) {
+      const target = e.target as Element;
+
+      // If event is not from modal content, prevent it
+      if (!modalContentElement || !modalContentElement.contains(target)) {
+        e.preventDefault();
+        e.stopPropagation();
         return;
       }
-      e.preventDefault();
-      e.stopPropagation();
+
+      // Find the scrollable element in the event path
+      let scrollableElement: Element | null = null;
+      let currentElement: Element | null = target;
+
+      while (currentElement && modalContentElement.contains(currentElement)) {
+        const style = window.getComputedStyle(currentElement);
+        const isScrollable =
+          style.overflow === 'auto' ||
+          style.overflow === 'scroll' ||
+          style.overflowY === 'auto' ||
+          style.overflowY === 'scroll';
+
+        if (isScrollable && currentElement.scrollHeight > currentElement.clientHeight) {
+          scrollableElement = currentElement;
+          break;
+        }
+
+        currentElement = currentElement.parentElement;
+      }
+
+      // If no scrollable element found, prevent the event
+      if (!scrollableElement) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      // Check if the scrollable element is at its scroll boundary
+      const { scrollTop, scrollHeight, clientHeight } = scrollableElement;
+      const isAtTop = scrollTop === 0;
+      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+
+      // Determine scroll direction
+      let isScrollingUp = false;
+      if (e.type === 'wheel') {
+        isScrollingUp = (e as WheelEvent).deltaY < 0;
+      } else if (e.type === 'touchmove') {
+        // For touchmove, we need to track the movement
+        // We'll prevent if at boundary to stop overscroll
+        if (isAtTop || isAtBottom) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        return;
+      }
+
+      // Prevent scrolling if at boundary
+      if ((isAtTop && isScrollingUp) || (isAtBottom && !isScrollingUp)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     };
 
     // Add event listeners on the overlay to prevent background scrolling
