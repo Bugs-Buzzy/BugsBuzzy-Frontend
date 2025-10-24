@@ -2,13 +2,44 @@
  * Manages loading screen state persistence
  * Loading screen should only show:
  * - On first visit
- * - After cache is cleared
+ * - On page reload (F5 or Ctrl+F5)
  * - After a certain time has elapsed (24 hours)
  */
 
 const LOADING_STATE_KEY = 'bugsbuzzy_loading_completed';
 const LOADING_TIMESTAMP_KEY = 'bugsbuzzy_loading_timestamp';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+/**
+ * Detect if this is a page reload (F5 or Ctrl+F5)
+ * Note: The Performance Navigation API cannot distinguish between soft (F5) and hard (Ctrl+F5) refresh
+ */
+function isHardRefresh(): boolean {
+  try {
+    // Check if Performance API is available
+    if (typeof performance === 'undefined') {
+      return false;
+    }
+
+    // Use Performance Navigation API to detect reload type
+    const navigationEntries = performance.getEntriesByType('navigation');
+    if (navigationEntries.length > 0) {
+      const navEntry = navigationEntries[0] as PerformanceNavigationTiming;
+      // type === 'reload' indicates any page reload (F5 or Ctrl+F5)
+      return navEntry.type === 'reload';
+    }
+
+    // Fallback for older browsers
+    if (performance.navigation) {
+      // TYPE_RELOAD = 1 indicates any type of reload
+      return performance.navigation.type === 1;
+    }
+
+    return false;
+  } catch {
+    return false;
+  }
+}
 
 export const loadingStateManager = {
   /**
@@ -21,6 +52,11 @@ export const loadingStateManager = {
 
       // If never completed, show loading
       if (!completed || !timestamp) {
+        return true;
+      }
+
+      // Check if this is a hard refresh
+      if (isHardRefresh()) {
         return true;
       }
 

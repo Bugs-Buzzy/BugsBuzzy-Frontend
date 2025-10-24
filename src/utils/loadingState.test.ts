@@ -68,4 +68,60 @@ describe('loadingStateManager', () => {
     // Restore
     Storage.prototype.setItem = originalSetItem;
   });
+
+  it('should show loading on hard refresh (reload navigation type)', () => {
+    // Mark loading as completed first
+    loadingStateManager.markLoadingCompleted();
+
+    // Mock performance.getEntriesByType to simulate hard refresh
+    const mockNavEntry = {
+      type: 'reload',
+      name: 'navigation',
+      entryType: 'navigation',
+      startTime: 0,
+      duration: 0,
+    } as PerformanceNavigationTiming;
+
+    const originalGetEntriesByType = performance.getEntriesByType;
+    performance.getEntriesByType = vi.fn((type: string) => {
+      if (type === 'navigation') {
+        return [mockNavEntry];
+      }
+      return [];
+    }) as any;
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(true);
+
+    // Restore
+    performance.getEntriesByType = originalGetEntriesByType;
+  });
+
+  it('should not show loading on normal navigation', () => {
+    // Mark loading as completed first
+    loadingStateManager.markLoadingCompleted();
+
+    // Mock performance.getEntriesByType to simulate normal navigation
+    const mockNavEntry = {
+      type: 'navigate',
+      name: 'navigation',
+      entryType: 'navigation',
+      startTime: 0,
+      duration: 0,
+    } as PerformanceNavigationTiming;
+
+    const originalGetEntriesByType = performance.getEntriesByType;
+    performance.getEntriesByType = vi.fn((type: string) => {
+      if (type === 'navigation') {
+        return [mockNavEntry];
+      }
+      return [];
+    }) as any;
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(false);
+
+    // Restore
+    performance.getEntriesByType = originalGetEntriesByType;
+  });
 });
