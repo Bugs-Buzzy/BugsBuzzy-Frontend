@@ -33,6 +33,7 @@ export default function BaseModal({
   preventBackgroundScroll = true,
 }: BaseModalProps) {
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   // Handle ESC key press
   const handleKeyDown = useCallback(
@@ -86,53 +87,28 @@ export default function BaseModal({
   }, [closeOnEscape, handleKeyDown]);
 
   useEffect(() => {
-    const modalElement = modalContentRef.current;
-    if (!modalElement) return;
+    const overlayElement = overlayRef.current;
+    if (!overlayElement) return;
 
-    // Prevent wheel events from reaching the background
-    const preventWheelPropagation = (e: WheelEvent) => {
-      const isScrollable = modalElement.scrollHeight > modalElement.clientHeight;
-
-      if (!isScrollable) {
-        // If content is not scrollable, prevent all wheel events
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-
-      // If scrollable, check if we're at the boundaries
-      const atTop = modalElement.scrollTop <= 0;
-      const atBottom =
-        modalElement.scrollTop + modalElement.clientHeight >= modalElement.scrollHeight - 1;
-
-      // Prevent scrolling past boundaries
-      if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
-        e.preventDefault();
-      }
-
+    // Prevent all wheel and touch events on the overlay from propagating
+    const preventEvent = (e: Event) => {
+      e.preventDefault();
       e.stopPropagation();
     };
 
-    // Prevent touch events from reaching the background
-    const preventTouchPropagation = (e: TouchEvent) => {
-      // Only stop propagation, allow the modal itself to scroll
-      e.stopPropagation();
-    };
-
-    // Add event listeners with passive: false to allow preventDefault
-    modalElement.addEventListener('wheel', preventWheelPropagation, { passive: false });
-    modalElement.addEventListener('touchmove', preventTouchPropagation, { passive: false });
-    modalElement.addEventListener('touchstart', preventTouchPropagation, { passive: false });
+    // Add event listeners on the overlay to prevent background scrolling
+    overlayElement.addEventListener('wheel', preventEvent, { passive: false });
+    overlayElement.addEventListener('touchmove', preventEvent, { passive: false });
 
     return () => {
-      modalElement.removeEventListener('wheel', preventWheelPropagation);
-      modalElement.removeEventListener('touchmove', preventTouchPropagation);
-      modalElement.removeEventListener('touchstart', preventTouchPropagation);
+      overlayElement.removeEventListener('wheel', preventEvent);
+      overlayElement.removeEventListener('touchmove', preventEvent);
     };
   }, []);
 
   return (
     <div
+      ref={overlayRef}
       className={`fixed inset-0 z-50 flex items-center justify-center ${overlayClassName}`}
       onClick={handleOverlayClick}
     >
