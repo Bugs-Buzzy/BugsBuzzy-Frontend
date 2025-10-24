@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { forwardRef, useState, useEffect, useRef, useCallback } from 'react';
 import {
   FaGamepad,
   FaClock,
@@ -293,8 +293,6 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
     },
   ];
 
-  const reversedPages = useMemo(() => [...pages].reverse(), [pages]);
-
   const nextPage = useCallback(() => {
     if (isChangingPage.current) return;
     if (currentPage < pages.length - 1) {
@@ -410,23 +408,20 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
 
         {/* Page Indicators */}
         <div className="mt-4 md:mt-8 mb-2 md:mb-0 flex gap-2 cursor-pointer">
-          {reversedPages.map((page, reversedIndex) => {
-            const index = pages.length - 1 - reversedIndex;
-            return (
-              <div
-                key={page.id}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  currentPage === index
-                    ? 'bg-primary-sky w-6'
-                    : 'bg-primary-oxfordblue hover:bg-primary-midnight'
-                }`}
-                onClick={() => {
-                  setAnimDirection(index > currentPage ? 'right' : 'left');
-                  setCurrentPage(index);
-                }}
-              />
-            );
-          })}
+          {pages.map((page, index) => (
+            <div
+              key={page.id}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                currentPage === index
+                  ? 'bg-primary-sky w-6'
+                  : 'bg-primary-oxfordblue hover:bg-primary-midnight'
+              }`}
+              onClick={() => {
+                setAnimDirection(index > currentPage ? 'right' : 'left');
+                setCurrentPage(index);
+              }}
+            />
+          ))}
         </div>
 
         {/* Swipe hint text */}
