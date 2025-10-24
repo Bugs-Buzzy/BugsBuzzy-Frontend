@@ -1,14 +1,16 @@
 /**
  * Manages loading screen state persistence
  * Loading screen should only show:
- * - On first visit
- * - On page reload (F5 or Ctrl+F5)
- * - After a certain time has elapsed (24 hours)
+ * - On first visit to the landing page
+ * - On page reload (F5 or Ctrl+F5) when on the landing page
+ * - After a certain time has elapsed (24 hours) when on the landing page
+ * - Never show on panel routes or when user is authenticated
  */
 
 const LOADING_STATE_KEY = 'bugsbuzzy_loading_completed';
 const LOADING_TIMESTAMP_KEY = 'bugsbuzzy_loading_timestamp';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const AUTH_TOKEN_KEY = 'access_token'; // Must match authService token key
 
 /**
  * Detect if this is a page reload (F5 or Ctrl+F5)
@@ -41,12 +43,46 @@ function isHardRefresh(): boolean {
   }
 }
 
+/**
+ * Check if user is currently authenticated
+ */
+function isAuthenticated(): boolean {
+  try {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    return !!token;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if current path is a panel route or protected route
+ */
+function isOnProtectedRoute(): boolean {
+  try {
+    const path = window.location.pathname;
+    return path.startsWith('/panel') || path.startsWith('/payment');
+  } catch {
+    return false;
+  }
+}
+
 export const loadingStateManager = {
   /**
    * Check if loading screen should be shown
    */
   shouldShowLoading(): boolean {
     try {
+      // Never show loading screen on protected routes (panel, payment)
+      if (isOnProtectedRoute()) {
+        return false;
+      }
+
+      // Never show loading screen if user is authenticated (even on landing page refresh)
+      if (isAuthenticated()) {
+        return false;
+      }
+
       const completed = localStorage.getItem(LOADING_STATE_KEY);
       const timestamp = localStorage.getItem(LOADING_TIMESTAMP_KEY);
 
@@ -72,8 +108,8 @@ export const loadingStateManager = {
 
       return false;
     } catch {
-      // If localStorage is not available or any error occurs, show loading
-      return true;
+      // If localStorage is not available or any error occurs, show loading only on landing page
+      return !isOnProtectedRoute() && !isAuthenticated();
     }
   },
 

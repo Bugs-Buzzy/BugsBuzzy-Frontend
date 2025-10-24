@@ -1,14 +1,31 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 import { loadingStateManager } from './loadingState';
 
 describe('loadingStateManager', () => {
+  const originalPathname = window.location.pathname;
+
   beforeEach(() => {
     // Clear localStorage before each test
     localStorage.clear();
+    // Reset pathname to root
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/' },
+      writable: true,
+      configurable: true,
+    });
   });
 
-  it('should show loading on first visit', () => {
+  afterEach(() => {
+    // Restore original pathname
+    Object.defineProperty(window, 'location', {
+      value: { pathname: originalPathname },
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  it('should show loading on first visit to landing page', () => {
     const shouldShow = loadingStateManager.shouldShowLoading();
     expect(shouldShow).toBe(true);
   });
@@ -104,6 +121,93 @@ describe('loadingStateManager', () => {
     // Mock performance.getEntriesByType to simulate normal navigation
     const mockNavEntry = {
       type: 'navigate',
+      name: 'navigation',
+      entryType: 'navigation',
+      startTime: 0,
+      duration: 0,
+    } as PerformanceNavigationTiming;
+
+    const originalGetEntriesByType = performance.getEntriesByType;
+    performance.getEntriesByType = vi.fn((type: string) => {
+      if (type === 'navigation') {
+        return [mockNavEntry];
+      }
+      return [];
+    }) as any;
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(false);
+
+    // Restore
+    performance.getEntriesByType = originalGetEntriesByType;
+  });
+
+  it('should not show loading on panel routes', () => {
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/panel/dashboard' },
+      writable: true,
+      configurable: true,
+    });
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(false);
+  });
+
+  it('should not show loading on payment routes', () => {
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/payment/success' },
+      writable: true,
+      configurable: true,
+    });
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(false);
+  });
+
+  it('should not show loading when user is authenticated', () => {
+    localStorage.setItem('access_token', 'fake-token');
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(false);
+  });
+
+  it('should not show loading on panel routes even with hard refresh', () => {
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/panel/dashboard' },
+      writable: true,
+      configurable: true,
+    });
+
+    // Mock performance.getEntriesByType to simulate hard refresh
+    const mockNavEntry = {
+      type: 'reload',
+      name: 'navigation',
+      entryType: 'navigation',
+      startTime: 0,
+      duration: 0,
+    } as PerformanceNavigationTiming;
+
+    const originalGetEntriesByType = performance.getEntriesByType;
+    performance.getEntriesByType = vi.fn((type: string) => {
+      if (type === 'navigation') {
+        return [mockNavEntry];
+      }
+      return [];
+    }) as any;
+
+    const shouldShow = loadingStateManager.shouldShowLoading();
+    expect(shouldShow).toBe(false);
+
+    // Restore
+    performance.getEntriesByType = originalGetEntriesByType;
+  });
+
+  it('should not show loading when authenticated even with hard refresh on landing page', () => {
+    localStorage.setItem('access_token', 'fake-token');
+
+    // Mock performance.getEntriesByType to simulate hard refresh
+    const mockNavEntry = {
+      type: 'reload',
       name: 'navigation',
       entryType: 'navigation',
       startTime: 0,
