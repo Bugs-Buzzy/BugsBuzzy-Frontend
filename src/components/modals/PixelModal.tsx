@@ -16,7 +16,7 @@ export default function PixelModal({ children, onClose, showCloseButton = true }
       overlayClassName="pixel-modal-overlay p-4 sm:p-6"
       contentClassName="max-w-2xl w-full"
     >
-      <PixelFrame className="bg-gray-900 relative max-h-[90vh] flex flex-col">
+      <PixelFrame className="bg-gray-900 relative max-h-[90vh] flex flex-col overflow-hidden">
         {showCloseButton && (
           <button
             onClick={onClose}
@@ -35,7 +35,9 @@ export default function PixelModal({ children, onClose, showCloseButton = true }
           </button>
         )}
 
-        <div className="pt-8 md:pt-4 overflow-y-auto flex-1">{children}</div>
+        <div className="pt-8 md:pt-4 px-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-primary-cerulean scrollbar-track-gray-800">
+          {children}
+        </div>
       </PixelFrame>
     </BaseModal>
   );
