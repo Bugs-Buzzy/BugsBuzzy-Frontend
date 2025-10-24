@@ -14,7 +14,7 @@ export default function PixelModal({ children, onClose, showCloseButton = true }
     <BaseModal
       onClose={onClose}
       overlayClassName="pixel-modal-overlay p-4 sm:p-6"
-      contentClassName="max-w-2xl w-full"
+      contentClassName="max-w-2xl w-full max-h-[90vh] flex flex-col"
     >
       <PixelFrame className="bg-gray-900 relative max-h-[90vh] flex flex-col overflow-hidden">
         {showCloseButton && (
