@@ -13,6 +13,7 @@ export default function InPersonCompetition() {
   const { profileCompleted, user: _user } = useAuth();
   const navigate = useNavigate();
   const [currentPhase, setCurrentPhase] = useState(0);
+  const [manualPhaseSelection, setManualPhaseSelection] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [competitionPhases, setCompetitionPhases] = useState<CompetitionPhase[]>([]);
@@ -50,16 +51,19 @@ export default function InPersonCompetition() {
         teamComplete,
       });
 
-      if (!hasPaid) {
-        setCurrentPhase(0);
-      } else if (!hasTeam || !teamComplete) {
-        setCurrentPhase(1);
-      } else {
-        const activePhase = competitionStatus.phases.find((p) => p.active);
-        if (activePhase) {
-          setCurrentPhase(activePhase.id + 1);
+      // Only auto-navigate if user hasn't manually selected a phase
+      if (!manualPhaseSelection) {
+        if (!hasPaid) {
+          setCurrentPhase(0);
+        } else if (!hasTeam || !teamComplete) {
+          setCurrentPhase(1);
         } else {
-          setCurrentPhase(2);
+          const activePhase = competitionStatus.phases.find((p) => p.active);
+          if (activePhase) {
+            setCurrentPhase(activePhase.id + 1);
+          } else {
+            setCurrentPhase(2);
+          }
         }
       }
     } catch (err) {
@@ -110,19 +114,22 @@ export default function InPersonCompetition() {
 
   const handlePhaseChange = (phaseId: number) => {
     const phase = phases.find((p) => p.id === phaseId);
-    if (phase && phase.isClickable) {
+    if (phase?.isClickable) {
+      setManualPhaseSelection(true);
       setCurrentPhase(phaseId);
     }
   };
 
   const handlePaymentComplete = () => {
     setPhaseStatus((prev) => ({ ...prev, hasPaid: true }));
+    setManualPhaseSelection(false);
     setCurrentPhase(1);
     loadStatus();
   };
 
   const handleTeamComplete = () => {
     setPhaseStatus((prev) => ({ ...prev, teamComplete: true }));
+    setManualPhaseSelection(false);
     loadStatus();
   };
 
