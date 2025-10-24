@@ -299,50 +299,53 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         )}
       </button>
 
-      <div className="flex flex-col gap-3 pt-3 border-t border-gray-700">
+      <div className="grid grid-cols-2 gap-2 pt-3 mt-3 border-t border-gray-700">
         <button
           onClick={handleSendCode}
-          className={`flex items-center justify-center gap-2 text-sm transition-colors ${
+          className={`pixel-btn text-xs py-2 px-3 transition-colors ${
             resendTimer > 0
-              ? 'text-gray-500 cursor-not-allowed'
-              : 'text-primary-cerulean hover:text-primary-sky'
+              ? 'bg-gray-800 text-gray-500 cursor-not-allowed border-gray-700'
+              : 'bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky'
           }`}
           disabled={loading || resendTimer > 0}
         >
           {resendTimer > 0 ? (
-            <>
-              <FaClock />
+            <div className="flex items-center justify-center gap-1.5">
+              <FaClock className="text-xs" />
               <span>
-                ارسال مجدد ({Math.floor(resendTimer / 60)}:
-                {(resendTimer % 60).toString().padStart(2, '0')})
+                {Math.floor(resendTimer / 60)}:{(resendTimer % 60).toString().padStart(2, '0')}
               </span>
-            </>
+            </div>
           ) : (
-            <>
-              <FaRedo />
-              <span>ارسال مجدد کد</span>
-            </>
+            <div className="flex items-center justify-center gap-1.5">
+              <FaRedo className="text-xs" />
+              <span>ارسال مجدد</span>
+            </div>
           )}
         </button>
 
         {flow === 'normal' && (
           <button
             onClick={() => setStep('password-login')}
-            className="flex items-center justify-center gap-2 text-primary-aero hover:text-primary-sky text-sm transition-colors"
+            className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
             disabled={loading}
           >
-            <FaLock />
-            <span>ورود با رمز عبور</span>
+            <div className="flex items-center justify-center gap-1.5">
+              <FaLock className="text-xs" />
+              <span>ورود با رمز</span>
+            </div>
           </button>
         )}
 
         <button
           onClick={() => setStep('email')}
-          className="flex items-center justify-center gap-2 text-primary-aero hover:text-primary-sky text-sm transition-colors"
+          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 col-span-2"
           disabled={loading}
         >
-          <FaEdit />
-          <span>تغییر ایمیل</span>
+          <div className="flex items-center justify-center gap-1.5">
+            <FaEdit className="text-xs" />
+            <span>تغییر ایمیل</span>
+          </div>
         </button>
       </div>
     </>
@@ -414,11 +417,13 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             setPassword('');
             setError('');
           }}
-          className="flex items-center justify-center gap-2 text-secondary-ramzinex hover:text-secondary-orangeCrayola text-sm transition-colors"
+          className="pixel-btn bg-primary-oxfordblue border-secondary-orangePantone text-secondary-ramzinex hover:text-secondary-orangeCrayola transition-colors text-xs py-2 px-3"
           disabled={loading}
         >
-          <FaKey />
-          <span>فراموشی رمز عبور</span>
+          <div className="flex items-center justify-center gap-1.5">
+            <FaKey className="text-xs" />
+            <span>فراموشی رمز</span>
+          </div>
         </button>
 
         <button
@@ -427,11 +432,13 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             setPassword('');
             setError('');
           }}
-          className="flex items-center justify-center gap-2 text-primary-aero hover:text-primary-sky text-sm transition-colors"
+          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
           disabled={loading}
         >
-          <FaArrowLeft />
-          <span>بازگشت به ورود با کد</span>
+          <div className="flex items-center justify-center gap-1.5">
+            <FaArrowLeft className="text-xs" />
+            <span>بازگشت</span>
+          </div>
         </button>
       </div>
     </>

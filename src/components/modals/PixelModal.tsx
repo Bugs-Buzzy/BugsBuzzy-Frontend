@@ -23,7 +23,7 @@ export default function PixelModal({
       contentClassName="max-w-2xl w-full max-h-[90vh] flex flex-col"
       closeOnOverlayClick={closeOnOverlayClick}
     >
-      <PixelFrame className="bg-gray-900 relative max-h-[90vh] flex flex-col overflow-hidden">
+      <PixelFrame className="bg-gray-900 relative max-h-[90vh] flex flex-col">
         {showCloseButton && (
           <button
             onClick={onClose}
