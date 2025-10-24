@@ -13,6 +13,8 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (userData: Partial<UserProfile>) => void;
   refreshProfile: () => Promise<void>;
+  onLoginSuccess?: () => void;
+  setOnLoginSuccess: (callback: (() => void) | undefined) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [onLoginSuccess, setOnLoginSuccess] = useState<(() => void) | undefined>(undefined);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -41,6 +44,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (data: UserProfile, accessToken: string, refreshToken: string) => {
     setUser(data);
     authService.setTokens(accessToken, refreshToken);
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
   };
 
   const logout = () => {
@@ -83,6 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         updateUser,
         refreshProfile,
+        onLoginSuccess,
+        setOnLoginSuccess,
       }}
     >
       {children}

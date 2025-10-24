@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       allowedHosts: ['dev.bugsbuzzy', 'localhost', 'bugsbuzzy.ir', 'www.bugsbuzzy.ir'],
+      historyApiFallback: true,
     },
     resolve: {
       alias: {
