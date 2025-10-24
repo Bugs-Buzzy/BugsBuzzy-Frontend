@@ -130,17 +130,14 @@ export default function BaseModal({
       }
 
       // Check if the scrollable element is at its scroll boundary
+      // Use tolerance for floating-point comparison
+      const SCROLL_TOLERANCE = 1;
       const { scrollTop, scrollHeight, clientHeight } = scrollableElement;
       const isAtTop = scrollTop === 0;
-      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < SCROLL_TOLERANCE;
 
-      // Determine scroll direction
-      let isScrollingUp = false;
-      if (e.type === 'wheel') {
-        isScrollingUp = (e as WheelEvent).deltaY < 0;
-      } else if (e.type === 'touchmove') {
-        // For touchmove, we need to track the movement
-        // We'll prevent if at boundary to stop overscroll
+      // For touchmove events, prevent at boundaries to stop overscroll
+      if (e.type === 'touchmove') {
         if (isAtTop || isAtBottom) {
           e.preventDefault();
           e.stopPropagation();
@@ -148,10 +145,13 @@ export default function BaseModal({
         return;
       }
 
-      // Prevent scrolling if at boundary
-      if ((isAtTop && isScrollingUp) || (isAtBottom && !isScrollingUp)) {
-        e.preventDefault();
-        e.stopPropagation();
+      // For wheel events, check direction and prevent at boundaries
+      if (e.type === 'wheel') {
+        const isScrollingUp = (e as WheelEvent).deltaY < 0;
+        if ((isAtTop && isScrollingUp) || (isAtBottom && !isScrollingUp)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
       }
     };
 
