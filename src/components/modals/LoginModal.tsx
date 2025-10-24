@@ -205,7 +205,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       <button
         onClick={flow === 'forgot' ? handleForgotPassword : handleVerifyCode}
         disabled={code.length !== 6 || loading}
-        className="pixel-btn pixel-btn-success py-3 px-8 mb-4 w-full text-base md:text-lg font-bold transition-all"
+        className="pixel-btn pixel-btn-primary py-3 px-8 mb-4 w-full text-base md:text-lg font-bold transition-all"
       >
         {loading
           ? '⏳ در حال پردازش...'
@@ -232,7 +232,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         {flow === 'normal' && (
           <button
             onClick={() => setStep('password-login')}
-            className="text-gray-400 hover:text-white underline text-sm font-normal transition-colors"
+            className="text-primary-aero hover:text-primary-sky underline text-sm font-normal transition-colors"
             disabled={loading}
           >
             🔐 ورود با رمز عبور
@@ -241,7 +241,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
 
         <button
           onClick={() => setStep('email')}
-          className="text-gray-400 hover:text-white underline text-sm font-normal transition-colors"
+          className="text-primary-aero hover:text-primary-sky underline text-sm font-normal transition-colors"
           disabled={loading}
         >
           ✏️ تغییر ایمیل
@@ -279,7 +279,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       <button
         onClick={handlePasswordLogin}
         disabled={!password || loading}
-        className="pixel-btn pixel-btn-success py-3 px-8 mb-4 w-full text-base md:text-lg font-bold transition-all"
+        className="pixel-btn pixel-btn-primary py-3 px-8 mb-4 w-full text-base md:text-lg font-bold transition-all"
       >
         {loading ? '⏳ در حال ورود...' : '✓ ورود'}
       </button>
@@ -292,7 +292,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             setPassword('');
             setError('');
           }}
-          className="text-yellow-400 hover:text-yellow-300 underline text-sm font-normal transition-colors"
+          className="text-secondary-ramzinex hover:text-secondary-orangeCrayola underline text-sm font-normal transition-colors"
           disabled={loading}
         >
           🔑 رمز عبور را فراموش کرده‌اید؟
@@ -304,7 +304,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             setPassword('');
             setError('');
           }}
-          className="text-gray-400 hover:text-white underline text-sm font-normal transition-colors"
+          className="text-primary-aero hover:text-primary-sky underline text-sm font-normal transition-colors"
           disabled={loading}
         >
           ⬅️ بازگشت به ورود با کد
