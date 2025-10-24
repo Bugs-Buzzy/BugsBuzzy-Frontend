@@ -105,7 +105,7 @@ class InPersonService {
     teamId: number,
     data: { name?: string; description?: string; avatar?: string },
   ): Promise<InPersonTeam> {
-    return apiClient.put<InPersonTeam>(`/inperson/team/${teamId}/update/`, data);
+    return apiClient.patch<InPersonTeam>(`/inperson/team/${teamId}/update/`, data);
   }
 
   async getTeamMembers(teamId: number): Promise<InPersonMember[]> {
