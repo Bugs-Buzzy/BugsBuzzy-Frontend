@@ -1,34 +1,26 @@
 import { useEffect, useState } from 'react';
 
 import PixelFrame from '@/components/PixelFrame';
+import { INPERSON_TEAM_CONFIG } from '@/constants/inperson';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
-import { teamsService, type Team, type TeamMember } from '@/services/teams.service';
+import {
+  inpersonService,
+  type InPersonTeam,
+  type InPersonMember,
+} from '@/services/inperson.service';
 import { extractFieldErrors } from '@/utils/errorMessages';
 
-interface TeamPhaseProps {
-  teamType: 'inperson' | 'gamejam';
-  maxMembers: number;
-  minMembers: number;
-  requirePaymentForCreate: boolean;
-  hasPaid: boolean;
+interface InPersonTeamPhaseProps {
   onTeamComplete?: () => void;
 }
 
-export default function TeamPhase({
-  teamType,
-  maxMembers,
-  minMembers,
-  requirePaymentForCreate,
-  hasPaid,
-  onTeamComplete,
-}: TeamPhaseProps) {
-  const [team, setTeam] = useState<Team | null>(null);
-  const [members, setMembers] = useState<TeamMember[]>([]);
+export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseProps) {
+  const [team, setTeam] = useState<InPersonTeam | null>(null);
+  const [members, setMembers] = useState<InPersonMember[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [successMessage, setSuccessMessage] = useState('');
   const toast = useToast();
 
   const [teamName, setTeamName] = useState('');
@@ -37,32 +29,24 @@ export default function TeamPhase({
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showJoinForm, setShowJoinForm] = useState(false);
 
-  const isInPerson = teamType === 'inperson';
-
   useEffect(() => {
     loadTeam();
   }, []);
 
   useEffect(() => {
-    if (team && team.member_count >= minMembers && onTeamComplete) {
+    if (team && (team.status === 'active' || team.status === 'attended') && onTeamComplete) {
       onTeamComplete();
     }
-  }, [team, minMembers, onTeamComplete]);
+  }, [team, onTeamComplete]);
 
   const loadTeam = async () => {
     setLoading(true);
     try {
-      const teamsData = await teamsService.getAllTeams();
-      const existingTeam = teamsData.teams.find((t) =>
-        teamType === 'inperson' ? t.team_type === 'in_person' : t.team_type === 'online',
-      );
+      const response = await inpersonService.getMyTeam();
 
-      if (existingTeam) {
-        setTeam(existingTeam);
-        const teamMembers = isInPerson
-          ? await teamsService.getInPersonTeamMembers(existingTeam.id)
-          : await teamsService.getOnlineTeamMembers(existingTeam.id);
-        setMembers(teamMembers);
+      if (response.team) {
+        setTeam(response.team);
+        setMembers(response.team.members);
       }
     } catch (err) {
       console.error('Failed to load team:', err);
@@ -80,17 +64,15 @@ export default function TeamPhase({
     setLoading(true);
     setError('');
     setFieldErrors({});
-    setSuccessMessage('');
     try {
-      const response = isInPerson
-        ? await teamsService.createInPersonTeam({ name: teamName, description: teamDescription })
-        : await teamsService.createOnlineTeam({ name: teamName, description: teamDescription });
+      const newTeam = await inpersonService.createTeam({
+        name: teamName,
+        description: teamDescription,
+      });
 
-      setTeam(response.team);
+      setTeam(newTeam);
       setShowCreateForm(false);
-      setSuccessMessage('تیم با موفقیت ساخته شد!');
       toast.success('تیم با موفقیت ساخته شد!');
-      setTimeout(() => setSuccessMessage(''), 3000);
       await loadTeam();
     } catch (err) {
       console.error('Create team error:', err);
@@ -114,17 +96,12 @@ export default function TeamPhase({
     setLoading(true);
     setError('');
     setFieldErrors({});
-    setSuccessMessage('');
     try {
-      const response = isInPerson
-        ? await teamsService.joinInPersonTeam({ invite_code: inviteCode })
-        : await teamsService.joinOnlineTeam({ invite_code: inviteCode });
+      const newTeam = await inpersonService.joinTeam(inviteCode);
 
-      setTeam(response.team);
+      setTeam(newTeam);
       setShowJoinForm(false);
-      setSuccessMessage('با موفقیت به تیم پیوستید!');
       toast.success('با موفقیت به تیم پیوستید!');
-      setTimeout(() => setSuccessMessage(''), 3000);
       await loadTeam();
     } catch (err) {
       console.error('Join team error:', err);
@@ -144,38 +121,24 @@ export default function TeamPhase({
 
     setLoading(true);
     setError('');
-    setSuccessMessage('');
     try {
-      if (isInPerson) {
-        await teamsService.leaveInPersonTeam(team.id);
-      } else {
-        await teamsService.leaveOnlineTeam(team.id);
-      }
-
+      await inpersonService.leaveTeam(team.id);
       setTeam(null);
-      setSuccessMessage('از تیم خارج شدید');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      toast.success('از تیم خارج شدید');
       await loadTeam();
     } catch (err) {
       console.error('Leave team error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
       setError(message || 'خطا در خروج از تیم');
+      toast.error(message || 'خطا در خروج از تیم');
     } finally {
       setLoading(false);
     }
   };
 
-  const canCreateTeam = requirePaymentForCreate ? hasPaid : true;
-
   return (
     <div className="space-y-6">
-      {successMessage && (
-        <PixelFrame className="bg-green-900 bg-opacity-30 border-green-500">
-          <p className="text-green-300">{successMessage}</p>
-        </PixelFrame>
-      )}
-
       {error && (
         <PixelFrame className="bg-red-900 bg-opacity-30 border-red-500">
           <p className="text-red-300">{error}</p>
@@ -193,11 +156,13 @@ export default function TeamPhase({
               </div>
               <span
                 className={`pixel-btn ${
-                  team.member_count >= minMembers ? 'pixel-btn-success' : 'pixel-btn-warning'
+                  team.status === 'active' || team.status === 'attended'
+                    ? 'pixel-btn-success'
+                    : 'pixel-btn-warning'
                 } px-4 py-2 font-pixel`}
                 dir="ltr"
               >
-                {team.member_count}/{maxMembers}
+                {team.member_count}/{INPERSON_TEAM_CONFIG.MAX_MEMBERS}
               </span>
             </div>
 
@@ -214,19 +179,20 @@ export default function TeamPhase({
               </p>
             </div>
 
-            {team.member_count < minMembers && (
+            {team.status === 'incomplete' && (
               <div className="bg-yellow-900 bg-opacity-30 rounded p-4 mb-4 border border-yellow-700">
                 <p className="text-yellow-300 text-sm">
-                  ⚠️ تیم شما باید حداقل {minMembers} نفره باشد تا برای رقابت واجد شرایط شود.
+                  ⚠️ تیم شما باید حداقل {INPERSON_TEAM_CONFIG.MIN_MEMBERS} نفره باشد تا برای رقابت
+                  واجد شرایط شود.
                 </p>
               </div>
             )}
 
-            {team.member_count >= minMembers && (
+            {(team.status === 'active' || team.status === 'attended') && (
               <div className="bg-green-900 bg-opacity-30 rounded p-4 mb-4 border border-green-600">
                 <p className="text-green-300 text-sm flex items-center gap-2">
                   <span>✅</span>
-                  <span>تیم شما واجد شرایط است و می‌توانید به مراحل بعدی بروید!</span>
+                  <span>تیم شما واجد شرایط است! ثبت‌نام شما تکمیل شده است.</span>
                 </p>
               </div>
             )}
@@ -256,15 +222,13 @@ export default function TeamPhase({
                     </p>
                     <p className="text-primary-aero text-sm">{member.user.email}</p>
                   </div>
-                  {isInPerson && (
-                    <span
-                      className={`pixel-btn ${
-                        member.is_paid ? 'pixel-btn-success' : 'pixel-btn-warning'
-                      } px-3 py-1 text-sm`}
-                    >
-                      {member.is_paid ? '✅ پرداخت شده' : '⏳ در انتظار'}
-                    </span>
-                  )}
+                  <span
+                    className={`pixel-btn ${
+                      member.has_paid ? 'pixel-btn-success' : 'pixel-btn-warning'
+                    } px-3 py-1 text-sm`}
+                  >
+                    {member.has_paid ? '✅ پرداخت شده' : '⏳ در انتظار'}
+                  </span>
                 </div>
               ))}
             </div>
@@ -292,24 +256,11 @@ export default function TeamPhase({
                   یک تیم جدید بسازید و دوستان خود را دعوت کنید.
                 </p>
 
-                {!canCreateTeam && requirePaymentForCreate && (
-                  <div className="bg-red-900 bg-opacity-30 rounded p-3 mb-4 border border-red-500">
-                    <p className="text-red-300 text-sm">
-                      ⚠️ برای ساخت تیم، ابتدا باید هزینه ثبت‌نام را پرداخت کنید.
-                    </p>
-                  </div>
-                )}
-
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  disabled={!canCreateTeam}
-                  className={`pixel-btn py-3 px-8 w-full ${
-                    canCreateTeam
-                      ? 'pixel-btn-primary'
-                      : 'pixel-btn-secondary opacity-50 cursor-not-allowed'
-                  }`}
+                  className="pixel-btn pixel-btn-primary py-3 px-8 w-full"
                 >
-                  {canCreateTeam ? 'ساخت تیم' : '🔒 نیاز به پرداخت'}
+                  ساخت تیم
                 </button>
               </PixelFrame>
 

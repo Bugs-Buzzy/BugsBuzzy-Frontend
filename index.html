@@ -1,13 +1,93 @@
 <!doctype html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="description" content="BugsBuzzy Event Frontend" />
+	
+	<!-- Primary Meta Tags -->
+	<title>باگزبازی | BugsBuzzy</title>
+	<meta name="title" content="باگزبازی | BugsBuzzy - اولین رویداد بازی‌سازی دانشگاه صنعتی شریف" />
+	<meta name="description" content="باگزبازی (Bugs Buzzy) - اولین دوره رویداد بازی‌سازی با بیش از ۱۰۰۰ تتر جایزه. شامل گیم جم، مسابقه حضوری و کارگاه‌های آموزشی Godot. برگزار شده توسط انجمن علمی کامپیوتر شریف" />
+	<meta name="keywords" content="باگزبازی, BugsBuzzy, Bugs Buzzy, رویداد بازی سازی, گیم جم, game jam, بازی سازی, Godot, دانشگاه صنعتی شریف, انجمن علمی کامپیوتر, مسابقه بازی سازی, آموزش بازی سازی, جایزه تتر, game development" />
+	<meta name="author" content="انجمن علمی دانشکده مهندسی کامپیوتر دانشگاه صنعتی شریف" />
+	<meta name="robots" content="index, follow" />
+	<meta name="language" content="Persian" />
+	<meta name="revisit-after" content="7 days" />
 	<meta name="enamad" content="13440372" />
-	<title>BugsBuzzy</title>
+	
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://bugsbuzzy.ir/" />
+	<meta property="og:title" content="باگزبازی | BugsBuzzy - اولین رویداد بازی‌سازی دانشگاه صنعتی شریف" />
+	<meta property="og:description" content="باگزبازی (Bugs Buzzy) - اولین دوره رویداد بازی‌سازی با بیش از ۱۰۰۰ تتر جایزه. شامل گیم جم، مسابقه حضوری و کارگاه‌های آموزشی Godot" />
+	<meta property="og:image" content="https://bugsbuzzy.ir/og-image.jpg" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:locale" content="fa_IR" />
+	<meta property="og:site_name" content="باگزبازی BugsBuzzy" />
+	
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://bugsbuzzy.ir/" />
+	<meta name="twitter:title" content="باگزبازی | BugsBuzzy - اولین رویداد بازی‌سازی دانشگاه صنعتی شریف" />
+	<meta name="twitter:description" content="باگزبازی (Bugs Buzzy) - اولین دوره رویداد بازی‌سازی با بیش از ۱۰۰۰ تتر جایزه. شامل گیم جم، مسابقه حضوری و کارگاه‌های آموزشی Godot" />
+	<meta name="twitter:image" content="https://bugsbuzzy.ir/og-image.jpg" />
+	
+	<!-- Telegram -->
+	<meta property="telegram:channel" content="@bugsbuzzy" />
+	
+	<!-- Additional SEO -->
+	<link rel="canonical" href="https://bugsbuzzy.ir/" />
+	<meta name="theme-color" content="#1a202c" />
+	
+	<!-- Structured Data (JSON-LD) -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Event",
+		"name": "باگزبازی - BugsBuzzy",
+		"alternateName": "Bugs Buzzy",
+		"description": "اولین دوره رویداد بازی‌سازی باگزبازی با بیش از ۱۰۰۰ تتر جایزه. شامل گیم جم، مسابقه حضوری و کارگاه‌های آموزشی Godot",
+		"image": "https://bugsbuzzy.ir/og-image.jpg",
+		"url": "https://bugsbuzzy.ir",
+		"organizer": {
+			"@type": "Organization",
+			"name": "انجمن علمی دانشکده مهندسی کامپیوتر دانشگاه صنعتی شریف",
+			"url": "https://ssc.ce.sharif.ir"
+		},
+		"eventAttendanceMode": "https://schema.org/MixedEventAttendanceMode",
+		"eventStatus": "https://schema.org/EventScheduled"
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "باگزبازی BugsBuzzy",
+		"alternateName": ["BugsBuzzy", "Bugs Buzzy", "باگز بازی"],
+		"url": "https://bugsbuzzy.ir",
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"name": "باگزبازی BugsBuzzy",
+		"alternateName": "Bugs Buzzy",
+		"url": "https://bugsbuzzy.ir",
+		"logo": "https://bugsbuzzy.ir/logo.png",
+		"sameAs": [
+			"https://t.me/bugsbuzzy",
+			"https://www.linkedin.com/company/bugs-buzzy/",
+			"https://t.me/BugsBuzzy_Support"
+		]
+	}
+	</script>
+	
 	<link rel="icon" type="image/png" href="src/assets/favicon.png" />
+	<link rel="apple-touch-icon" href="src/assets/favicon.png" />
+	<link rel="manifest" href="/manifest.json" />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap"

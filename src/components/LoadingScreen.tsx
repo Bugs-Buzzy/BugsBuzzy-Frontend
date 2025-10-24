@@ -84,7 +84,7 @@ export default function LoadingScreen({
             } as CSSProperties
           }
         >
-          درحال بارگزاری
+          درحال بارگذاری
           <span className="inline-block w-10 md:w-20 text-right">{dots}</span>
         </p>
       </div>

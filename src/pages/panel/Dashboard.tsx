@@ -15,14 +15,12 @@ import { Link } from 'react-router-dom';
 
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
-import { teamsService, type Team } from '@/services/teams.service';
+import { inpersonService, type InPersonTeam } from '@/services/inperson.service';
 
 interface DashboardStats {
   profileCompleted: boolean;
-  inPersonTeam: Team | null;
-  onlineTeam: Team | null;
+  inPersonTeam: InPersonTeam | null;
   inPersonRegistered: boolean;
-  onlineRegistered: boolean;
   inPersonPaid: boolean;
   onlinePaid: boolean;
   purchasedItems: string[];
@@ -34,9 +32,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     profileCompleted: false,
     inPersonTeam: null,
-    onlineTeam: null,
     inPersonRegistered: false,
-    onlineRegistered: false,
     inPersonPaid: false,
     onlinePaid: false,
     purchasedItems: [],
@@ -49,20 +45,15 @@ export default function Dashboard() {
       if (!user) return;
 
       try {
-        const [teamsData, purchasedData] = await Promise.all([
-          teamsService.getAllTeams(),
+        const [inPersonTeamData, purchasedData] = await Promise.all([
+          inpersonService.getMyTeam(),
           import('@/services/payments.service').then((m) => m.paymentsService.getPurchasedItems()),
         ]);
 
-        const inPersonTeam = teamsData.teams.find((t) => t.team_type === 'in_person');
-        const onlineTeam = teamsData.teams.find((t) => t.team_type === 'online');
-
         setStats({
           profileCompleted,
-          inPersonTeam: inPersonTeam || null,
-          onlineTeam: onlineTeam || null,
-          inPersonRegistered: !!inPersonTeam,
-          onlineRegistered: !!onlineTeam,
+          inPersonTeam: inPersonTeamData.team || null,
+          inPersonRegistered: !!inPersonTeamData.team,
           inPersonPaid: purchasedData.purchased_items.includes('inperson'),
           onlinePaid: purchasedData.purchased_items.includes('gamejam'),
           purchasedItems: purchasedData.purchased_items,
@@ -201,13 +192,42 @@ export default function Dashboard() {
               </span>
             </div>
             {stats.inPersonTeam && (
-              <div className="flex justify-between items-center text-sm">
-                <span>نام تیم:</span>
-                <span className="text-white font-normal flex items-center gap-1">
-                  <FaUsers className="text-primary-aero" />
-                  {stats.inPersonTeam.name}
-                </span>
-              </div>
+              <>
+                <div className="flex justify-between items-center text-sm">
+                  <span>نام تیم:</span>
+                  <span className="text-white font-normal flex items-center gap-1">
+                    <FaUsers className="text-primary-aero" />
+                    {stats.inPersonTeam.name}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>تعداد اعضا:</span>
+                  <span className="text-primary-aero font-pixel" dir="ltr">
+                    {stats.inPersonTeam.member_count}/5
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>وضعیت:</span>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold ${
+                      stats.inPersonTeam.status === 'active' ||
+                      stats.inPersonTeam.status === 'attended'
+                        ? 'bg-green-900 bg-opacity-30 text-green-400 border border-green-600'
+                        : stats.inPersonTeam.status === 'incomplete'
+                          ? 'bg-yellow-900 bg-opacity-30 text-yellow-400 border border-yellow-600'
+                          : 'bg-gray-800 text-gray-400 border border-gray-600'
+                    }`}
+                  >
+                    {stats.inPersonTeam.status === 'active'
+                      ? 'فعال'
+                      : stats.inPersonTeam.status === 'attended'
+                        ? 'شرکت کرده'
+                        : stats.inPersonTeam.status === 'incomplete'
+                          ? 'ناقص'
+                          : 'منحل شده'}
+                  </span>
+                </div>
+              </>
             )}
           </div>
           {profileCompleted && (
@@ -227,38 +247,21 @@ export default function Dashboard() {
           </div>
           <div className="space-y-2 text-primary-aero">
             <div className="flex justify-between items-center">
-              <span>وضعیت تیم:</span>
+              <span>وضعیت پرداخت:</span>
               <span
-                className={`flex items-center gap-1 ${stats.onlineRegistered ? 'text-green-400' : 'text-gray-400'}`}
+                className={`flex items-center gap-1 ${stats.onlinePaid ? 'text-green-400' : 'text-gray-400'}`}
               >
-                {stats.onlineRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
-                {stats.onlineRegistered ? 'دارد' : 'ندارد'}
+                {stats.onlinePaid ? <FaCheckCircle /> : <FaTimesCircle />}
+                {stats.onlinePaid ? 'پرداخت شده' : 'پرداخت نشده'}
               </span>
             </div>
-            {stats.onlineTeam && (
-              <>
-                <div className="flex justify-between items-center text-sm">
-                  <span>نام تیم:</span>
-                  <span className="text-white font-normal flex items-center gap-1">
-                    <FaUsers className="text-primary-aero" />
-                    {stats.onlineTeam.name}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>نوع:</span>
-                  <span className="text-primary-aero">
-                    {stats.onlinePaid ? 'تیم پولی (سازنده)' : 'تیم رایگان (عضو)'}
-                  </span>
-                </div>
-              </>
-            )}
           </div>
           {profileCompleted && (
             <Link
               to="/panel/gamejam"
               className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
             >
-              {stats.onlineRegistered ? 'مشاهده جزئیات' : 'ثبت‌نام'}
+              {stats.onlinePaid ? 'مشاهده جزئیات' : 'ثبت‌نام'}
             </Link>
           )}
         </PixelFrame>

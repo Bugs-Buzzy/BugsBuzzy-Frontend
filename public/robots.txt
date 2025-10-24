@@ -1,0 +1,18 @@
+# BugsBuzzy Robots.txt
+User-agent: *
+Allow: /
+Allow: /panel/dashboard
+Allow: /panel/inperson
+Allow: /panel/gamejam
+Allow: /panel/announcements
+Allow: /panel/presentations
+
+# صفحات خصوصی
+Disallow: /panel/profile
+Disallow: /payment/
+
+# Sitemap
+Sitemap: https://bugsbuzzy.ir/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
