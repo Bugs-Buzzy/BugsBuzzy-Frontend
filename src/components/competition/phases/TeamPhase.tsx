@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import PixelFrame from '@/components/PixelFrame';
+import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { teamsService, type Team, type TeamMember } from '@/services/teams.service';
 import { extractFieldErrors } from '@/utils/errorMessages';
@@ -28,6 +29,7 @@ export default function TeamPhase({
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState('');
+  const toast = useToast();
 
   const [teamName, setTeamName] = useState('');
   const [teamDescription, setTeamDescription] = useState('');
@@ -87,6 +89,7 @@ export default function TeamPhase({
       setTeam(response.team);
       setShowCreateForm(false);
       setSuccessMessage('تیم با موفقیت ساخته شد!');
+      toast.success('تیم با موفقیت ساخته شد!');
       setTimeout(() => setSuccessMessage(''), 3000);
       await loadTeam();
     } catch (err) {
@@ -96,6 +99,7 @@ export default function TeamPhase({
 
       setFieldErrors(fieldErrors);
       setError(message || 'خطا در ساخت تیم');
+      toast.error(message || 'خطا در ساخت تیم');
     } finally {
       setLoading(false);
     }
@@ -119,6 +123,7 @@ export default function TeamPhase({
       setTeam(response.team);
       setShowJoinForm(false);
       setSuccessMessage('با موفقیت به تیم پیوستید!');
+      toast.success('با موفقیت به تیم پیوستید!');
       setTimeout(() => setSuccessMessage(''), 3000);
       await loadTeam();
     } catch (err) {
@@ -128,6 +133,7 @@ export default function TeamPhase({
 
       setFieldErrors(fieldErrors);
       setError(message || 'خطا در پیوستن به تیم');
+      toast.error(message || 'خطا در پیوستن به تیم');
     } finally {
       setLoading(false);
     }
