@@ -180,22 +180,6 @@ a {
 	color: #2EB1E0; /* process cyan */
 }
 
-button {
-	cursor: pointer;
-	font-size: 1rem;
-	padding: 0.6rem 1rem;
-	border-radius: 6px;
-	border: 1px solid #17789B; /* cerulean */
-	background: #F14F04; /* golden */
-	color: #fff;
-	transition: background .25s ease, transform .25s ease;
-}
-
-button:hover {
-	background: #FB5D13; /* orange pantone */
-	transform: translateY(-2px);
-}
-
 .app-container {
 	max-width: 860px;
 	margin: 0 auto;
