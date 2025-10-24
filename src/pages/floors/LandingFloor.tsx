@@ -1,11 +1,12 @@
 import { forwardRef, useState } from 'react';
-import { FaChevronDown, FaGamepad, FaLinkedin, FaTelegram } from 'react-icons/fa';
+import { FaChevronDown, FaGamepad } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import bgLanding from '@/assets/bkg-landing.png';
 import nameImg from '@/assets/name.png'; // 👈 تصویر جدیدت
-import LoginModal from '@/components/modals/LoginModal';
+import { SocialLinks } from '@/components/SocialLinks';
 import { useAuth } from '@/context/AuthContext';
+import LoginModal from '@/pages/modals/LoginModal';
 
 const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
   const navigate = useNavigate();
@@ -34,27 +35,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
             <span className="relative z-10">ثبت‌نام در رویداد</span>
             <span className="absolute inset-0 bg-white/20 blur-xl opacity-0 hover:opacity-60 transition-opacity duration-700"></span>
           </button>
-
-          <div className="flex gap-6 justify-center mt-16">
-            <a
-              href="https://t.me/BugsBuzzy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-orange-400 hover:text-orange-300 transition-colors"
-              aria-label="Telegram"
-            >
-              <FaTelegram className="text-4xl md:text-5xl" />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/bugs-buzzy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-orange-400 hover:text-orange-300 transition-colors"
-              aria-label="LinkedIn"
-            >
-              <FaLinkedin className="text-4xl md:text-5xl" />
-            </a>
-          </div>
+          <SocialLinks />
         </div>
 
         <div className="absolute bottom-10 animate-bounce flex flex-col items-center gap-1">
