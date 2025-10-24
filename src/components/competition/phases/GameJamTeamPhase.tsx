@@ -444,7 +444,7 @@ export default function GameJamTeamPhase({ onTeamCreated }: GameJamTeamPhaseProp
                       <div className="flex justify-between text-sm">
                         <span className="text-primary-aero">ثبت‌نام گیم‌جم:</span>
                         <span className="font-pixel text-primary-aero" dir="ltr">
-                          {teamPrice ? `${formatPrice(teamPrice)} تومان` : '...'}
+                          {teamPrice ? `${formatPrice(teamPrice)}` : '...'}
                         </span>
                       </div>
 
@@ -453,7 +453,7 @@ export default function GameJamTeamPhase({ onTeamCreated }: GameJamTeamPhaseProp
                           <div className="flex justify-between text-green-400 text-sm">
                             <span>تخفیف ({discountPercentage}%):</span>
                             <span className="font-pixel" dir="ltr">
-                              - {formatPrice(teamPrice - finalPrice)} تومان
+                              - {formatPrice(teamPrice - finalPrice)}
                             </span>
                           </div>
                         </div>
@@ -474,7 +474,7 @@ export default function GameJamTeamPhase({ onTeamCreated }: GameJamTeamPhaseProp
                             }`}
                             dir="ltr"
                           >
-                            {finalPrice ? `${formatPrice(finalPrice)} تومان` : '...'}
+                            {finalPrice ? `${formatPrice(finalPrice)}` : '...'}
                           </span>
                         </div>
                       </div>
