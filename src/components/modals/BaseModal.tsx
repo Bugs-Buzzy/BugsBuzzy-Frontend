@@ -133,7 +133,7 @@ export default function BaseModal({
       // Use tolerance for floating-point comparison
       const SCROLL_TOLERANCE = 1;
       const { scrollTop, scrollHeight, clientHeight } = scrollableElement;
-      const isAtTop = scrollTop === 0;
+      const isAtTop = scrollTop < SCROLL_TOLERANCE;
       const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < SCROLL_TOLERANCE;
 
       // For touchmove events, prevent at boundaries to stop overscroll
