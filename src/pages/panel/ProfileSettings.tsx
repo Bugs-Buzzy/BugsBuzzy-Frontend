@@ -512,7 +512,7 @@ export default function ProfileSettings() {
               type="text"
               value={formData.university}
               onChange={(e) => handleChange('university', e.target.value)}
-              placeholder="مثلاً دانشگاه تهران"
+              placeholder="مثلاً دانشگاه شریف"
               className={`w-full pixel-input bg-primary-midnight text-white border-primary-cerulean p-3 font-normal ${
                 fieldErrors.university ? 'border-red-500' : ''
               }`}
