@@ -61,48 +61,55 @@ export default function GameWorld() {
       }
     };
 
-    let touchStartY = 0;
-    let touchStartTime = 0;
+    let lastTouchY: number | null = null;
+    let touchMoveDistance = 0;
+    const touchThreshold = 80;
 
-    const handleTouchStart = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.team-scrollbar')) {
-        return;
-      }
-      touchStartY = e.touches[0].clientY;
-      touchStartTime = Date.now();
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchMove = (e: TouchEvent) => {
       const target = e.target as HTMLElement;
       if (target.closest('.team-scrollbar')) {
         return;
       }
 
-      if (isScrolling.current) return;
+      if (isScrolling.current) {
+        e.preventDefault();
+        return;
+      }
 
-      const touchEndY = e.changedTouches[0].clientY;
-      const touchEndTime = Date.now();
-      const diff = touchStartY - touchEndY;
-      const timeDiff = touchEndTime - touchStartTime;
+      const currentTouchY = e.touches[0].clientY;
 
-      if (Math.abs(diff) > 80 && timeDiff < 500) {
-        if (diff > 0 && currentFloor < 5) {
+      // Initialize lastTouchY on first move
+      if (lastTouchY === null) {
+        lastTouchY = currentTouchY;
+        return;
+      }
+
+      const deltaY = lastTouchY - currentTouchY;
+      touchMoveDistance += deltaY;
+      lastTouchY = currentTouchY;
+
+      // Check if we've moved enough to trigger floor change
+      if (Math.abs(touchMoveDistance) > touchThreshold) {
+        e.preventDefault();
+
+        if (touchMoveDistance > 0 && currentFloor < 5) {
           scrollToFloor(currentFloor + 1);
-        } else if (diff < 0 && currentFloor > 0) {
+          touchMoveDistance = 0;
+          lastTouchY = null; // Reset for next gesture
+        } else if (touchMoveDistance < 0 && currentFloor > 0) {
           scrollToFloor(currentFloor - 1);
+          touchMoveDistance = 0;
+          lastTouchY = null; // Reset for next gesture
         }
       }
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       container.removeEventListener('wheel', handleWheel);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchmove', handleTouchMove);
     };
   }, [currentFloor]);
 

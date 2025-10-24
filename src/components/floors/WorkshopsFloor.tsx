@@ -40,37 +40,30 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
 
     let lastTouchX: number | null = null;
 
-    const onTouchStart = (e: TouchEvent) => {
-      e.stopPropagation();
-      lastTouchX = e.touches[0].clientX;
-    };
-
     const onTouchMove = (e: TouchEvent) => {
       e.stopPropagation();
-      if (lastTouchX === null) return;
+
       const currentX = e.touches[0].clientX;
+
+      // Initialize on first move
+      if (lastTouchX === null) {
+        lastTouchX = currentX;
+        return;
+      }
+
       const delta = lastTouchX - currentX;
       container.scrollLeft += delta;
       lastTouchX = currentX;
       e.preventDefault();
     };
 
-    const onTouchEnd = () => {
-      lastTouchX = null;
-    };
-
     container.addEventListener('wheel', onWheel, { passive: false });
-    container.addEventListener('touchstart', onTouchStart, { passive: true });
     container.addEventListener('touchmove', onTouchMove, { passive: false });
-    container.addEventListener('touchend', onTouchEnd);
-    container.addEventListener('touchcancel', onTouchEnd);
 
     return () => {
       container.removeEventListener('wheel', onWheel);
-      container.removeEventListener('touchstart', onTouchStart);
       container.removeEventListener('touchmove', onTouchMove);
-      container.removeEventListener('touchend', onTouchEnd);
-      container.removeEventListener('touchcancel', onTouchEnd);
+      lastTouchX = null; // Reset on cleanup
     };
   }, [selectedCategory]);
 
