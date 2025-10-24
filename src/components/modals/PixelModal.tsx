@@ -35,9 +35,7 @@ export default function PixelModal({ children, onClose, showCloseButton = true }
           </button>
         )}
 
-        <div className="pt-8 md:pt-4 px-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-primary-cerulean scrollbar-track-gray-800">
-          {children}
-        </div>
+        <div className="pt-8 md:pt-4 px-2 overflow-y-auto flex-1 modal-scrollbar">{children}</div>
       </PixelFrame>
     </BaseModal>
   );
