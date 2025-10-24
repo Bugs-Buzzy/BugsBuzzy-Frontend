@@ -169,14 +169,12 @@ export default function InPersonCompetition() {
       {/* Phase Content */}
       {currentPhase === 0 && (
         <PaymentPhase
-          competitionType="inperson"
           baseItem="inperson"
           baseItemLabel="ثبت‌نام رقابت حضوری"
           additionalItems={[
             { id: 'thursday_lunch', label: 'ناهار روز اول (پنجشنبه)' },
             { id: 'friday_lunch', label: 'ناهار روز دوم (جمعه)' },
           ]}
-          isSkippable={false}
           onPaymentComplete={handlePaymentComplete}
         />
       )}

@@ -13,23 +13,17 @@ interface AdditionalItem {
 }
 
 interface PaymentPhaseProps {
-  competitionType: 'inperson' | 'gamejam';
   baseItem: string;
   baseItemLabel: string;
   additionalItems?: AdditionalItem[];
-  isSkippable?: boolean;
   onPaymentComplete: () => void;
-  onSkip?: () => void;
 }
 
 export default function PaymentPhase({
-  competitionType,
   baseItem,
   baseItemLabel,
   additionalItems = [],
-  isSkippable = false,
   onPaymentComplete: _onPaymentComplete,
-  onSkip,
 }: PaymentPhaseProps) {
   const [selectedAdditionalItems, setSelectedAdditionalItems] = useState<Set<string>>(new Set());
   const [discountCode, setDiscountCode] = useState('');
@@ -45,6 +39,8 @@ export default function PaymentPhase({
 
   const [itemPrices, setItemPrices] = useState<Record<string, number>>({});
   const [purchasedItems, setPurchasedItems] = useState<Set<string>>(new Set());
+  const [baseItemAvailable, setBaseItemAvailable] = useState<boolean | null>(null);
+  const [purchasedLoaded, setPurchasedLoaded] = useState(false);
 
   useEffect(() => {
     fetchItemPrices();
@@ -66,6 +62,7 @@ export default function PaymentPhase({
       const result = await paymentsService.getPurchasedItems();
       const purchased = new Set(result.purchased_items);
       setPurchasedItems(purchased);
+      setPurchasedLoaded(true);
 
       // Initialize selectedAdditionalItems with already purchased items
       const purchasedAdditionalItems = additionalItems
@@ -79,23 +76,37 @@ export default function PaymentPhase({
       });
     } catch (err) {
       console.error('Failed to fetch purchased items:', err);
+      setPurchasedLoaded(true);
     }
   };
 
   const fetchItemPrices = async () => {
     try {
       const allItems = [baseItem, ...additionalItems.map((i) => i.id)];
-      const pricePromises = allItems.map((item) => paymentsService.getPrice([item]));
-      const prices = await Promise.all(pricePromises);
+      const results = await Promise.allSettled(
+        allItems.map((item) => paymentsService.getPrice([item])),
+      );
 
       const pricesMap: Record<string, number> = {};
-      allItems.forEach((item, index) => {
-        pricesMap[item] = prices[index].amount;
+      let baseOk = false;
+
+      results.forEach((res, idx) => {
+        const itemId = allItems[idx];
+        if (res.status === 'fulfilled') {
+          pricesMap[itemId] = res.value.amount;
+          if (itemId === baseItem) baseOk = true;
+        } else {
+          if (itemId === baseItem) baseOk = false;
+        }
       });
 
-      setItemPrices(pricesMap);
+      setBaseItemAvailable(baseOk);
+      if (baseOk) {
+        setItemPrices(pricesMap);
+      }
     } catch (err) {
       console.error('Failed to fetch item prices:', err);
+      setBaseItemAvailable(false);
     }
   };
 
@@ -210,6 +221,33 @@ export default function PaymentPhase({
       return;
     }
 
+    // Re-validate price and availability before payment
+    setLoading(true);
+    try {
+      const latestPrice = await paymentsService.getPrice(unpurchasedItems);
+
+      // Check if price changed
+      if (latestPrice.amount !== calculatedPrice) {
+        setOriginalPrice(latestPrice.amount);
+        setCalculatedPrice(latestPrice.amount);
+        setError('مبلغ به‌روز شد. لطفاً مجدداً تایید و پرداخت کنید');
+        setLoading(false);
+        return;
+      }
+    } catch (err: any) {
+      console.error('Price re-validation error:', err);
+      const apiError = err as ApiError;
+      if (apiError.status === 404 || apiError.status === 410) {
+        setError('ثبت‌نام در حال حاضر بسته است');
+        setBaseItemAvailable(false);
+        setLoading(false);
+        return;
+      }
+      setError('خطا در بررسی قیمت. لطفاً دوباره تلاش کنید');
+      setLoading(false);
+      return;
+    }
+
     if (calculatedPrice === null || calculatedPrice === 0) {
       setError('لطفاً صبر کنید تا قیمت محاسبه شود');
       return;
@@ -232,7 +270,7 @@ export default function PaymentPhase({
         items: unpurchasedItems,
         amount: calculatedPrice,
         discount_code: discountCode || undefined,
-        returnUrl: `/panel/${competitionType}`,
+        returnUrl: '/panel/inperson',
       });
 
       const payment = await paymentsService.createPayment({
@@ -261,6 +299,16 @@ export default function PaymentPhase({
     setSelectedAdditionalItems(newSet);
   };
 
+  // Check if registration is closed
+  if (baseItemAvailable === false && purchasedLoaded && !hasBaseItemPurchased()) {
+    return (
+      <PixelFrame className="bg-primary-midnight bg-opacity-90">
+        <h3 className="text-primary-sky font-bold mb-4">🔒 ثبت‌نام بسته است</h3>
+        <p className="text-gray-300">متأسفانه ثبت‌نام برای این رقابت در حال حاضر بسته است.</p>
+      </PixelFrame>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {successMessage && (
@@ -280,11 +328,7 @@ export default function PaymentPhase({
           <span>💰</span>
           <span>پرداخت هزینه ثبت‌نام</span>
         </h2>
-        <p className="text-primary-aero mb-6">
-          {isSkippable
-            ? 'می‌توانید پرداخت را انجام دهید یا این مرحله را رد کنید و فقط به تیم بپیوندید.'
-            : 'برای ادامه، ابتدا هزینه ثبت‌نام را پرداخت کنید.'}
-        </p>
+        <p className="text-primary-aero mb-6">برای ادامه، ابتدا هزینه ثبت‌نام را پرداخت کنید.</p>
 
         {/* Base Item Status */}
         {hasBaseItemPurchased() && (
@@ -509,32 +553,21 @@ export default function PaymentPhase({
             >
               {loading ? 'در حال انتقال...' : 'پرداخت و ادامه'}
             </button>
-
-            {isSkippable && onSkip && (
-              <button
-                onClick={onSkip}
-                disabled={loading}
-                className="pixel-btn pixel-btn-secondary py-3 px-8"
-              >
-                رد کردن
-              </button>
-            )}
           </div>
         ) : (
-          <div className="bg-green-900 bg-opacity-30 rounded p-4 border border-green-600">
-            <p className="text-green-300 text-center flex items-center justify-center gap-2">
-              <span>✅</span>
-              <span>همه موارد قبلاً پرداخت شده است. می‌توانید به مرحله بعد بروید.</span>
-            </p>
-          </div>
-        )}
-
-        {isSkippable && (
-          <div className="bg-yellow-900 bg-opacity-20 rounded p-3 mt-4 border border-yellow-600">
-            <p className="text-yellow-300 text-sm">
-              ⚠️ توجه: اگر پرداخت نکنید، فقط می‌توانید به تیم موجود بپیوندید و نمی‌توانید تیم
-              بسازید.
-            </p>
+          <div className="space-y-3">
+            <div className="bg-green-900 bg-opacity-30 rounded p-4 border border-green-600">
+              <p className="text-green-300 text-center flex items-center justify-center gap-2">
+                <span>✅</span>
+                <span>همه موارد قبلاً پرداخت شده است.</span>
+              </p>
+            </div>
+            <button
+              onClick={_onPaymentComplete}
+              className="pixel-btn pixel-btn-primary w-full py-3 text-lg font-bold"
+            >
+              ادامه به تیم‌سازی ←
+            </button>
           </div>
         )}
       </PixelFrame>

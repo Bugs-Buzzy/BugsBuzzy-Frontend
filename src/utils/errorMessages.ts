@@ -140,6 +140,24 @@ const errorTranslations: Record<string, string> = {
   'You do not have permission to perform this action.': 'شما مجوز انجام این عملیات را ندارید',
   'User is not verified': 'کاربر تایید نشده است',
   'Profile is not completed': 'پروفایل تکمیل نشده است',
+  'Given token not valid for any token type': 'نشست شما منقضی شده است. لطفاً دوباره وارد شوید',
+  'Token is expired': 'نشست شما منقضی شده است',
+};
+
+export const extractErrorMessage = (error: any): string => {
+  // Handle nested messages array from JWT
+  if (error.messages && Array.isArray(error.messages)) {
+    const message = error.messages.map((m: any) => m.message).join(', ');
+    return translateError(message);
+  }
+
+  // Handle detail field
+  if (error.detail) {
+    return translateError(error.detail);
+  }
+
+  // Handle error or message field
+  return translateError(error.message || error.error || 'خطای نامشخص');
 };
 
 export const translateError = (error?: string): string => {
