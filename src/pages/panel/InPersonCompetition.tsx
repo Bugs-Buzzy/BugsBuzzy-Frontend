@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import InPersonTeamPhase from '@/components/competition/phases/InPersonTeamPhase';
 import PaymentPhase from '@/components/competition/phases/PaymentPhase';
 import PlaceholderPhase from '@/components/competition/phases/PlaceholderPhase';
-import TeamPhase from '@/components/competition/phases/TeamPhase';
 import ProgressBar, { type Phase } from '@/components/competition/ProgressBar';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
-import { teamsService } from '@/services/teams.service';
+import { inpersonService, type CompetitionPhase } from '@/services/inperson.service';
 
 export default function InPersonCompetition() {
   const { profileCompleted, user: _user } = useAuth();
@@ -15,7 +15,8 @@ export default function InPersonCompetition() {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Phase status tracking
+  const [competitionPhases, setCompetitionPhases] = useState<CompetitionPhase[]>([]);
+
   const [phaseStatus, setPhaseStatus] = useState({
     hasPaid: false,
     hasTeam: false,
@@ -29,15 +30,19 @@ export default function InPersonCompetition() {
   const loadStatus = async () => {
     setLoading(true);
     try {
-      // Check purchased items to determine if base item (inperson) was paid
-      const { paymentsService } = await import('@/services/payments.service');
-      const purchasedData = await paymentsService.getPurchasedItems();
-      const hasPaid = purchasedData.purchased_items.includes('inperson');
+      const [competitionStatus, teamResponse, purchasedData] = await Promise.all([
+        inpersonService.getCompetitionStatus(),
+        inpersonService.getMyTeam(),
+        import('@/services/payments.service').then((m) => m.paymentsService.getPurchasedItems()),
+      ]);
 
-      const teamsData = await teamsService.getAllTeams();
-      const inPersonTeam = teamsData.teams.find((t) => t.team_type === 'in_person');
-      const hasTeam = !!inPersonTeam;
-      const teamComplete = inPersonTeam ? inPersonTeam.member_count >= 3 : false;
+      setCompetitionPhases(competitionStatus.phases);
+
+      const hasPaid = purchasedData.purchased_items.includes('inperson');
+      const hasTeam = !!teamResponse.team;
+      const teamComplete = teamResponse.team
+        ? teamResponse.team.status === 'active' || teamResponse.team.status === 'attended'
+        : false;
 
       setPhaseStatus({
         hasPaid,
@@ -45,13 +50,17 @@ export default function InPersonCompetition() {
         teamComplete,
       });
 
-      // Determine current phase
       if (!hasPaid) {
         setCurrentPhase(0);
       } else if (!hasTeam || !teamComplete) {
         setCurrentPhase(1);
       } else {
-        setCurrentPhase(2);
+        const activePhase = competitionStatus.phases.find((p) => p.active);
+        if (activePhase) {
+          setCurrentPhase(activePhase.id + 1);
+        } else {
+          setCurrentPhase(2);
+        }
       }
     } catch (err) {
       console.error('Failed to load status:', err);
@@ -60,49 +69,43 @@ export default function InPersonCompetition() {
     }
   };
 
+  const getPhaseStatus = (phaseId: number): 'current' | 'completed' | 'available' | 'locked' => {
+    if (currentPhase === phaseId) return 'current';
+    if (phaseId === 0) return phaseStatus.hasPaid ? 'completed' : 'locked';
+    if (phaseId === 1) {
+      if (phaseStatus.teamComplete) return 'completed';
+      if (phaseStatus.hasPaid) return 'available';
+      return 'locked';
+    }
+    const backendPhase = competitionPhases.find((p) => p.id === phaseId - 2);
+    if (!phaseStatus.teamComplete) return 'locked';
+    if (backendPhase?.active) return 'available';
+    if (currentPhase > phaseId) return 'completed';
+    return 'locked';
+  };
+
   const phases: Phase[] = [
     {
       id: 0,
       title: 'پرداخت',
       icon: '💰',
-      status: currentPhase === 0 ? 'current' : phaseStatus.hasPaid ? 'completed' : 'locked',
+      status: getPhaseStatus(0),
       isClickable: phaseStatus.hasPaid,
     },
     {
       id: 1,
       title: 'تیم‌سازی',
       icon: '👥',
-      status:
-        currentPhase === 1
-          ? 'current'
-          : phaseStatus.teamComplete
-            ? 'completed'
-            : phaseStatus.hasPaid
-              ? 'available'
-              : 'locked',
+      status: getPhaseStatus(1),
       isClickable: phaseStatus.hasPaid,
     },
-    {
-      id: 2,
-      title: 'فاز اول',
-      icon: '🎯',
-      status: currentPhase === 2 ? 'current' : phaseStatus.teamComplete ? 'available' : 'locked',
+    ...competitionPhases.map((phase, index) => ({
+      id: index + 2,
+      title: phase.title,
+      icon: ['🎯', '🎮', '🏁'][index] || '🎯',
+      status: getPhaseStatus(index + 2),
       isClickable: false,
-    },
-    {
-      id: 3,
-      title: 'فاز دوم',
-      icon: '🎮',
-      status: currentPhase === 3 ? 'current' : 'locked',
-      isClickable: false,
-    },
-    {
-      id: 4,
-      title: 'فاز نهایی',
-      icon: '🏁',
-      status: currentPhase === 4 ? 'current' : 'locked',
-      isClickable: false,
-    },
+    })),
   ];
 
   const handlePhaseChange = (phaseId: number) => {
@@ -179,22 +182,16 @@ export default function InPersonCompetition() {
         />
       )}
 
-      {currentPhase === 1 && (
-        <TeamPhase
-          teamType="inperson"
-          maxMembers={3}
-          minMembers={3}
-          requirePaymentForCreate={true}
-          hasPaid={phaseStatus.hasPaid}
-          onTeamComplete={handleTeamComplete}
-        />
-      )}
+      {currentPhase === 1 && <InPersonTeamPhase onTeamComplete={handleTeamComplete} />}
 
       {currentPhase >= 2 && (
         <PlaceholderPhase
           phaseNumber={currentPhase}
-          phaseName={`فاز ${currentPhase - 1}`}
-          description="جزئیات این فاز به‌زودی اعلام خواهد شد"
+          phaseName={competitionPhases[currentPhase - 2]?.title || `فاز ${currentPhase - 1}`}
+          description={
+            competitionPhases[currentPhase - 2]?.description ||
+            'جزئیات این فاز به‌زودی اعلام خواهد شد'
+          }
         />
       )}
     </div>

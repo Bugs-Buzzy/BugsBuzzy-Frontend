@@ -15,11 +15,12 @@ import { Link } from 'react-router-dom';
 
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import { inpersonService, type InPersonTeam } from '@/services/inperson.service';
 import { teamsService, type Team } from '@/services/teams.service';
 
 interface DashboardStats {
   profileCompleted: boolean;
-  inPersonTeam: Team | null;
+  inPersonTeam: InPersonTeam | null;
   onlineTeam: Team | null;
   inPersonRegistered: boolean;
   onlineRegistered: boolean;
@@ -49,19 +50,19 @@ export default function Dashboard() {
       if (!user) return;
 
       try {
-        const [teamsData, purchasedData] = await Promise.all([
+        const [inPersonTeamData, teamsData, purchasedData] = await Promise.all([
+          inpersonService.getMyTeam(),
           teamsService.getAllTeams(),
           import('@/services/payments.service').then((m) => m.paymentsService.getPurchasedItems()),
         ]);
 
-        const inPersonTeam = teamsData.teams.find((t) => t.team_type === 'in_person');
         const onlineTeam = teamsData.teams.find((t) => t.team_type === 'online');
 
         setStats({
           profileCompleted,
-          inPersonTeam: inPersonTeam || null,
+          inPersonTeam: inPersonTeamData.team || null,
           onlineTeam: onlineTeam || null,
-          inPersonRegistered: !!inPersonTeam,
+          inPersonRegistered: !!inPersonTeamData.team,
           onlineRegistered: !!onlineTeam,
           inPersonPaid: purchasedData.purchased_items.includes('inperson'),
           onlinePaid: purchasedData.purchased_items.includes('gamejam'),
