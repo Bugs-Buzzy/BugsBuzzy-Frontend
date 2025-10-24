@@ -366,3 +366,29 @@
   -webkit-overflow-scrolling: auto; /* disables delayed momentum on iOS */
   touch-action: pan-x; /* allows horizontal touch scroll only */
 }
+
+/* ========================================
+   Pixel Close Button for Modals
+   Sharp-edged pixel-art style close button
+   ======================================== */
+
+.pixel-close-btn {
+  border-radius: 0 !important; /* Force sharp corners */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.pixel-close-btn:hover {
+  box-shadow: 0 5px 0 #7f1d1d, 0 0 0 1px #fca5a5 inset !important;
+}
+
+.pixel-close-btn:active {
+  box-shadow: 0 2px 0 #7f1d1d, 0 0 0 1px #fca5a5 inset !important;
+}
+
+.pixel-text {
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}

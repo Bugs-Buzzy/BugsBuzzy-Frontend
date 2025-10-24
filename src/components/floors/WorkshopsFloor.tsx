@@ -16,44 +16,13 @@ import img8 from '@/assets/images/presents/img8.jpg';
 import img9 from '@/assets/images/presents/img9.jpg';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
-import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
   const [selectedCategory, setSelectedCategory] = useState<'godot' | 'presentations' | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const presentationRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(presentationRef, {});
-  const godotRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(godotRef, {});
   const horizontalPresRef = useRef<HTMLDivElement>(null);
   const horizontalGodotRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!selectedCategory) return;
-
-    const container =
-      selectedCategory == 'presentations' ? presentationRef.current : godotRef.current;
-    if (!container) return;
-
-    document.body.style.overflow = 'hidden';
-    container.focus();
-
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    container.addEventListener('wheel', preventScroll, { passive: false });
-    container.addEventListener('touchmove', preventScroll, { passive: false });
-    container.addEventListener('keydown', preventScroll, { passive: false });
-
-    return () => {
-      document.body.style.overflow = '';
-      container.removeEventListener('wheel', preventScroll);
-      container.removeEventListener('touchmove', preventScroll);
-      container.removeEventListener('keydown', preventScroll);
-    };
-  }, [selectedCategory]);
 
   useEffect(() => {
     if (!selectedCategory) return;
@@ -175,7 +144,7 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       {/* Godot Workshops Modal */}
       {selectedCategory === 'godot' && (
         <PixelModal onClose={() => setSelectedCategory(null)}>
-          <div className="text-white font-pixel text-center" ref={godotRef}>
+          <div className="text-white font-pixel text-center">
             <h3 className="text-2xl md:text-3xl mb-6 font-bold"> سری کارگاه‌های Godot</h3>
             <div
               className="flex gap-4 overflow-x-auto whitespace-nowrap px-4 py-2 scrollable-x"
@@ -194,7 +163,7 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       {/* Modal: Presentations */}
       {selectedCategory === 'presentations' && (
         <PixelModal onClose={() => setSelectedCategory(null)}>
-          <div className="text-white font-pixel text-center" ref={presentationRef}>
+          <div className="text-white font-pixel text-center">
             <h3 className="text-4xl md:text-3xl mb-6 font-bold"> ارائه‌ها</h3>
             <div
               className="flex gap-4 overflow-x-auto whitespace-nowrap px-4 py-2 scrollable-x"

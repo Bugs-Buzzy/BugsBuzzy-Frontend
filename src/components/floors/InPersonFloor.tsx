@@ -1,42 +1,12 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { FaTrophy, FaClock, FaCoins } from 'react-icons/fa';
 
 import bgInPerson from '@/assets/bkg-inperson.png';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
-import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
   const [showModal, setShowModal] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
-  useScrollInterceptor(modalRef, {});
-
-  useEffect(() => {
-    const container = modalRef.current;
-    if (!container) return;
-
-    if (showModal) {
-      document.body.style.overflow = 'hidden';
-      container.focus();
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    container.addEventListener('wheel', preventScroll, { passive: false });
-    container.addEventListener('touchmove', preventScroll, { passive: false });
-    container.addEventListener('keydown', preventScroll, { passive: false });
-
-    return () => {
-      document.body.style.overflow = '';
-      container.removeEventListener('wheel', preventScroll);
-      container.removeEventListener('touchmove', preventScroll);
-      container.removeEventListener('keydown', preventScroll);
-    };
-  }, [showModal]);
 
   return (
     <>
@@ -131,11 +101,7 @@ const InPersonFloor = forwardRef<HTMLElement>((props, ref) => {
 
       {showModal && (
         <PixelModal onClose={() => setShowModal(false)}>
-          <div
-            className="text-white font-pixel max-h-[70vh] overflow-y-auto p-4 md:p-6"
-            ref={modalRef}
-            tabIndex={-1}
-          >
+          <div className="text-white font-pixel p-4 md:p-6">
             <FaTrophy className="text-4xl md:text-6xl mb-4 mx-auto" />
             <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">
               رقابت حضوری Bitcoin Hunt
