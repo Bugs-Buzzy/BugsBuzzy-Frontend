@@ -22,7 +22,6 @@ import img6 from '@/assets/images/presents/img6.jpg';
 import img7 from '@/assets/images/presents/img7.jpg';
 import img8 from '@/assets/images/presents/img8.jpg';
 import img9 from '@/assets/images/presents/img9.jpg';
-
 // تصاویر گودوت
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
