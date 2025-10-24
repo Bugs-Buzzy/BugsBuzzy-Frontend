@@ -117,20 +117,23 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
 
         {/* Page Indicators */}
         <div className="mt-4 md:mt-6 mb-2 flex gap-2 cursor-pointer justify-center">
-          {teamNames.map((teamName, index) => (
-            <div
-              key={teamName}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                currentTeamIndex === index
-                  ? 'bg-primary-sky w-6'
-                  : 'bg-primary-oxfordblue hover:bg-primary-midnight'
-              }`}
-              onClick={() => {
-                setAnimDirection(index > currentTeamIndex ? 'right' : 'left');
-                setCurrentTeamIndex(index);
-              }}
-            />
-          ))}
+          {[...teamNames].reverse().map((teamName, reversedIndex) => {
+            const index = teamNames.length - 1 - reversedIndex;
+            return (
+              <div
+                key={teamName}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  currentTeamIndex === index
+                    ? 'bg-primary-sky w-6'
+                    : 'bg-primary-oxfordblue hover:bg-primary-midnight'
+                }`}
+                onClick={() => {
+                  setAnimDirection(index > currentTeamIndex ? 'right' : 'left');
+                  setCurrentTeamIndex(index);
+                }}
+              />
+            );
+          })}
         </div>
 
         <p className="text-white font-normal text-xs md:text-sm opacity-75">
