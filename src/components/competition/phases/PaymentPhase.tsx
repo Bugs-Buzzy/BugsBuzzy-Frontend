@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import PixelFrame from '@/components/PixelFrame';
+import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { paymentsService } from '@/services/payments.service';
 import { extractFieldErrors } from '@/utils/errorMessages';
@@ -25,6 +26,7 @@ export default function PaymentPhase({
   additionalItems = [],
   onPaymentComplete: _onPaymentComplete,
 }: PaymentPhaseProps) {
+  const toast = useToast();
   const [selectedAdditionalItems, setSelectedAdditionalItems] = useState<Set<string>>(new Set());
   const [discountCode, setDiscountCode] = useState('');
   const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
@@ -146,7 +148,9 @@ export default function PaymentPhase({
       console.error('Price calculation error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در محاسبه قیمت');
+      const errorMsg = message || 'خطا در محاسبه قیمت';
+      setError(errorMsg);
+      toast.error(errorMsg);
       setCalculatedPrice(null);
       setOriginalPrice(null);
     } finally {
@@ -184,7 +188,9 @@ export default function PaymentPhase({
       setDiscountPercentage(result.discount_percentage);
 
       if (result.discount_applied) {
-        setSuccessMessage(`کد تخفیف با موفقیت اعمال شد! (${result.discount_percentage}% تخفیف)`);
+        const successMsg = `کد تخفیف با موفقیت اعمال شد! (${result.discount_percentage}% تخفیف)`;
+        setSuccessMessage(successMsg);
+        toast.success(successMsg);
         setTimeout(() => setSuccessMessage(''), 3000);
       }
     } catch (err: any) {
@@ -203,8 +209,11 @@ export default function PaymentPhase({
       if (errorMessage) {
         const translatedError = extractFieldErrors({ error: errorMessage }).message;
         setFieldErrors({ code: translatedError });
+        toast.error(translatedError);
       } else {
-        setFieldErrors({ code: 'خطا در بررسی کد تخفیف. لطفاً دوباره تلاش کنید' });
+        const fallbackError = 'خطا در بررسی کد تخفیف. لطفاً دوباره تلاش کنید';
+        setFieldErrors({ code: fallbackError });
+        toast.error(fallbackError);
       }
 
       setDiscountApplied(false);
@@ -217,7 +226,9 @@ export default function PaymentPhase({
     const unpurchasedItems = getUnpurchasedItems();
 
     if (unpurchasedItems.length === 0) {
-      setError('همه آیتم‌ها قبلاً خریداری شده‌اند');
+      const errorMsg = 'همه آیتم‌ها قبلاً خریداری شده‌اند';
+      setError(errorMsg);
+      toast.warning(errorMsg);
       return;
     }
 
@@ -230,7 +241,9 @@ export default function PaymentPhase({
       if (latestPrice.amount !== calculatedPrice) {
         setOriginalPrice(latestPrice.amount);
         setCalculatedPrice(latestPrice.amount);
-        setError('مبلغ به‌روز شد. لطفاً مجدداً تایید و پرداخت کنید');
+        const warningMsg = 'مبلغ به‌روز شد. لطفاً مجدداً تایید و پرداخت کنید';
+        setError(warningMsg);
+        toast.warning(warningMsg);
         setLoading(false);
         return;
       }
@@ -238,18 +251,24 @@ export default function PaymentPhase({
       console.error('Price re-validation error:', err);
       const apiError = err as ApiError;
       if (apiError.status === 404 || apiError.status === 410) {
-        setError('ثبت‌نام در حال حاضر بسته است');
+        const errorMsg = 'ثبت‌نام در حال حاضر بسته است';
+        setError(errorMsg);
+        toast.error(errorMsg);
         setBaseItemAvailable(false);
         setLoading(false);
         return;
       }
-      setError('خطا در بررسی قیمت. لطفاً دوباره تلاش کنید');
+      const errorMsg = 'خطا در بررسی قیمت. لطفاً دوباره تلاش کنید';
+      setError(errorMsg);
+      toast.error(errorMsg);
       setLoading(false);
       return;
     }
 
     if (calculatedPrice === null || calculatedPrice === 0) {
-      setError('لطفاً صبر کنید تا قیمت محاسبه شود');
+      const errorMsg = 'لطفاً صبر کنید تا قیمت محاسبه شود';
+      setError(errorMsg);
+      toast.warning(errorMsg);
       return;
     }
 
@@ -283,7 +302,9 @@ export default function PaymentPhase({
       console.error('Payment error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در ایجاد پرداخت');
+      const errorMsg = message || 'خطا در ایجاد پرداخت';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

@@ -34,6 +34,7 @@ export default function ProfileSettings() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong'>('weak');
   const [loading, setLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -139,17 +140,42 @@ export default function ProfileSettings() {
     }
   };
 
+  const checkPasswordStrength = (password: string): 'weak' | 'medium' | 'strong' => {
+    if (password.length < 8) return 'weak';
+
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+
+    const criteriaCount = [hasNumber, hasSpecialChar, hasUpperCase, hasLowerCase].filter(
+      Boolean,
+    ).length;
+
+    if (criteriaCount >= 3 && password.length >= 12) return 'strong';
+    if (criteriaCount >= 2 && password.length >= 8) return 'medium';
+    return 'weak';
+  };
+
   const handlePasswordChange = async (e: FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
       setPasswordError('رمزهای عبور مطابقت ندارند');
+      toast.error('رمزهای عبور مطابقت ندارند');
       return;
     }
 
     if (newPassword.length < 8) {
       setPasswordError('رمز عبور باید حداقل 8 کاراکتر باشد');
+      toast.error('رمز عبور باید حداقل 8 کاراکتر باشد');
       return;
+    }
+
+    if (passwordStrength === 'weak') {
+      toast.warning(
+        'رمز عبور شما ضعیف است. برای امنیت بیشتر از حروف، اعداد و کاراکترهای خاص استفاده کنید',
+      );
     }
 
     setPasswordLoading(true);
@@ -169,6 +195,7 @@ export default function ProfileSettings() {
       setNewPassword('');
       setConfirmPassword('');
       setShowPasswordSection(false);
+      setPasswordStrength('weak');
       setTimeout(() => setPasswordSuccess(false), 3000);
     } catch (err) {
       console.error('Password change error:', err);
@@ -274,10 +301,11 @@ export default function ProfileSettings() {
                 onClick={() => setShowPasswordSection(true)}
                 className={`pixel-btn px-4 py-2 text-sm ${
                   !user?.has_usable_password
-                    ? 'pixel-btn-warning animate-pulse'
+                    ? 'bg-secondary-orangePantone hover:bg-secondary-orangeCrayola border-2 border-secondary-golden text-white font-bold animate-pulse'
                     : 'pixel-btn-primary'
                 }`}
               >
+                {!user?.has_usable_password && <FaLock className="inline ml-1" />}
                 {user?.has_usable_password ? 'تغییر رمز' : 'تنظیم رمز'}
               </button>
             )}
@@ -315,13 +343,63 @@ export default function ProfileSettings() {
                 <input
                   type="password"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e) => {
+                    const pwd = e.target.value;
+                    setNewPassword(pwd);
+                    setPasswordStrength(checkPasswordStrength(pwd));
+                  }}
                   placeholder="رمز عبور جدید (حداقل 8 کاراکتر)"
-                  className="w-full pixel-input bg-primary-midnight text-white border-primary-cerulean p-3 font-normal"
+                  className={`w-full pixel-input bg-primary-midnight text-white p-3 font-normal ${
+                    passwordStrength === 'weak' && newPassword.length >= 8
+                      ? 'border-yellow-500 border-2'
+                      : passwordStrength === 'medium'
+                        ? 'border-blue-500'
+                        : passwordStrength === 'strong'
+                          ? 'border-green-500'
+                          : 'border-primary-cerulean'
+                  }`}
                   required
                   minLength={8}
                 />
-                <p className="text-xs text-gray-400 mt-1 font-normal">(حداقل 8 کاراکتر)</p>
+                {newPassword.length > 0 && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="flex-1 bg-gray-700 rounded-full h-2 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${
+                          passwordStrength === 'weak'
+                            ? 'bg-yellow-500 w-1/3'
+                            : passwordStrength === 'medium'
+                              ? 'bg-blue-500 w-2/3'
+                              : 'bg-green-500 w-full'
+                        }`}
+                      />
+                    </div>
+                    <span
+                      className={`text-xs font-bold ${
+                        passwordStrength === 'weak'
+                          ? 'text-yellow-400'
+                          : passwordStrength === 'medium'
+                            ? 'text-blue-400'
+                            : 'text-green-400'
+                      }`}
+                    >
+                      {passwordStrength === 'weak'
+                        ? '⚠️ ضعیف'
+                        : passwordStrength === 'medium'
+                          ? '✓ متوسط'
+                          : '✓✓ قوی'}
+                    </span>
+                  </div>
+                )}
+                {passwordStrength === 'weak' && newPassword.length >= 8 && (
+                  <p className="text-xs text-yellow-400 mt-1 font-normal flex items-center gap-1">
+                    <FaExclamationTriangle />
+                    <span>برای امنیت بیشتر از حروف بزرگ، اعداد و کاراکترهای خاص استفاده کنید</span>
+                  </p>
+                )}
+                <p className="text-xs text-gray-400 mt-1 font-normal">
+                  (حداقل 8 کاراکتر - توصیه: استفاده از حروف، اعداد و کاراکترهای خاص)
+                </p>
               </div>
 
               <div>

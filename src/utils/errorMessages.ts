@@ -91,13 +91,32 @@ const errorTranslations: Record<string, string> = {
   'Team name is required': 'نام تیم الزامی است',
   'Invite code is required': 'کد دعوت الزامی است',
   'Invalid invite code': 'کد دعوت نامعتبر است',
+
+  // Create Team Errors (from TeamCreateView)
+  'You already have an active team': 'شما قبلاً یک تیم فعال دارید',
+  'You are already a member of another team': 'شما عضو تیم دیگری هستید',
+
+  // Join Team Errors (from TeamJoinView and can_join method)
+  'You are already a member of this team': 'شما قبلاً عضو این تیم هستید',
+  'You are already a member of another in-person team': 'شما عضو تیم حضوری دیگری هستید',
+  'You are leader of another team': 'شما سرتیم دیگری هستید',
+
+  // Leave Team Errors (from TeamLeaveView)
+  'Team leader cannot leave. Disband team instead.': 'سرتیم نمی‌تواند خارج شود. تیم را منحل کنید',
+  'You are not a member of this team': 'شما عضو این تیم نیستید',
+
+  // General Team Messages
+  'Left team successfully': 'با موفقیت از تیم خارج شدید',
+  'Team disbanded successfully': 'تیم با موفقیت منحل شد',
+  'Invite code revoked and regenerated': 'کد دعوت باطل و کد جدید ساخته شد',
+  message: '',
+
+  // Legacy support for old messages
   'You already have an active in-person team': 'شما قبلاً یک تیم حضوری فعال دارید',
   'You already have an active inpersonteam team': 'شما قبلاً یک تیم حضوری فعال دارید',
-  'You are already a member of another in-person team': 'شما عضو تیم حضوری دیگری هستید',
   'You already have an active online team': 'شما قبلاً یک تیم مجازی فعال دارید',
   'You already have an active onlineteam team': 'شما قبلاً یک تیم مجازی فعال دارید',
   'You are already a member of another online team': 'شما عضو تیم مجازی دیگری هستید',
-  'You are already a member of this team': 'شما قبلاً عضو این تیم هستید',
   'Team leader cannot leave the team. You must disband the team instead.':
     'سرتیم نمی‌تواند از تیم خارج شود. باید تیم را منحل کنید',
   'You are not a member of this in-person team': 'شما عضو این تیم حضوری نیستید',
@@ -112,7 +131,6 @@ const errorTranslations: Record<string, string> = {
   'Online team created successfully': 'تیم مجازی با موفقیت ساخته شد',
   'Exactly one team (in_person_team or online_team) must be set':
     'باید دقیقاً یک نوع تیم انتخاب شود',
-  'You are not a member of this team': 'شما عضو این تیم نیستید',
   'Can join': 'می‌توانید عضو شوید',
 
   // ========== Payment Errors ==========
@@ -142,6 +160,11 @@ const errorTranslations: Record<string, string> = {
   'Profile is not completed': 'پروفایل تکمیل نشده است',
   'Given token not valid for any token type': 'نشست شما منقضی شده است. لطفاً دوباره وارد شوید',
   'Token is expired': 'نشست شما منقضی شده است',
+
+  // Purchase Permission Errors (from HasPurchased permission)
+  'You have not purchased the required item.': 'شما این مورد را خریداری نکرده‌اید',
+  'You must purchase inperson registration first.': 'ابتدا باید ثبت‌نام حضوری را خریداری کنید',
+  'You must purchase gamejam registration first.': 'ابتدا باید ثبت‌نام گیم‌جم را خریداری کنید',
 };
 
 export const extractErrorMessage = (error: any): string => {
