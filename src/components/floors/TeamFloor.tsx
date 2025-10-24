@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useEffect, useCallback } from 'react';
+import { forwardRef, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import bgStaff from '@/assets/bkg-staff.png';
@@ -8,6 +8,7 @@ import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
   const teamNames = Object.keys(teams) as TeamName[];
+  const reversedTeamNames = useMemo(() => [...teamNames].reverse(), [teamNames]);
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
   const [animDirection, setAnimDirection] = useState<'left' | 'right'>('left');
   const [hasScroll, setHasScroll] = useState(false);
@@ -117,7 +118,7 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
 
         {/* Page Indicators */}
         <div className="mt-4 md:mt-6 mb-2 flex gap-2 cursor-pointer justify-center">
-          {[...teamNames].reverse().map((teamName, reversedIndex) => {
+          {reversedTeamNames.map((teamName, reversedIndex) => {
             const index = teamNames.length - 1 - reversedIndex;
             return (
               <div
