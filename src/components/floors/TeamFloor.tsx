@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useEffect, useCallback } from 'react';
+import { forwardRef, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import bgStaff from '@/assets/bkg-staff.png';
@@ -8,22 +8,34 @@ import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 
 const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
   const teamNames = Object.keys(teams) as TeamName[];
+  const reversedTeamNames = useMemo(() => [...teamNames].reverse(), [teamNames]);
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
   const [animDirection, setAnimDirection] = useState<'left' | 'right'>('left');
   const [hasScroll, setHasScroll] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
+  const isChangingTeam = useRef(false);
 
   const currentTeamName = teamNames[currentTeamIndex];
   const currentMembers = teams[currentTeamName];
 
   const nextTeam = useCallback(() => {
+    if (isChangingTeam.current) return;
+    isChangingTeam.current = true;
     setAnimDirection('right');
     setCurrentTeamIndex((prev) => (prev + 1) % teamNames.length);
+    setTimeout(() => {
+      isChangingTeam.current = false;
+    }, 600);
   }, [teamNames.length]);
 
   const prevTeam = useCallback(() => {
+    if (isChangingTeam.current) return;
+    isChangingTeam.current = true;
     setAnimDirection('left');
     setCurrentTeamIndex((prev) => (prev === 0 ? teamNames.length - 1 : prev - 1));
+    setTimeout(() => {
+      isChangingTeam.current = false;
+    }, 600);
   }, [teamNames.length]);
 
   useScrollInterceptor(listContainerRef, {
@@ -117,20 +129,23 @@ const TeamFloor = forwardRef<HTMLElement>((props, ref) => {
 
         {/* Page Indicators */}
         <div className="mt-4 md:mt-6 mb-2 flex gap-2 cursor-pointer justify-center">
-          {teamNames.map((teamName, index) => (
-            <div
-              key={teamName}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                currentTeamIndex === index
-                  ? 'bg-primary-sky w-6'
-                  : 'bg-primary-oxfordblue hover:bg-primary-midnight'
-              }`}
-              onClick={() => {
-                setAnimDirection(index > currentTeamIndex ? 'right' : 'left');
-                setCurrentTeamIndex(index);
-              }}
-            />
-          ))}
+          {reversedTeamNames.map((teamName, reversedIndex) => {
+            const index = teamNames.length - 1 - reversedIndex;
+            return (
+              <div
+                key={teamName}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  currentTeamIndex === index
+                    ? 'bg-primary-sky w-6'
+                    : 'bg-primary-oxfordblue hover:bg-primary-midnight'
+                }`}
+                onClick={() => {
+                  setAnimDirection(index > currentTeamIndex ? 'right' : 'left');
+                  setCurrentTeamIndex(index);
+                }}
+              />
+            );
+          })}
         </div>
 
         <p className="text-white font-normal text-xs md:text-sm opacity-75">
