@@ -23,11 +23,11 @@ export default function PixelModal({
       contentClassName="max-w-2xl w-full max-h-[90vh] flex flex-col"
       closeOnOverlayClick={closeOnOverlayClick}
     >
-      <PixelFrame className="bg-gray-900 relative max-h-[90vh] flex flex-col">
+      <PixelFrame className="bg-gray-900 relative flex flex-col max-h-[90vh]">
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="absolute top-3 left-3 md:top-4 md:left-4 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center z-10 transition-all duration-150 hover:brightness-110 active:translate-y-0.5 group pixel-close-btn"
+            className="absolute top-3 left-3 md:top-4 md:left-4 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center z-50 transition-all duration-150 hover:brightness-110 active:translate-y-0.5 group pixel-close-btn"
             aria-label="Close modal"
             style={{
               background: '#dc2626',
@@ -42,7 +42,9 @@ export default function PixelModal({
           </button>
         )}
 
-        <div className="pt-8 md:pt-4 px-2 overflow-y-auto flex-1 modal-scrollbar">{children}</div>
+        <div className="pt-8 md:pt-4 px-2 overflow-y-auto flex-1 modal-scrollbar min-h-0">
+          {children}
+        </div>
       </PixelFrame>
     </BaseModal>
   );

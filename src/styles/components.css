@@ -342,6 +342,8 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .pixel-modal-content {
@@ -359,6 +361,7 @@
 .modal-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--color-primary-dark) #1f2937;
+  overscroll-behavior: contain;
 }
 
 .modal-scrollbar::-webkit-scrollbar {
