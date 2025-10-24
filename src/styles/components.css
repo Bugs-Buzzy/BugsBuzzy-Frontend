@@ -25,14 +25,14 @@
   padding: 0.75rem 1.5rem;
   font-weight: normal;
   position: relative;
-  /* Add margin to compensate for transform movement to prevent layout shift 
-     The 2px value matches the -2px translate on hover, preventing content reflow */
   margin: 2px;
 }
 
-.pixel-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+@media (hover: hover) and (pointer: fine) {
+  .pixel-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  }
 }
 
 .pixel-btn:active {
@@ -53,8 +53,10 @@
   color: white;
 }
 
-.pixel-btn-primary:hover {
-  background-color: var(--color-primary-light);
+@media (hover: hover) and (pointer: fine) {
+  .pixel-btn-primary:hover {
+    background-color: var(--color-primary-light);
+  }
 }
 
 .pixel-btn-secondary {
@@ -63,8 +65,10 @@
   color: white;
 }
 
-.pixel-btn-secondary:hover {
-  background-color: var(--color-secondary-light);
+@media (hover: hover) and (pointer: fine) {
+  .pixel-btn-secondary:hover {
+    background-color: var(--color-secondary-light);
+  }
 }
 
 .pixel-btn-success {

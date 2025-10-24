@@ -116,7 +116,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
                 'pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80';
               const activeClasses = isActive
                 ? 'text-orange-400 border-orange-400 border-2'
-                : 'text-white hover:bg-gray-700';
+                : 'text-white md:hover:bg-gray-700';
               return (
                 <button
                   key={index}
