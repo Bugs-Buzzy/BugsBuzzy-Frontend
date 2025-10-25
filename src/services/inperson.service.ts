@@ -48,10 +48,7 @@ export interface InPersonSubmission {
   id: number;
   team: InPersonTeam;
   phase: number;
-  title: string;
-  description: string;
-  file: string | null;
-  game_url: string;
+  content: string;
   score: number | null;
   judge_notes: string;
   submitted_at: string;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import PhaseContent from '@/components/competition/phases/PhaseContent';
@@ -13,7 +13,7 @@ export default function InPersonCompetition() {
   const { profileCompleted, user: _user } = useAuth();
   const navigate = useNavigate();
   const [currentPhase, setCurrentPhase] = useState(0);
-  const [manualPhaseSelection, setManualPhaseSelection] = useState(false);
+  const manualPhaseSelectionRef = useRef(false);
   const [loading, setLoading] = useState(true);
 
   const [competitionPhases, setCompetitionPhases] = useState<CompetitionPhase[]>([]);
@@ -52,7 +52,7 @@ export default function InPersonCompetition() {
       });
 
       // Only auto-navigate if user hasn't manually selected a phase
-      if (!manualPhaseSelection) {
+      if (!manualPhaseSelectionRef.current) {
         if (!hasPaid) {
           setCurrentPhase(0);
         } else if (!hasTeam || !teamComplete) {
@@ -108,29 +108,28 @@ export default function InPersonCompetition() {
       title: phase.title,
       icon: ['🎯', '🎮', '🏁'][index] || '🎯',
       status: getPhaseStatus(index + 2),
-      isClickable: false,
+      isClickable: phaseStatus.teamComplete && phase.active,
     })),
   ];
 
   const handlePhaseChange = (phaseId: number) => {
     const phase = phases.find((p) => p.id === phaseId);
     if (phase?.isClickable) {
-      setManualPhaseSelection(true);
+      manualPhaseSelectionRef.current = true;
       setCurrentPhase(phaseId);
     }
   };
 
   const handlePaymentComplete = () => {
     setPhaseStatus((prev) => ({ ...prev, hasPaid: true }));
-    setManualPhaseSelection(false);
+    manualPhaseSelectionRef.current = false;
     setCurrentPhase(1);
     loadStatus();
   };
 
   const handleTeamComplete = () => {
     setPhaseStatus((prev) => ({ ...prev, teamComplete: true }));
-    setManualPhaseSelection(false);
-    loadStatus();
+    // Don't auto-navigate, just refresh status
   };
 
   if (!profileCompleted) {

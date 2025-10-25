@@ -34,7 +34,6 @@ export default function PhaseContent({
   isActive = false,
 }: PhaseContentProps) {
   const toast = useToast();
-  const [markdownContent, setMarkdownContent] = useState('');
   const [submission, setSubmission] = useState<InPersonSubmission | null>(null);
   const [submissions, setSubmissions] = useState<InPersonSubmission[]>([]);
   const [submissionContent, setSubmissionContent] = useState('');
@@ -50,21 +49,11 @@ export default function PhaseContent({
   const hasEnded = end ? now >= end : false;
   const canSubmit = isActive && hasStarted && !hasEnded;
 
+  const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
+
   useEffect(() => {
-    loadMarkdown();
     loadSubmissions();
   }, [phaseId]);
-
-  const loadMarkdown = async () => {
-    try {
-      const response = await fetch(`/src/content/phases/phase-${phaseId}.md`);
-      const text = await response.text();
-      setMarkdownContent(text);
-    } catch (err) {
-      console.error('Failed to load markdown:', err);
-      setMarkdownContent(`# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`);
-    }
-  };
 
   const loadSubmissions = async () => {
     try {
