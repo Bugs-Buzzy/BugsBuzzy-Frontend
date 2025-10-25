@@ -233,44 +233,6 @@ export default function PaymentPhase({
     }
 
     // Re-validate price and availability before payment
-    setLoading(true);
-    try {
-      const latestPrice = await paymentsService.getPrice(unpurchasedItems);
-
-      // Check if price changed
-      if (latestPrice.amount !== calculatedPrice) {
-        setOriginalPrice(latestPrice.amount);
-        setCalculatedPrice(latestPrice.amount);
-        const warningMsg = 'مبلغ به‌روز شد. لطفاً مجدداً تایید و پرداخت کنید';
-        setError(warningMsg);
-        toast.warning(warningMsg);
-        setLoading(false);
-        return;
-      }
-    } catch (err: any) {
-      console.error('Price re-validation error:', err);
-      const apiError = err as ApiError;
-      if (apiError.status === 404 || apiError.status === 410) {
-        const errorMsg = 'ثبت‌نام در حال حاضر بسته است';
-        setError(errorMsg);
-        toast.error(errorMsg);
-        setBaseItemAvailable(false);
-        setLoading(false);
-        return;
-      }
-      const errorMsg = 'خطا در بررسی قیمت. لطفاً دوباره تلاش کنید';
-      setError(errorMsg);
-      toast.error(errorMsg);
-      setLoading(false);
-      return;
-    }
-
-    if (calculatedPrice === null || calculatedPrice === 0) {
-      const errorMsg = 'لطفاً صبر کنید تا قیمت محاسبه شود';
-      setError(errorMsg);
-      toast.warning(errorMsg);
-      return;
-    }
 
     setLoading(true);
     setError('');
