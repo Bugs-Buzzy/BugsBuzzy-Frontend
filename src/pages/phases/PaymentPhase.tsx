@@ -33,6 +33,7 @@ export default function PaymentPhase({
   const [originalPrice, setOriginalPrice] = useState<number | null>(null);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState<string | null>(null);
   const [priceLoading, setPriceLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,14 +51,12 @@ export default function PaymentPhase({
   }, []);
 
   useEffect(() => {
-    if (purchasedItems.size > 0) {
-      calculatePrice();
+    if (!purchasedLoaded) {
+      return;
     }
-  }, [purchasedItems]);
 
-  useEffect(() => {
     calculatePrice();
-  }, [selectedAdditionalItems]);
+  }, [selectedAdditionalItems, purchasedItems, purchasedLoaded]);
 
   const fetchPurchasedItems = async () => {
     try {
@@ -127,6 +126,10 @@ export default function PaymentPhase({
   };
 
   const calculatePrice = async () => {
+    if (!purchasedLoaded) {
+      return;
+    }
+
     const unpurchasedItems = getUnpurchasedItems();
 
     // If all items are purchased, no need to calculate
@@ -134,6 +137,7 @@ export default function PaymentPhase({
       setCalculatedPrice(0);
       setOriginalPrice(0);
       setPriceLoading(false);
+      setAppliedDiscountCode(null);
       return;
     }
 
@@ -144,6 +148,7 @@ export default function PaymentPhase({
       setOriginalPrice(result.amount);
       setDiscountApplied(false);
       setDiscountPercentage(0);
+      setAppliedDiscountCode(null);
     } catch (err: any) {
       console.error('Price calculation error:', err);
       const apiError = err as ApiError;
@@ -179,13 +184,18 @@ export default function PaymentPhase({
     try {
       const result = await paymentsService.applyDiscount(discountCode, unpurchasedItems);
 
-      if (!originalPrice) {
-        setOriginalPrice(calculatedPrice);
+      if (result.discount_applied) {
+        if (originalPrice === null && calculatedPrice !== null) {
+          setOriginalPrice(calculatedPrice);
+        }
+      } else {
+        setOriginalPrice(result.amount);
       }
 
       setCalculatedPrice(result.amount);
       setDiscountApplied(result.discount_applied);
       setDiscountPercentage(result.discount_percentage);
+      setAppliedDiscountCode(result.discount_applied ? discountCode.trim().toUpperCase() : null);
 
       if (result.discount_applied) {
         const successMsg = `کد تخفیف با موفقیت اعمال شد! (${result.discount_percentage}% تخفیف)`;
@@ -217,6 +227,7 @@ export default function PaymentPhase({
       }
 
       setDiscountApplied(false);
+      setAppliedDiscountCode(null);
     } finally {
       setPriceLoading(false);
     }
@@ -232,7 +243,65 @@ export default function PaymentPhase({
       return;
     }
 
-    // Re-validate price and availability before payment
+    setLoading(true);
+    try {
+      const latestPrice = await paymentsService.getPrice(unpurchasedItems);
+      const expectedBasePrice = discountApplied ? originalPrice : calculatedPrice;
+
+      if (expectedBasePrice === null) {
+        setOriginalPrice(latestPrice.amount);
+        setCalculatedPrice(latestPrice.amount);
+        setDiscountApplied(false);
+        setDiscountPercentage(0);
+        setAppliedDiscountCode(null);
+        const warningMsg = 'لطفاً دوباره محاسبه و سپس پرداخت را انجام دهید';
+        setError(warningMsg);
+        toast.warning(warningMsg);
+        setLoading(false);
+        return;
+      }
+
+      // Check if price changed
+      if (latestPrice.amount !== expectedBasePrice) {
+        setOriginalPrice(latestPrice.amount);
+        setCalculatedPrice(latestPrice.amount);
+        if (discountApplied) {
+          setDiscountApplied(false);
+          setDiscountPercentage(0);
+          setAppliedDiscountCode(null);
+        }
+        const warningMsg = discountApplied
+          ? 'مبلغ پایه تغییر کرده است. لطفاً کد تخفیف را دوباره اعمال کنید'
+          : 'مبلغ به‌روز شد. لطفاً مجدداً تایید و پرداخت کنید';
+        setError(warningMsg);
+        toast.warning(warningMsg);
+        setLoading(false);
+        return;
+      }
+    } catch (err: any) {
+      console.error('Price re-validation error:', err);
+      const apiError = err as ApiError;
+      if (apiError.status === 404 || apiError.status === 410) {
+        const errorMsg = 'ثبت‌نام در حال حاضر بسته است';
+        setError(errorMsg);
+        toast.error(errorMsg);
+        setBaseItemAvailable(false);
+        setLoading(false);
+        return;
+      }
+      const errorMsg = 'خطا در بررسی قیمت. لطفاً دوباره تلاش کنید';
+      setError(errorMsg);
+      toast.error(errorMsg);
+      setLoading(false);
+      return;
+    }
+
+    if (calculatedPrice === null || calculatedPrice === 0) {
+      const errorMsg = 'لطفاً صبر کنید تا قیمت محاسبه شود';
+      setError(errorMsg);
+      toast.warning(errorMsg);
+      return;
+    }
 
     setLoading(true);
     setError('');
@@ -250,13 +319,13 @@ export default function PaymentPhase({
             : undefined,
         items: unpurchasedItems,
         amount: calculatedPrice,
-        discount_code: discountCode || undefined,
+        discount_code: appliedDiscountCode ?? undefined,
         returnUrl: '/panel/inperson',
       });
 
       const payment = await paymentsService.createPayment({
         items: unpurchasedItems,
-        discount_code: discountCode || undefined,
+        discount_code: appliedDiscountCode ?? undefined,
       });
 
       window.location.href = payment.redirect_url;
@@ -381,6 +450,9 @@ export default function PaymentPhase({
                   if (discountApplied) {
                     setDiscountApplied(false);
                     calculatePrice();
+                  }
+                  if (appliedDiscountCode) {
+                    setAppliedDiscountCode(null);
                   }
                   if (fieldErrors.code) {
                     const { code: _code, ...rest } = fieldErrors;
