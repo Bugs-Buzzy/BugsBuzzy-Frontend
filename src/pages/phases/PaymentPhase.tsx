@@ -342,6 +342,8 @@ export default function PaymentPhase({
   };
 
   const toggleAdditionalItem = (itemId: string) => {
+    const discountWillReset = discountApplied || appliedDiscountCode;
+
     const newSet = new Set(selectedAdditionalItems);
     if (newSet.has(itemId)) {
       newSet.delete(itemId);
@@ -349,6 +351,13 @@ export default function PaymentPhase({
       newSet.add(itemId);
     }
     setSelectedAdditionalItems(newSet);
+
+    if (discountWillReset) {
+      setDiscountApplied(false);
+      setDiscountPercentage(0);
+      setAppliedDiscountCode(null);
+      toast.info('کد تخفیف به دلیل تغییر گزینه‌ها حذف شد. در صورت نیاز دوباره اعمال کنید');
+    }
   };
 
   // Check if registration is closed
