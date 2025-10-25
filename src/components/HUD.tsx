@@ -12,10 +12,10 @@ import {
 import { Link } from 'react-router-dom';
 
 import coinGif from '@/assets/coin.gif';
-import LoginModal from '@/components/modals/LoginModal';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import LoginModal from '@/pages/modals/LoginModal';
 
 interface HUDProps {
   onFloorNavigate: (_index: number) => void;

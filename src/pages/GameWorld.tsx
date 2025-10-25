@@ -1,12 +1,12 @@
 import { useRef, useEffect, useState } from 'react';
 
-import GameJamFloor from '@/components/floors/GameJamFloor';
-import InPersonFloor from '@/components/floors/InPersonFloor';
-import LandingFloor from '@/components/floors/LandingFloor';
-import SponsorsFloor from '@/components/floors/SponsorsFloor';
-import TeamFloor from '@/components/floors/TeamFloor';
-import WorkshopsFloor from '@/components/floors/WorkshopsFloor';
 import HUD from '@/components/HUD';
+import GameJamFloor from '@/pages/floors/GameJamFloor';
+import InPersonFloor from '@/pages/floors/InPersonFloor';
+import LandingFloor from '@/pages/floors/LandingFloor';
+import SponsorsFloor from '@/pages/floors/SponsorsFloor';
+import TeamFloor from '@/pages/floors/TeamFloor';
+import WorkshopsFloor from '@/pages/floors/WorkshopsFloor';
 import '@/styles/gameworld.css';
 
 const floorNames = ['', 'inperson', 'gamejam', 'workshops', 'sponsors', 'team'];

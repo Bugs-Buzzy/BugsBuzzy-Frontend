@@ -2,7 +2,7 @@ import { forwardRef, useState, useRef, useEffect, useCallback, useMemo } from 'r
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import bgStaff from '@/assets/bkg-staff.png';
-import TeamMemberCard from '@/components/team/TeamMemberCard';
+import TeamMemberCard from '@/components/TeamMemberCard';
 import { teams, type TeamName } from '@/data/teams';
 import { useScrollInterceptor } from '@/hooks/useScrollInterceptor';
 

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import InPersonTeamPhase from '@/components/competition/phases/InPersonTeamPhase';
-import PaymentPhase from '@/components/competition/phases/PaymentPhase';
-import PlaceholderPhase from '@/components/competition/phases/PlaceholderPhase';
-import ProgressBar, { type Phase } from '@/components/competition/ProgressBar';
 import PixelFrame from '@/components/PixelFrame';
+import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
+import InPersonTeamPhase from '@/pages/phases/InPersonTeamPhase';
+import PaymentPhase from '@/pages/phases/PaymentPhase';
+import PlaceholderPhase from '@/pages/phases/PlaceholderPhase';
 import { inpersonService, type CompetitionPhase } from '@/services/inperson.service';
 
 export default function InPersonCompetition() {
