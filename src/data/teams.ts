@@ -212,15 +212,6 @@ export const teams = {
       telegram: 'https://t.me/NargesKari',
     },
     {
-      id: 42,
-      name: 'فاطمه نیلفروشان',
-      role: 'دیزاین و فرانت‌اند',
-      image: '42.jpg',
-      linkedin: 'https://www.linkedin.com/in/fatemeh-nilforoushan-903620325/',
-      github: 'https://github.com/fnilli',
-      telegram: '',
-    },
-    {
       id: 8,
       name: 'محمدعارف زارع‌زاده',
       role: 'فرانت‌اند',
