@@ -1,3 +1,5 @@
+import { FaCheckCircle } from 'react-icons/fa';
+
 import PixelFrame from '@/components/PixelFrame';
 
 interface Presentation {
@@ -21,7 +23,12 @@ export default function Presentations() {
       case 'upcoming':
         return <span className="pixel-btn pixel-btn-warning px-3 py-1 text-sm">⏰ به زودی</span>;
       case 'completed':
-        return <span className="pixel-btn pixel-btn-success px-3 py-1 text-sm">✅ تمام شده</span>;
+        return (
+          <span className="pixel-btn pixel-btn-success px-3 py-1 text-sm flex items-center gap-1">
+            <FaCheckCircle />
+            تمام شده
+          </span>
+        );
     }
   };
 

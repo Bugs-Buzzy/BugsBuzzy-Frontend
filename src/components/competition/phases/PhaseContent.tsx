@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
@@ -126,8 +127,9 @@ export default function PhaseContent({
           )}
 
           {hasEnded && (
-            <span className="pixel-btn bg-gray-700 text-gray-300 px-4 py-2 text-sm">
-              ✓ پایان یافته
+            <span className="pixel-btn bg-gray-700 text-gray-300 px-4 py-2 text-sm flex items-center gap-1">
+              <FaCheck />
+              پایان یافته
             </span>
           )}
 
@@ -215,7 +217,7 @@ export default function PhaseContent({
           {submission && (
             <div className="bg-green-900 bg-opacity-20 border border-green-600 rounded p-3 mb-4">
               <p className="text-green-300 text-sm flex items-center gap-2">
-                <span>✅</span>
+                <FaCheckCircle className="text-lg" />
                 <span>
                   شما قبلاً برای این فاز ارسال کرده‌اید. می‌توانید ارسال خود را به‌روزرسانی کنید.
                 </span>
@@ -264,7 +266,10 @@ export default function PhaseContent({
       {/* Phase Ended Message */}
       {hasEnded && (
         <PixelFrame className="bg-gray-800 bg-opacity-50">
-          <p className="text-gray-300 text-center py-4">✓ این فاز پایان یافته است</p>
+          <p className="text-gray-300 text-center py-4 flex items-center justify-center gap-2">
+            <FaCheck />
+            این فاز پایان یافته است
+          </p>
         </PixelFrame>
       )}
 

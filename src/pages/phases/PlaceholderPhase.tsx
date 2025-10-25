@@ -1,3 +1,5 @@
+import { FaCheck } from 'react-icons/fa';
+
 import { Countdown } from '@/components/Countdown';
 import PixelFrame from '@/components/PixelFrame';
 
@@ -45,8 +47,9 @@ export default function PlaceholderPhase({
 
         {hasEnded && (
           <div className="inline-block mb-4">
-            <span className="pixel-btn bg-gray-700 text-gray-300 px-4 py-2 text-sm">
-              ✓ پایان یافته
+            <span className="pixel-btn bg-gray-700 text-gray-300 px-4 py-2 text-sm flex items-center gap-2">
+              <FaCheck />
+              پایان یافته
             </span>
           </div>
         )}

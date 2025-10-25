@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 
 import PixelFrame from '@/components/PixelFrame';
 import { useToast } from '@/context/ToastContext';
@@ -395,7 +396,7 @@ export default function PaymentPhase({
         {hasBaseItemPurchased() && (
           <div className="bg-green-900 bg-opacity-20 rounded p-4 mb-4 border border-green-600">
             <div className="flex items-center gap-2 text-green-300">
-              <span className="text-2xl">✅</span>
+              <FaCheckCircle className="text-2xl" />
               <div className="flex-1">
                 <p className="font-bold">{baseItemLabel} - پرداخت شده</p>
                 <p className="text-sm text-green-400">شما قبلاً این آیتم را خریداری کرده‌اید</p>
@@ -433,7 +434,12 @@ export default function PaymentPhase({
                     }`}
                   >
                     {item.label}
-                    {isPurchased && <span className="text-xs mr-2">✓ خریداری شده</span>}
+                    {isPurchased && (
+                      <span className="text-xs mr-2 inline-flex items-center gap-1">
+                        <FaCheck />
+                        خریداری شده
+                      </span>
+                    )}
                   </span>
                   {itemPrices[item.id] > 0 && !isPurchased && (
                     <span className="text-primary-aero text-sm font-pixel" dir="ltr">
@@ -487,7 +493,7 @@ export default function PaymentPhase({
           </div>
           {discountApplied && !fieldErrors.code && (
             <p className="text-green-400 text-sm mt-2 flex items-center gap-1">
-              <span>✅</span>
+              <FaCheckCircle />
               <span>کد تخفیف اعمال شد</span>
             </p>
           )}
@@ -512,7 +518,8 @@ export default function PaymentPhase({
               <div className="flex justify-between text-green-400 text-sm opacity-60">
                 <span>• {baseItemLabel}</span>
                 <span className="font-pixel flex items-center gap-1" dir="ltr">
-                  <span>✓ پرداخت شده</span>
+                  <FaCheck />
+                  <span>پرداخت شده</span>
                 </span>
               </div>
             )}
@@ -532,7 +539,8 @@ export default function PaymentPhase({
                   <span className="font-pixel" dir="ltr">
                     {isPurchased ? (
                       <span className="flex items-center gap-1">
-                        <span>✓ پرداخت شده</span>
+                        <FaCheck />
+                        <span>پرداخت شده</span>
                       </span>
                     ) : itemPrices[itemId] > 0 ? (
                       `${formatPrice(itemPrices[itemId])}`
@@ -622,7 +630,7 @@ export default function PaymentPhase({
           <div className="space-y-3">
             <div className="bg-green-900 bg-opacity-30 rounded p-4 border border-green-600">
               <p className="text-green-300 text-center flex items-center justify-center gap-2">
-                <span>✅</span>
+                <FaCheckCircle className="text-lg" />
                 <span>همه موارد قبلاً پرداخت شده است.</span>
               </p>
             </div>
