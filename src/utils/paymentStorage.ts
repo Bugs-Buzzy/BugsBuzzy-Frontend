@@ -104,5 +104,5 @@ export const getItemDisplayName = (itemName: string): string => {
  * Helper to format price in Persian
  */
 export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('fa-IR').format(price / 10) + 'تومان';
+  return new Intl.NumberFormat('fa-IR').format(price / 10) + ' ' + 'تومان';
 };
