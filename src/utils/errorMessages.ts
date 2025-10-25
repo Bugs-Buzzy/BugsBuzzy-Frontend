@@ -109,6 +109,18 @@ const errorTranslations: Record<string, string> = {
   'Left team successfully': 'با موفقیت از تیم خارج شدید',
   'Team disbanded successfully': 'تیم با موفقیت منحل شد',
   'Invite code revoked and regenerated': 'کد دعوت باطل و کد جدید ساخته شد',
+
+  // Submission Errors
+  'You are not in an active team': 'شما عضو تیم فعالی نیستید',
+  'Your team must be complete to submit': 'تیم شما باید کامل باشد تا بتوانید ارسال کنید',
+  'Phase is required': 'فاز الزامی است',
+  'Content is required': 'متن ارسالی الزامی است',
+  'Phase 0 is not active yet': 'فاز ۰ هنوز فعال نشده است',
+  'Phase 1 is not active yet': 'فاز ۱ هنوز فعال نشده است',
+  'Phase 2 is not active yet': 'فاز ۲ هنوز فعال نشده است',
+  'Phase 3 is not active yet': 'فاز ۳ هنوز فعال نشده است',
+  'Phase 4 is not active yet': 'فاز ۴ هنوز فعال نشده است',
+
   message: '',
 
   // Legacy support for old messages

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import PhaseContent from '@/components/competition/phases/PhaseContent';
 import PixelFrame from '@/components/PixelFrame';
 import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
 import InPersonTeamPhase from '@/pages/phases/InPersonTeamPhase';
 import PaymentPhase from '@/pages/phases/PaymentPhase';
-import PlaceholderPhase from '@/pages/phases/PlaceholderPhase';
 import { inpersonService, type CompetitionPhase } from '@/services/inperson.service';
 
 export default function InPersonCompetition() {
@@ -192,13 +192,18 @@ export default function InPersonCompetition() {
       {currentPhase === 1 && <InPersonTeamPhase onTeamComplete={handleTeamComplete} />}
 
       {currentPhase >= 2 && (
-        <PlaceholderPhase
+        <PhaseContent
           phaseNumber={currentPhase}
+          phaseId={currentPhase - 2}
           phaseName={competitionPhases[currentPhase - 2]?.title || `فاز ${currentPhase - 1}`}
           description={
             competitionPhases[currentPhase - 2]?.description ||
             'جزئیات این فاز به‌زودی اعلام خواهد شد'
           }
+          startDate={competitionPhases[currentPhase - 2]?.start}
+          endDate={competitionPhases[currentPhase - 2]?.end}
+          isActive={competitionPhases[currentPhase - 2]?.active}
+          icon={['🎯', '🎮', '🏁'][currentPhase - 2] || '🎯'}
         />
       )}
     </div>

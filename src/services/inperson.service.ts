@@ -105,7 +105,7 @@ class InPersonService {
     teamId: number,
     data: { name?: string; description?: string; avatar?: string },
   ): Promise<InPersonTeam> {
-    return apiClient.patch<InPersonTeam>(`/inperson/team/${teamId}/update/`, data);
+    return apiClient.put<InPersonTeam>(`/inperson/team/${teamId}/update/`, data);
   }
 
   async getTeamMembers(teamId: number): Promise<InPersonMember[]> {
@@ -113,12 +113,7 @@ class InPersonService {
   }
 
   // Submissions
-  async createSubmission(data: {
-    phase: number;
-    title?: string;
-    description?: string;
-    game_url?: string;
-  }): Promise<InPersonSubmission> {
+  async createSubmission(data: { phase: number; content: string }): Promise<InPersonSubmission> {
     return apiClient.post<InPersonSubmission>('/inperson/submission/create/', data);
   }
 
