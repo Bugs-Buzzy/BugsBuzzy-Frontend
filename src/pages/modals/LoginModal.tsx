@@ -17,8 +17,7 @@ import {
   FaExclamationTriangle,
 } from 'react-icons/fa';
 
-import PixelModal from './PixelModal';
-
+import PixelModal from '@/components/modals/PixelModal';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
