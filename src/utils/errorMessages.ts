@@ -192,11 +192,7 @@ export const extractErrorMessage = (error: any): string => {
   }
 
   // Handle error or message field
-  const rawMessage = error.message || error.error || 'خطای نامشخص';
-  console.log('🔍 extractErrorMessage - rawMessage:', rawMessage);
-  const translated = translateError(rawMessage);
-  console.log('🔍 extractErrorMessage - translated:', translated);
-  return translated;
+  return translateError(error.message || error.error || 'خطای نامشخص');
 };
 
 export const translateError = (error?: string): string => {

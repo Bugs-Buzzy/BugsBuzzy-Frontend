@@ -21,7 +21,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { authService } from '@/services/auth.service';
-import { extractFieldErrors } from '@/utils/errorMessages';
+import { extractFieldErrors, extractErrorMessage } from '@/utils/errorMessages';
 import { validateEmail, getEmailError } from '@/utils/validation';
 
 interface LoginModalProps {
@@ -83,7 +83,8 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       console.error('Check email error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در بررسی ایمیل');
+      const translatedMessage = message || extractErrorMessage(apiError) || 'خطا در بررسی ایمیل';
+      setError(translatedMessage);
     } finally {
       setLoading(false);
     }
@@ -106,8 +107,10 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       console.error('Verify code error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'کد وارد شده اشتباه است');
-      toast.error(message || 'کد وارد شده اشتباه است');
+      const translatedMessage =
+        message || extractErrorMessage(apiError) || 'کد وارد شده اشتباه است';
+      setError(translatedMessage);
+      toast.error(translatedMessage);
     } finally {
       setLoading(false);
     }
@@ -130,8 +133,9 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       console.error('Forgot password error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در بازنشانی رمز');
-      toast.error(message || 'خطا در بازنشانی رمز');
+      const translatedMessage = message || extractErrorMessage(apiError) || 'خطا در بازنشانی رمز';
+      setError(translatedMessage);
+      toast.error(translatedMessage);
     } finally {
       setLoading(false);
     }
@@ -156,8 +160,9 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       console.error('Login error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در ورود');
-      toast.error(message || 'خطا در ورود');
+      const translatedMessage = message || extractErrorMessage(apiError) || 'خطا در ورود';
+      setError(translatedMessage);
+      toast.error(translatedMessage);
     } finally {
       setLoading(false);
     }
@@ -453,7 +458,9 @@ export default function LoginModal({ onClose }: LoginModalProps) {
               console.error('Send code error:', err);
               const apiError = err as ApiError;
               const { message } = extractFieldErrors(apiError.errors);
-              toast.error(message || 'خطا در ارسال کد');
+              const translatedMessage =
+                message || extractErrorMessage(apiError) || 'خطا در ارسال کد';
+              toast.error(translatedMessage);
             } finally {
               setLoading(false);
             }
