@@ -1,5 +1,14 @@
 import { apiClient } from './api';
 
+export interface CheckEmailData {
+  email: string;
+}
+
+export interface CheckEmailResponse {
+  exists: boolean;
+  has_usable_password: boolean;
+}
+
 export interface SendCodeData {
   email: string;
 }
@@ -89,6 +98,10 @@ export interface TokenRefreshResponse {
 }
 
 class AuthService {
+  async checkEmail(data: CheckEmailData): Promise<CheckEmailResponse> {
+    return apiClient.post<CheckEmailResponse>('/accounts/check-email/', data);
+  }
+
   async sendCode(data: SendCodeData): Promise<SendCodeResponse> {
     return apiClient.post<SendCodeResponse>('/accounts/send-code/', data);
   }
