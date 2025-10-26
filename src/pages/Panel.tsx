@@ -37,7 +37,7 @@ export default function Panel() {
   ];
 
   return (
-    <div className="relative h-screen bg-gradient-to-br from-primary-oxfordblue via-primary-midnight to-primary-cerulean overflow-hidden">
+    <div className="relative h-screen bg-gradient-to-br from-primary-oxfordblue via-primary-midnight to-primary-cerulean p-[5px]">
       <ParticlesCanvas />
       <div className="relative z-10 flex flex-col md:flex-row h-full">
         {/* Sidebar - Desktop & Mobile */}
