@@ -60,17 +60,24 @@ export default function LoginModal({ onClose }: LoginModalProps) {
     setLoading(true);
     setError('');
     try {
-      // First, check if the email exists
-      const checkResponse = await authService.checkEmail({ email });
-
-      // If the email exists and has a usable password, go to password login step
-      if (checkResponse.exists && checkResponse.has_usable_password) {
-        setStep('password-login');
-      } else {
-        // Otherwise, send the verification code
+      // اگر فلوی فراموشی رمز است، مستقیم کد ارسال کن
+      if (flow === 'forgot') {
         await authService.sendCode({ email });
         setStep('code');
         setResendTimer(120);
+      } else {
+        // در غیر این صورت، ابتدا چک می‌کنیم که آیا کاربر رمز عبور دارد یا نه
+        const checkResponse = await authService.checkEmail({ email });
+
+        // اگر کاربر وجود دارد و رمز عبور قابل استفاده دارد
+        if (checkResponse.exists && checkResponse.has_usable_password) {
+          setStep('password-login');
+        } else {
+          // در غیر این صورت کد تایید ارسال می‌کنیم
+          await authService.sendCode({ email });
+          setStep('code');
+          setResendTimer(120);
+        }
       }
     } catch (err) {
       console.error('Check email error:', err);
