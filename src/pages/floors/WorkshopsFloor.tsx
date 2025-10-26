@@ -2,18 +2,19 @@ import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { FaChalkboardTeacher, FaCogs, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import bgWorkshops from '@/assets/bkg-workshops.png';
-import info1 from '@/assets/images/godot/info1.jpg';
-import info2 from '@/assets/images/godot/info2.jpg';
-import info3 from '@/assets/images/godot/info3.jpg';
-import info4 from '@/assets/images/godot/info4.jpg';
-import info5 from '@/assets/images/godot/info5.jpg';
-import info6 from '@/assets/images/godot/info6.jpg';
-import info7 from '@/assets/images/godot/info7.jpg';
-import info8 from '@/assets/images/godot/info8.jpg';
+import info1 from '@/assets/images/godot/info1.png';
+import info2 from '@/assets/images/godot/info2.png';
+import info3 from '@/assets/images/godot/info3.png';
+import info4 from '@/assets/images/godot/info4.png';
+import info5 from '@/assets/images/godot/info5.png';
+import info6 from '@/assets/images/godot/info6.png';
+import info7 from '@/assets/images/godot/info7.png';
+import info8 from '@/assets/images/godot/info8.png';
 import img21 from '@/assets/images/presents/coming_soon.jpg';
 import img1 from '@/assets/images/presents/img1.jpg';
 import img10 from '@/assets/images/presents/img10.jpg';
 import img11 from '@/assets/images/presents/img11.jpg';
+import img12 from '@/assets/images/presents/img12.jpg';
 import img2 from '@/assets/images/presents/img2.jpg';
 import img3 from '@/assets/images/presents/img3.jpg';
 import img4 from '@/assets/images/presents/img4.jpg';
@@ -32,7 +33,6 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
   const horizontalPresRef = useRef<HTMLDivElement>(null);
   const horizontalGodotRef = useRef<HTMLDivElement>(null);
 
-  // اسکرول نرم برای دکمه‌های فلش
   const scrollContainer = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
     if (!ref.current) return;
     const scrollAmount = ref.current.clientWidth * 0.8;
@@ -48,14 +48,12 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       selectedCategory === 'presentations' ? horizontalPresRef.current : horizontalGodotRef.current;
     if (!container) return;
 
-    // Scroll با چرخ موس (دسکتاپ)
     const onWheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaY) > 0) {
         container.scrollLeft += e.deltaY;
       }
     };
 
-    // لمس برای موبایل (اندروید/iOS)
     let isTouching = false;
     let startX = 0;
     let scrollLeftStart = 0;
@@ -90,15 +88,40 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
     };
   }, [selectedCategory]);
 
+  // داده‌های Godot با بعضی ویدیوها
   const godotWorkshops = [
-    { title: 'قسمت 1: نصب و راه‌اندازی Godot', img: info1, date: '۳ آبان' },
-    { title: 'قسمت 2: طراحی کاراکتر اصلی', img: info2, date: '۳ آبان' },
-    { title: 'قسمت 3: حرکت دوربین', img: info3, date: '۳ آبان' },
-    { title: 'قسمت 4: طراحی محیط بازی', img: info4, date: '۴ آبان' },
-    { title: 'قسمت 5: پیاده‌سازی منطق بازی', img: info5, date: '۴ آبان' },
-    { title: 'قسمت 6: پیاده‌سازی شبکه ۱', img: info6, date: '۴ آبان' },
-    { title: 'قسمت 7: پیاده‌سازی شبکه ۲', img: info7, date: '۵ آبان' },
-    { title: 'قسمت 8: منو و صداگذاری', img: info8, date: '۵ آبان' },
+    {
+      title: 'قسمت 1: نصب و راه‌اندازی Godot',
+      img: info1,
+      date: '۳ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1o2VZESCKK3ibTrHxsvfAaw03032NP3Md/view?usp=sharing',
+    },
+    {
+      title: 'قسمت 2: طراحی کاراکتر اصلی',
+      img: info2,
+      date: '۳ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1W55k4FmciVsn9vmaBsZ0l-3GeNpkGMQS/view?usp=sharing',
+    },
+    {
+      title: 'قسمت 3: حرکت دوربین',
+      img: info3,
+      date: '۴ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1M5q4oiCtha7eSI_dd4q6T9qMjrDs_wzj/view?usp=sharing',
+    },
+    {
+      title: 'قسمت 4: طراحی محیط بازی',
+      img: info4,
+      date: '۴ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/19NH-AoSHiybVIsCXcNpzdLi0GCadogds/view?usp=drive_link',
+    },
+    { title: 'قسمت 5: پیاده‌سازی منطق بازی', img: info5, date: '۵ آبان' },
+    { title: 'قسمت 6: پیاده‌سازی شبکه ۱', img: info6, date: '۵ آبان' },
+    { title: 'قسمت 7: پیاده‌سازی شبکه ۲', img: info7, date: '۶ آبان' },
+    { title: 'قسمت 8: منو و صداگذاری', img: info8, date: '۶ آبان' },
   ];
 
   const presentations = [
@@ -113,6 +136,7 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
     { img: img9 },
     { img: img10 },
     { img: img11 },
+    { img: img12 },
     { img: img21 },
   ];
 
@@ -176,6 +200,9 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
                       {w.title}
                     </h4>
                     <p className="text-primary-columbia text-sm">{w.date}</p>
+                    <p className="text-xs text-primary-columbia mt-2 opacity-80">
+                      برای اطلاعات بیشتر کلیک کنید
+                    </p>
                   </div>
                 </PixelFrame>
               ))}
@@ -190,7 +217,6 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
           <div className="relative text-white font-pixel text-center">
             <h3 className="text-3xl mb-6 font-bold">ارائه‌ها</h3>
 
-            {/* فلش‌ها */}
             <button
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 p-3 rounded-full z-10"
               onClick={() => scrollContainer(horizontalPresRef, 'left')}
@@ -234,12 +260,29 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       {/* نمایش تصویر بزرگ */}
       {selectedImage && (
         <PixelModal onClose={() => setSelectedImage(null)}>
-          <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center space-y-4">
             <img
               src={selectedImage}
               alt="تصویر بزرگ"
-              className="max-w-full max-h-[80vh] rounded-3xl"
+              className="max-w-[90%] max-h-[72vh] rounded-3xl"
             />
+
+            {selectedCategory === 'godot' &&
+              (() => {
+                const found = godotWorkshops.find((w) => w.img === selectedImage);
+                return (
+                  found?.videoUrl && (
+                    <a
+                      href={found.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-columbia underline text-xl hover:text-white transition-colors"
+                    >
+                      مشاهده ویدیو
+                    </a>
+                  )
+                );
+              })()}
           </div>
         </PixelModal>
       )}
