@@ -192,12 +192,19 @@ export const extractErrorMessage = (error: any): string => {
   }
 
   // Handle error or message field
-  return translateError(error.message || error.error || 'خطای نامشخص');
+  const rawMessage = error.message || error.error || 'خطای نامشخص';
+  console.log('🔍 extractErrorMessage - rawMessage:', rawMessage);
+  const translated = translateError(rawMessage);
+  console.log('🔍 extractErrorMessage - translated:', translated);
+  return translated;
 };
 
 export const translateError = (error?: string): string => {
   if (!error) return '';
-  return errorTranslations[error] || error;
+  const translated = errorTranslations[error];
+  if (translated) return translated;
+  // اگر ترجمه پیدا نشد، همان متن انگلیسی را برگردان (نه "خطای نامشخص")
+  return error;
 };
 
 export const getFieldName = (field: string): string => {
