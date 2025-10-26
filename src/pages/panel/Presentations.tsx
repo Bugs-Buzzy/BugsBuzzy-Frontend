@@ -12,49 +12,6 @@ import {
 import PixelFrame from '@/components/PixelFrame';
 import { Workshop, workshopService } from '@/services/workshop.service';
 
-const mockWorkshops: Workshop[] = [
-  {
-    id: 1,
-    title: 'آموزش React پیشرفته - نکات و ترفندها',
-    description:
-      'در این کارگاه به صورت عمقی با مفاهیم پیشرفته React شامل Hooks، Performance Optimization و Best Practices آشنا خواهیم شد.',
-    start_datetime: '2025-10-26T22:00:00Z',
-    duration: 120,
-    presenter: 'علی محمدی',
-    presenter_image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2JFyVMUGB2hCmAhFXOdCydqzgsCHd2BAzEA&s',
-    vc_link: 'https://meet.example.com/workshop1',
-    place: 'سالن کنفرانس اصلی - طبقه دوم',
-    record_link: 'https://youtube.com/record1',
-  },
-  {
-    id: 2,
-    title: 'از صفر تا صد',
-    description: null,
-    start_datetime: '2025-10-26T20:00:00Z',
-    duration: 2400,
-    presenter: 'سارا حسینی',
-    presenter_image: null,
-    vc_link: null,
-    place: 'آمفی تئاتر دانشکده مهندسی',
-    record_link: null,
-  },
-  {
-    id: 3,
-    title: 'طراحی سیستم‌های مقیاس‌پذیر با Microservices',
-    description:
-      'آشنایی با معماری Microservices و روش‌های پیاده‌سازی سیستم‌های مقیاس‌پذیر در محیط‌های ابری',
-    start_datetime: '2026-01-10T09:00:00Z',
-    duration: 180,
-    presenter: 'محمد رضایی',
-    presenter_image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2JFyVMUGB2hCmAhFXOdCydqzgsCHd2BAzEA&s',
-    vc_link: 'https://meet.example.com/workshop3',
-    place: null,
-    record_link: 'https://youtube.com/record3',
-  },
-];
-
 const getWorkshopStatus = (workshop: Workshop): 'upcoming' | 'live' | 'completed' => {
   const now = new Date();
   const startTime = new Date(workshop.start_datetime);
@@ -327,7 +284,7 @@ export default function Presentations() {
         ))}
       </div>
 
-      {mockWorkshops.length === 0 && (
+      {workshops.length === 0 && (
         <PixelFrame className="bg-gradient-to-r from-gray-800 to-gray-700 border-2 border-gray-600">
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📚</div>
