@@ -49,6 +49,7 @@ export interface UserProfile {
   status: string;
   has_paid: boolean;
   profile_completed: boolean;
+  has_played_minigame: boolean;
   has_usable_password?: boolean;
   created_at: string;
   last_login: string | null;

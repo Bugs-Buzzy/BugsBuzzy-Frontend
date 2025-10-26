@@ -9,10 +9,9 @@ import {
   FaUser,
   FaSignInAlt,
 } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import coinGif from '@/assets/coin.gif';
-import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
 import LoginModal from '@/pages/modals/LoginModal';
@@ -24,9 +23,9 @@ interface HUDProps {
 export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showFastTravel, setShowFastTravel] = useState(true);
-  const [showMiniGame, setShowMiniGame] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let hideTimeout: ReturnType<typeof setTimeout>;
@@ -71,7 +70,20 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
           {/* 👇 سکه‌ی تعاملی */}
           <div
             className="cursor-pointer"
-            onClick={() => setShowMiniGame(true)}
+            onClick={() => {
+              if (isAuthenticated) {
+                // Check if user has already played
+                if (user?.has_played_minigame) {
+                  // Show their result or redirect to panel
+                  navigate('/panel/minigame');
+                } else {
+                  // Redirect to minigame to play
+                  navigate('/panel/minigame');
+                }
+              } else {
+                setShowLoginModal(true);
+              }
+            }}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
           >
@@ -144,19 +156,6 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
       </div>
 
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
-
-      {/* 🎮 Mini Game Modal */}
-      {showMiniGame && (
-        <PixelModal onClose={() => setShowMiniGame(false)}>
-          <div className="text-center">
-            <h2 className="font-pixel text-xl text-white mb-4">مینی‌گیم</h2>
-            <p className="text-gray-300 mb-4"></p>
-
-            {/* داخل قاب بازی */}
-            <p>Coming Soon...</p>
-          </div>
-        </PixelModal>
-      )}
     </>
   );
 }

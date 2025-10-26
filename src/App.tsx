@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
+import MiniGamePage from './pages/MiniGamePage';
+
 import bgGameJam from '@/assets/bkg-gamejam.png';
 import bgInPerson from '@/assets/bkg-inperson.png';
 import bgLanding from '@/assets/bkg-landing.png';
@@ -42,6 +44,9 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<GameWorld />} />
 
+      {/* Game routes */}
+      <Route path="/game/minigame" element={<MiniGamePage />} />
+
       {/* Payment callback routes */}
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/failed" element={<PaymentFailed />} />
@@ -61,6 +66,7 @@ function AppRoutes() {
         <Route path="gamejam" element={<GameJamCompetition />} />
         <Route path="announcements" element={<Announcements />} />
         <Route path="presentations" element={<Presentations />} />
+        <Route path="minigame" element={<MiniGamePage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

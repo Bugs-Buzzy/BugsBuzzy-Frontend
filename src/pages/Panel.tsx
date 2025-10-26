@@ -8,6 +8,7 @@ import {
   FaArrowLeft,
   FaSignOutAlt,
   FaLock,
+  FaCoins,
 } from 'react-icons/fa';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
@@ -32,6 +33,7 @@ export default function Panel() {
     { path: '/panel/profile', label: 'پروفایل', icon: FaUser, enabled: true },
     { path: '/panel/inperson', label: 'رقابت حضوری', icon: FaTrophy, enabled: user?.is_verified },
     { path: '/panel/gamejam', label: 'گیم‌جم مجازی', icon: FaGamepad, enabled: user?.is_verified },
+    { path: '/panel/minigame', label: 'مینی‌گیم', icon: FaCoins, enabled: true },
     { path: '/panel/announcements', label: 'اطلاعیه‌ها', icon: FaBullhorn, enabled: true },
     { path: '/panel/presentations', label: 'ارائه‌ها', icon: FaDesktop, enabled: true },
   ];

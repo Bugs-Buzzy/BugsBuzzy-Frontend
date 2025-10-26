@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2D Platformer</title>
+  <style>
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    #score-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+      align-items: flex-start;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 2px solid gold;
+      backdrop-filter: blur(5px);
+      flex-shrink: 0;
+    }
+
+    .score-item img {
+      width: 24px;
+      height: 24px;
+      image-rendering: pixelated;
+      filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+    }
+
+    #carrot-count,
+    #coin-count,
+    #timer {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+      min-width: 20px;
+      text-align: center;
+    }
+
+    #timer {
+      min-width: 60px;
+    }
+
+    #score-container .score-item:first-child {
+      border: 2px solid #ff4444;
+    }
+
+    #score-container {
+      pointer-events: none;
+    }
+
+    .score-item {
+      pointer-events: auto;
+    }
+
+    /* Touch Controls */
+    #touch-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      display: none;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .touch-section {
+      display: flex;
+      gap: 15px;
+      pointer-events: auto;
+    }
+
+    .touch-button {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      font-weight: bold;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      backdrop-filter: blur(5px);
+    }
+
+    .touch-button:active {
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(0.95);
+    }
+
+    .d-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 5px;
+      width: 120px;
+      height: 120px;
+    }
+
+    .d-pad-button {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .d-pad-button:active {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .d-pad-center {
+      background: transparent;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      #touch-controls {
+        display: flex;
+      }
+
+      #score-container {
+        top: 5px;
+        left: 5px;
+        gap: 10px;
+      }
+
+      .score-item {
+        padding: 6px 10px;
+        border-radius: 15px;
+      }
+
+      #carrot-count,
+      #coin-count,
+      #timer {
+        font-size: 16px;
+      }
+
+      .score-item img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  </style>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font: inherit;
+      vertical-align: baseline;
+    }
+
+    body {
+      background: black;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      width: 1024px;
+      height: 576px;
+      image-rendering: pixelated;
+    }
+
+    @media (max-width: 1024px) {
+      canvas {
+        width: 100vw;
+        height: 56.25vw;
+        /* 16:9 aspect ratio */
+        max-height: 100vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas></canvas>
+
+  <!-- Touch Controls -->
+  <div id="touch-controls">
+    <div class="touch-section">
+      <div class="d-pad">
+        <div class="d-pad-button" style="grid-column: 2; grid-row: 1;" id="up-btn">↑</div>
+        <div class="d-pad-button" style="grid-column: 1; grid-row: 2;" id="left-btn">←</div>
+        <div class="d-pad-center" style="grid-column: 2; grid-row: 2;"></div>
+        <div class="d-pad-button" style="grid-column: 3; grid-row: 2;" id="right-btn">→</div>
+        <div class="d-pad-button" style="grid-column: 2; grid-row: 3;" id="down-btn">↓</div>
+      </div>
+    </div>
+
+    <!-- <div class="touch-section">
+      <div class="touch-button" id="jump-btn">A</div>
+      <div class="touch-button" id="action-btn">X</div>
+    </div> -->
+  </div>
+
+  <script src="./data/l_Sky.js"></script>
+  <script src="./data/l_Mountains.js"></script>
+  <script src="./data/l_Decorations.js"></script>
+  <script src="./data/l_underground_tiles.js"></script>
+  <script src="./data/l_Soil.js"></script>
+  <script src="./data/l_dec.js"></script>
+  <script src="./data/l_front_tiles.js"></script>
+  <script src="./data/l_rewards.js"></script>
+  <script src="./data/l_Collisions.js"></script>
+  <script src="./data/l_coins.js"></script>
+  <script src="./data/collisions.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./classes/CollisionBlock.js"></script>
+  <script src="./classes/Platform.js"></script>
+  <script src="./classes/Player.js"></script>
+  <script src="./js/touchControls.js"></script>
+  <script src="./js/index.js"></script>
+  <script src="./js/eventListeners.js"></script>
+</body>
+
+</html>
