@@ -12,7 +12,6 @@ import {
   FaRedo,
   FaClock,
   FaEdit,
-  FaArrowLeft,
   FaTimes,
   FaExclamationTriangle,
 } from 'react-icons/fa';
@@ -61,14 +60,23 @@ export default function LoginModal({ onClose }: LoginModalProps) {
     setLoading(true);
     setError('');
     try {
-      await authService.sendCode({ email });
-      setStep('code');
-      setResendTimer(120);
+      // First, check if the email exists
+      const checkResponse = await authService.checkEmail({ email });
+
+      // If the email exists and has a usable password, go to password login step
+      if (checkResponse.exists && checkResponse.has_usable_password) {
+        setStep('password-login');
+      } else {
+        // Otherwise, send the verification code
+        await authService.sendCode({ email });
+        setStep('code');
+        setResendTimer(120);
+      }
     } catch (err) {
-      console.error('Send code error:', err);
+      console.error('Check email error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در ارسال کد');
+      setError(message || 'خطا در بررسی ایمیل');
     } finally {
       setLoading(false);
     }
@@ -426,17 +434,29 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         </button>
 
         <button
-          onClick={() => {
-            setStep('code');
+          onClick={async () => {
             setPassword('');
             setError('');
+            setLoading(true);
+            try {
+              await authService.sendCode({ email });
+              setStep('code');
+              setResendTimer(120);
+            } catch (err) {
+              console.error('Send code error:', err);
+              const apiError = err as ApiError;
+              const { message } = extractFieldErrors(apiError.errors);
+              toast.error(message || 'خطا در ارسال کد');
+            } finally {
+              setLoading(false);
+            }
           }}
           className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
-            <FaArrowLeft className="text-xs" />
-            <span>بازگشت</span>
+            <FaSortNumericDown className="text-xs" />
+            <span>ورود با کد تایید</span>
           </div>
         </button>
       </div>

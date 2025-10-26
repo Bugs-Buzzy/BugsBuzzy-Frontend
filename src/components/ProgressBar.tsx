@@ -1,3 +1,5 @@
+import { FaCheckCircle } from 'react-icons/fa';
+
 export interface Phase {
   id: number;
   title: string;
@@ -62,11 +64,13 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
                         ${phase.status === 'current' && 'animate-bounce'}
                       `}
                       >
-                        {phase.status === 'completed'
-                          ? '✅'
-                          : phase.status === 'locked'
-                            ? '🔒'
-                            : phase.icon}
+                        {phase.status === 'completed' ? (
+                          <FaCheckCircle className="text-green-400" />
+                        ) : phase.status === 'locked' ? (
+                          '🔒'
+                        ) : (
+                          phase.icon
+                        )}
                       </div>
 
                       {/* Glow effect for current phase */}
@@ -178,11 +182,13 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
                     `}
                     >
                       <div className="text-2xl">
-                        {phase.status === 'completed'
-                          ? '✅'
-                          : phase.status === 'locked'
-                            ? '🔒'
-                            : phase.icon}
+                        {phase.status === 'completed' ? (
+                          <FaCheckCircle className="text-green-400" />
+                        ) : phase.status === 'locked' ? (
+                          '🔒'
+                        ) : (
+                          phase.icon
+                        )}
                       </div>
                     </div>
 

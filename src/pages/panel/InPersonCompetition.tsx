@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import PhaseContent from '@/components/competition/phases/PhaseContent';
 import PixelFrame from '@/components/PixelFrame';
 import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
 import InPersonTeamPhase from '@/pages/phases/InPersonTeamPhase';
 import PaymentPhase from '@/pages/phases/PaymentPhase';
-import PlaceholderPhase from '@/pages/phases/PlaceholderPhase';
 import { inpersonService, type CompetitionPhase } from '@/services/inperson.service';
 
 export default function InPersonCompetition() {
   const { profileCompleted, user: _user } = useAuth();
   const navigate = useNavigate();
   const [currentPhase, setCurrentPhase] = useState(0);
-  const [manualPhaseSelection, setManualPhaseSelection] = useState(false);
+  const [viewingPhase, setViewingPhase] = useState(0);
+  const manualPhaseSelectionRef = useRef(false);
   const [loading, setLoading] = useState(true);
 
   const [competitionPhases, setCompetitionPhases] = useState<CompetitionPhase[]>([]);
@@ -51,20 +52,26 @@ export default function InPersonCompetition() {
         teamComplete,
       });
 
-      // Only auto-navigate if user hasn't manually selected a phase
-      if (!manualPhaseSelection) {
-        if (!hasPaid) {
-          setCurrentPhase(0);
-        } else if (!hasTeam || !teamComplete) {
-          setCurrentPhase(1);
+      // Determine actual current phase based on progress
+      let actualPhase = 0;
+      if (!hasPaid) {
+        actualPhase = 0;
+      } else if (!hasTeam || !teamComplete) {
+        actualPhase = 1;
+      } else {
+        const activePhase = competitionStatus.phases.find((p) => p.active);
+        if (activePhase) {
+          actualPhase = activePhase.id + 2;
         } else {
-          const activePhase = competitionStatus.phases.find((p) => p.active);
-          if (activePhase) {
-            setCurrentPhase(activePhase.id + 1);
-          } else {
-            setCurrentPhase(2);
-          }
+          actualPhase = 2;
         }
+      }
+
+      setCurrentPhase(actualPhase);
+
+      // Set viewing phase (only if not manually selected)
+      if (!manualPhaseSelectionRef.current) {
+        setViewingPhase(actualPhase);
       }
     } catch (err) {
       console.error('Failed to load status:', err);
@@ -108,29 +115,28 @@ export default function InPersonCompetition() {
       title: phase.title,
       icon: ['🎯', '🎮', '🏁'][index] || '🎯',
       status: getPhaseStatus(index + 2),
-      isClickable: false,
+      isClickable: phaseStatus.teamComplete && phase.active,
     })),
   ];
 
   const handlePhaseChange = (phaseId: number) => {
     const phase = phases.find((p) => p.id === phaseId);
     if (phase?.isClickable) {
-      setManualPhaseSelection(true);
-      setCurrentPhase(phaseId);
+      manualPhaseSelectionRef.current = true;
+      setViewingPhase(phaseId);
     }
   };
 
   const handlePaymentComplete = () => {
     setPhaseStatus((prev) => ({ ...prev, hasPaid: true }));
-    setManualPhaseSelection(false);
-    setCurrentPhase(1);
+    manualPhaseSelectionRef.current = false;
+    setViewingPhase(1);
     loadStatus();
   };
 
   const handleTeamComplete = () => {
     setPhaseStatus((prev) => ({ ...prev, teamComplete: true }));
-    setManualPhaseSelection(false);
-    loadStatus();
+    // Don't auto-navigate, just refresh status
   };
 
   if (!profileCompleted) {
@@ -177,7 +183,7 @@ export default function InPersonCompetition() {
       <ProgressBar phases={phases} currentPhase={currentPhase} onPhaseClick={handlePhaseChange} />
 
       {/* Phase Content */}
-      {currentPhase === 0 && (
+      {viewingPhase === 0 && (
         <PaymentPhase
           baseItem="inperson"
           baseItemLabel="ثبت‌نام رقابت حضوری"
@@ -189,16 +195,21 @@ export default function InPersonCompetition() {
         />
       )}
 
-      {currentPhase === 1 && <InPersonTeamPhase onTeamComplete={handleTeamComplete} />}
+      {viewingPhase === 1 && <InPersonTeamPhase onTeamComplete={handleTeamComplete} />}
 
-      {currentPhase >= 2 && (
-        <PlaceholderPhase
-          phaseNumber={currentPhase}
-          phaseName={competitionPhases[currentPhase - 2]?.title || `فاز ${currentPhase - 1}`}
+      {viewingPhase >= 2 && (
+        <PhaseContent
+          phaseNumber={viewingPhase}
+          phaseId={viewingPhase - 2}
+          phaseName={competitionPhases[viewingPhase - 2]?.title || `فاز ${viewingPhase - 1}`}
           description={
-            competitionPhases[currentPhase - 2]?.description ||
+            competitionPhases[viewingPhase - 2]?.description ||
             'جزئیات این فاز به‌زودی اعلام خواهد شد'
           }
+          startDate={competitionPhases[viewingPhase - 2]?.start}
+          endDate={competitionPhases[viewingPhase - 2]?.end}
+          isActive={competitionPhases[viewingPhase - 2]?.active}
+          icon={['🎯', '🎮', '🏁'][viewingPhase - 2] || '🎯'}
         />
       )}
     </div>

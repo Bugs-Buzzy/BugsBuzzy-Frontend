@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaImage } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaImage, FaCheckCircle } from 'react-icons/fa';
 
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
@@ -286,53 +286,61 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       {team ? (
         <div className="space-y-6">
           <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+            {/* Mobile-friendly header */}
+            <div className="mb-4">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                <div className="flex items-center gap-3 flex-1 flex-row-reverse">
+                  <div className="min-w-0 flex-1 text-right">
+                    <h2 className="text-lg sm:text-2xl font-bold text-primary-sky truncate">
+                      {team.name}
+                    </h2>
+                    {team.description && (
+                      <p className="text-primary-aero text-xs sm:text-sm line-clamp-2">
+                        {team.description}
+                      </p>
+                    )}
+                  </div>
                   {team.avatar && (
                     <img
                       src={team.avatar}
                       alt={team.name}
-                      className="w-16 h-16 rounded border-2 border-primary-cerulean"
+                      className="w-12 h-12 sm:w-16 sm:h-16 rounded border-2 border-primary-cerulean flex-shrink-0"
                     />
                   )}
-                  <div>
-                    <h2 className="text-2xl font-bold text-primary-sky">{team.name}</h2>
-                    {team.description && (
-                      <p className="text-primary-aero text-sm">{team.description}</p>
-                    )}
-                  </div>
                 </div>
-              </div>
-              <div className="flex gap-2 items-start">
-                <span
-                  className={`pixel-btn ${
-                    team.status === 'active' || team.status === 'attended'
-                      ? 'pixel-btn-success'
-                      : 'pixel-btn-warning'
-                  } px-4 py-2 font-pixel`}
-                  dir="ltr"
-                >
-                  {team.member_count}/{INPERSON_TEAM_CONFIG.MAX_MEMBERS}
-                </span>
-                {team.is_leader && (
-                  <>
-                    <button
-                      onClick={handleOpenEditModal}
-                      className="pixel-btn pixel-btn-primary px-3 py-2 flex items-center gap-2"
-                      title="ویرایش تیم"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => setShowDisbandModal(true)}
-                      className="pixel-btn pixel-btn-danger px-3 py-2 flex items-center gap-2"
-                      title="منحل کردن تیم"
-                    >
-                      <FaTrash />
-                    </button>
-                  </>
-                )}
+
+                <div className="flex gap-2 items-center justify-between sm:justify-start">
+                  <span
+                    className={`pixel-btn ${
+                      team.status === 'active' || team.status === 'attended'
+                        ? 'pixel-btn-success'
+                        : 'pixel-btn-warning'
+                    } px-3 py-1 sm:px-4 sm:py-2 font-pixel text-sm sm:text-base`}
+                    dir="ltr"
+                  >
+                    {team.member_count}/{INPERSON_TEAM_CONFIG.MAX_MEMBERS}
+                  </span>
+                  {team.is_leader && (
+                    <div className="flex gap-1 sm:gap-2">
+                      <button
+                        onClick={handleOpenEditModal}
+                        className="pixel-btn pixel-btn-primary px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
+                        title="ویرایش تیم"
+                      >
+                        <FaEdit className="text-sm sm:text-base" />
+                        <span className="hidden sm:inline text-xs">ویرایش</span>
+                      </button>
+                      <button
+                        onClick={() => setShowDisbandModal(true)}
+                        className="pixel-btn pixel-btn-danger px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
+                        title="منحل کردن تیم"
+                      >
+                        <FaTrash className="text-sm sm:text-base" />
+                        <span className="hidden sm:inline text-xs">حذف</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -358,13 +366,8 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   {team.invite_code}
                 </p>
                 <p className="text-primary-aero text-sm mt-2 text-center">
-                  این کد را با دوستان خود به اشتراک بگذارید
+                  این کد را به هم‌گروهی‌های خود ارسال کنید
                 </p>
-                {team.is_leader && (
-                  <p className="text-yellow-400 text-xs mt-2 text-center">
-                    💡 می‌توانید کد را باطل و یک کد جدید دریافت کنید
-                  </p>
-                )}
               </div>
             )}
 
@@ -380,7 +383,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
             {(team.status === 'active' || team.status === 'attended') && (
               <div className="bg-green-900 bg-opacity-30 rounded p-4 mb-4 border border-green-600">
                 <p className="text-green-300 text-sm flex items-center gap-2">
-                  <span>✅</span>
+                  <FaCheckCircle className="text-lg" />
                   <span>تیم شما واجد شرایط است! ثبت‌نام شما تکمیل شده است.</span>
                 </p>
               </div>
@@ -388,41 +391,46 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
           </PixelFrame>
 
           <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-            <h3 className="text-xl font-bold text-primary-sky mb-4">اعضای تیم</h3>
-            <div className="space-y-3">
-              <div className="bg-primary-midnight rounded p-4 flex items-center justify-between border border-primary-cerulean">
-                <div className="flex-1">
-                  <p className="text-primary-sky font-bold">
-                    {team.leader.first_name} {team.leader.last_name}
-                  </p>
-                  <p className="text-primary-aero text-sm">{team.leader.email}</p>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <span className="pixel-btn pixel-btn-success px-3 py-1 text-sm">
-                    ✅ پرداخت شده
+            <h3 className="text-lg sm:text-xl font-bold text-primary-sky mb-4">اعضای تیم</h3>
+            <div className="space-y-2 sm:space-y-3">
+              {/* Leader */}
+              <div className="bg-primary-midnight rounded p-3 sm:p-4 border border-primary-cerulean">
+                <div className="flex items-center gap-2">
+                  <span className="pixel-btn pixel-btn-primary px-2 py-1 text-xs sm:text-sm whitespace-nowrap">
+                    سرتیم
                   </span>
-                  <span className="pixel-btn pixel-btn-primary px-3 py-1 text-sm">سرتیم</span>
+                  <div className="min-w-0 flex-1 text-right">
+                    <p className="text-primary-sky font-bold text-sm sm:text-base truncate">
+                      {team.leader.first_name} {team.leader.last_name}
+                    </p>
+                    <p className="text-primary-aero text-xs sm:text-sm truncate">
+                      {team.leader.email}
+                    </p>
+                  </div>
                 </div>
               </div>
 
+              {/* Members */}
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="bg-primary-midnight rounded p-4 flex items-center justify-between border border-primary-cerulean"
+                  className="bg-primary-midnight rounded p-3 sm:p-4 border border-primary-cerulean"
                 >
-                  <div>
-                    <p className="text-primary-sky font-bold">
-                      {member.user.first_name} {member.user.last_name}
-                    </p>
-                    <p className="text-primary-aero text-sm">{member.user.email}</p>
+                  <div className="flex items-center gap-2">
+                    {!member.has_paid && (
+                      <span className="pixel-btn pixel-btn-warning px-2 py-1 text-xs whitespace-nowrap">
+                        در انتظار پرداخت
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1 text-right">
+                      <p className="text-primary-sky font-bold text-sm sm:text-base truncate">
+                        {member.user.first_name} {member.user.last_name}
+                      </p>
+                      <p className="text-primary-aero text-xs sm:text-sm truncate">
+                        {member.user.email}
+                      </p>
+                    </div>
                   </div>
-                  <span
-                    className={`pixel-btn ${
-                      member.has_paid ? 'pixel-btn-success' : 'pixel-btn-warning'
-                    } px-3 py-1 text-sm`}
-                  >
-                    {member.has_paid ? '✅ پرداخت شده' : '⏳ در انتظار'}
-                  </span>
                 </div>
               ))}
             </div>
@@ -538,7 +546,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
               <h2 className="text-2xl font-bold text-primary-sky mb-4">🔗 پیوستن به تیم</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-primary-sky font-bold mb-2">کد دعوت *</label>
+                  <label className="block text-primary-sky font-bold mb-2">کد دعوت</label>
                   <input
                     type="text"
                     value={inviteCode}
