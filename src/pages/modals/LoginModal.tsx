@@ -316,7 +316,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       <div className="grid grid-cols-2 gap-2 pt-3 mt-3 border-t border-gray-700">
         <button
           onClick={handleSendCode}
-          className={`pixel-btn text-xs py-2 px-3 transition-colors ${
+          className={`pixel-btn text-xs py-2 px-3 transition-colors min-h-[2.5rem] ${
             resendTimer > 0
               ? 'bg-gray-800 text-gray-500 cursor-not-allowed border-gray-700'
               : 'bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky'
@@ -341,7 +341,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         {flow === 'normal' && (
           <button
             onClick={() => setStep('password-login')}
-            className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
+            className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 min-h-[2.5rem]"
             disabled={loading}
           >
             <div className="flex items-center justify-center gap-1.5">
@@ -353,7 +353,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
 
         <button
           onClick={() => setStep('email')}
-          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 col-span-2"
+          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 col-span-2 min-h-[2.5rem]"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
@@ -431,7 +431,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             setPassword('');
             setError('');
           }}
-          className="pixel-btn bg-primary-oxfordblue border-secondary-orangePantone text-secondary-ramzinex hover:text-secondary-orangeCrayola transition-colors text-xs py-2 px-3"
+          className="pixel-btn bg-primary-oxfordblue border-secondary-orangePantone text-secondary-ramzinex hover:text-secondary-orangeCrayola transition-colors text-xs py-2 px-3 min-h-[2.5rem]"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
@@ -458,7 +458,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
               setLoading(false);
             }
           }}
-          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
+          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 min-h-[2.5rem]"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
