@@ -171,7 +171,7 @@ const PresentationItem = ({ workshop }: { workshop: Workshop }) => {
   return (
     <PixelFrame
       key={workshop.id}
-      className="bg-gradient-to-br from-primary-oxfordblue to-blue-900 border-2 border-primary-sky border-opacity-20 hover:border-opacity-40 transition-all duration-300 px-7 py-2"
+      className="bg-primary-oxfordblue bg-opacity-90 border-2 border-primary-sky transition-all duration-300 px-7 py-2"
     >
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row justify-between items-start gap-4 mb-4">
@@ -269,10 +269,10 @@ const PresentationItem = ({ workshop }: { workshop: Workshop }) => {
 export default function Presentations() {
   return (
     <div className="space-y-6">
-      <PixelFrame className="bg-gradient-to-r from-primary-oxfordblue to-blue-900 border-2 border-primary-sky border-opacity-30">
+      <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary-sky mb-4 drop-shadow-lg">
-            🎯 کارگاه‌ها و ارائه‌ها
+            کارگاه‌ها و ارائه‌ها
           </h1>
           <p className="text-primary-aero text-lg">لیست کامل کارگاه‌ها و ارائه‌های آموزشی رویداد</p>
         </div>
