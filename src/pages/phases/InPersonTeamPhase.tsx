@@ -289,15 +289,8 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
             {/* Mobile-friendly header */}
             <div className="mb-4">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-                <div className="flex items-center gap-3 flex-1">
-                  {team.avatar && (
-                    <img
-                      src={team.avatar}
-                      alt={team.name}
-                      className="w-12 h-12 sm:w-16 sm:h-16 rounded border-2 border-primary-cerulean flex-shrink-0"
-                    />
-                  )}
-                  <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-3 flex-1 flex-row-reverse">
+                  <div className="min-w-0 flex-1 text-right">
                     <h2 className="text-lg sm:text-2xl font-bold text-primary-sky truncate">
                       {team.name}
                     </h2>
@@ -307,6 +300,13 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                       </p>
                     )}
                   </div>
+                  {team.avatar && (
+                    <img
+                      src={team.avatar}
+                      alt={team.name}
+                      className="w-12 h-12 sm:w-16 sm:h-16 rounded border-2 border-primary-cerulean flex-shrink-0"
+                    />
+                  )}
                 </div>
 
                 <div className="flex gap-2 items-center justify-between sm:justify-start">
@@ -366,13 +366,8 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   {team.invite_code}
                 </p>
                 <p className="text-primary-aero text-sm mt-2 text-center">
-                  این کد را با دوستان خود به اشتراک بگذارید
+                  این کد را به هم‌گروهی‌های خود ارسال کنید
                 </p>
-                {team.is_leader && (
-                  <p className="text-yellow-400 text-xs mt-2 text-center">
-                    💡 می‌توانید کد را باطل و یک کد جدید دریافت کنید
-                  </p>
-                )}
               </div>
             )}
 
@@ -400,8 +395,11 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
             <div className="space-y-2 sm:space-y-3">
               {/* Leader */}
               <div className="bg-primary-midnight rounded p-3 sm:p-4 border border-primary-cerulean">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="pixel-btn pixel-btn-primary px-2 py-1 text-xs sm:text-sm whitespace-nowrap">
+                    سرتیم
+                  </span>
+                  <div className="min-w-0 flex-1 text-right">
                     <p className="text-primary-sky font-bold text-sm sm:text-base truncate">
                       {team.leader.first_name} {team.leader.last_name}
                     </p>
@@ -409,9 +407,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                       {team.leader.email}
                     </p>
                   </div>
-                  <span className="pixel-btn pixel-btn-primary px-2 py-1 text-xs sm:text-sm whitespace-nowrap">
-                    سرتیم
-                  </span>
                 </div>
               </div>
 
@@ -421,8 +416,13 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   key={member.id}
                   className="bg-primary-midnight rounded p-3 sm:p-4 border border-primary-cerulean"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    {!member.has_paid && (
+                      <span className="pixel-btn pixel-btn-warning px-2 py-1 text-xs whitespace-nowrap">
+                        در انتظار پرداخت
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1 text-right">
                       <p className="text-primary-sky font-bold text-sm sm:text-base truncate">
                         {member.user.first_name} {member.user.last_name}
                       </p>
@@ -430,11 +430,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                         {member.user.email}
                       </p>
                     </div>
-                    {!member.has_paid && (
-                      <span className="pixel-btn pixel-btn-warning px-2 py-1 text-xs whitespace-nowrap">
-                        در انتظار پرداخت
-                      </span>
-                    )}
                   </div>
                 </div>
               ))}
@@ -551,7 +546,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
               <h2 className="text-2xl font-bold text-primary-sky mb-4">🔗 پیوستن به تیم</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-primary-sky font-bold mb-2">کد دعوت *</label>
+                  <label className="block text-primary-sky font-bold mb-2">کد دعوت</label>
                   <input
                     type="text"
                     value={inviteCode}
