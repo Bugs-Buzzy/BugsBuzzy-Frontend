@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   FaCheckCircle,
   FaUser,
@@ -9,7 +10,7 @@ import {
 } from 'react-icons/fa';
 
 import PixelFrame from '@/components/PixelFrame';
-import { Workshop } from '@/services/workshop.service';
+import { Workshop, workshopService } from '@/services/workshop.service';
 
 const mockWorkshops: Workshop[] = [
   {
@@ -171,7 +172,7 @@ const PresentationItem = ({ workshop }: { workshop: Workshop }) => {
   return (
     <PixelFrame
       key={workshop.id}
-      className="bg-gradient-to-br from-primary-oxfordblue to-blue-900 border-2 border-primary-sky border-opacity-20 hover:border-opacity-40 transition-all duration-300 px-7 py-2"
+      className="bg-primary-oxfordblue bg-opacity-90 transition-all duration-300 px-7 py-2"
     >
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row justify-between items-start gap-4 mb-4">
@@ -267,19 +268,61 @@ const PresentationItem = ({ workshop }: { workshop: Workshop }) => {
 };
 
 export default function Presentations() {
+  const [workshops, setWorkshops] = useState<Workshop[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+      try {
+        setLoading(true);
+        const data = await workshopService.getWorkshops();
+        setWorkshops(data);
+      } catch (err) {
+        setError('خطا در دریافت اطلاعات کارگاه‌ها');
+        console.error('Error fetching workshops:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkshops();
+  }, []);
+
   return (
     <div className="space-y-6">
-      <PixelFrame className="bg-gradient-to-r from-primary-oxfordblue to-blue-900 border-2 border-primary-sky border-opacity-30">
+      <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary-sky mb-4 drop-shadow-lg">
-            🎯 کارگاه‌ها و ارائه‌ها
+            کارگاه‌ها و ارائه‌ها
           </h1>
           <p className="text-primary-aero text-lg">لیست کامل کارگاه‌ها و ارائه‌های آموزشی رویداد</p>
         </div>
       </PixelFrame>
 
       <div className="space-y-6">
-        {mockWorkshops.map((workshop) => (
+        {loading && (
+          <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-sky mx-auto"></div>
+              <p className="text-primary-aero mt-4">در حال دریافت اطلاعات...</p>
+            </div>
+          </PixelFrame>
+        )}
+        {error && (
+          <PixelFrame className="bg-red-900 bg-opacity-90 border-2 border-red-500">
+            <div className="text-center py-4">
+              <p className="text-red-300">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="pixel-btn pixel-btn-danger mt-3"
+              >
+                تلاش مجدد
+              </button>
+            </div>
+          </PixelFrame>
+        )}
+        {workshops.map((workshop) => (
           <PresentationItem workshop={workshop} />
         ))}
       </div>
