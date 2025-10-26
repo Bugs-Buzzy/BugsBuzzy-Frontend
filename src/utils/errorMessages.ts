@@ -222,13 +222,18 @@ export const extractFieldErrors = (
   const hasFieldErrors =
     errorData &&
     typeof errorData === 'object' &&
-    Object.keys(errorData).some((key) => !['message', 'error', 'status'].includes(key));
+    Object.keys(errorData).some(
+      (key) => !['message', 'error', 'status', 'detail', 'code', 'messages'].includes(key),
+    );
 
   if (hasFieldErrors) {
     // فقط فیلدهایی که خطا دارند
     const fieldErrorsOnly: Record<string, string[]> = {};
     Object.entries(errorData).forEach(([key, value]) => {
-      if (!['message', 'error', 'status'].includes(key) && Array.isArray(value)) {
+      if (
+        !['message', 'error', 'status', 'detail', 'code', 'messages'].includes(key) &&
+        Array.isArray(value)
+      ) {
         fieldErrorsOnly[key] = value;
       }
     });
@@ -240,10 +245,11 @@ export const extractFieldErrors = (
     };
   }
 
+  // استفاده از extractErrorMessage برای ترجمه صحیح
+  const translatedMessage = extractErrorMessage(errorData);
   return {
     fieldErrors: {},
-    message:
-      translateError(errorData?.message) || translateError(errorData?.error) || 'خطای نامشخص',
+    message: translatedMessage || 'خطای نامشخص',
   };
 };
 
