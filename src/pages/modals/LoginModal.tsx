@@ -12,13 +12,11 @@ import {
   FaRedo,
   FaClock,
   FaEdit,
-  FaArrowLeft,
   FaTimes,
   FaExclamationTriangle,
 } from 'react-icons/fa';
 
-import PixelModal from './PixelModal';
-
+import PixelModal from '@/components/modals/PixelModal';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
@@ -62,14 +60,30 @@ export default function LoginModal({ onClose }: LoginModalProps) {
     setLoading(true);
     setError('');
     try {
-      await authService.sendCode({ email });
-      setStep('code');
-      setResendTimer(120);
+      // اگر فلوی فراموشی رمز است، مستقیم کد ارسال کن
+      if (flow === 'forgot') {
+        await authService.sendCode({ email });
+        setStep('code');
+        setResendTimer(120);
+      } else {
+        // در غیر این صورت، ابتدا چک می‌کنیم که آیا کاربر رمز عبور دارد یا نه
+        const checkResponse = await authService.checkEmail({ email });
+
+        // اگر کاربر وجود دارد و رمز عبور قابل استفاده دارد
+        if (checkResponse.exists && checkResponse.has_usable_password) {
+          setStep('password-login');
+        } else {
+          // در غیر این صورت کد تایید ارسال می‌کنیم
+          await authService.sendCode({ email });
+          setStep('code');
+          setResendTimer(120);
+        }
+      }
     } catch (err) {
-      console.error('Send code error:', err);
+      console.error('Check email error:', err);
       const apiError = err as ApiError;
       const { message } = extractFieldErrors(apiError.errors);
-      setError(message || 'خطا در ارسال کد');
+      setError(message || 'خطا در بررسی ایمیل');
     } finally {
       setLoading(false);
     }
@@ -302,7 +316,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
       <div className="grid grid-cols-2 gap-2 pt-3 mt-3 border-t border-gray-700">
         <button
           onClick={handleSendCode}
-          className={`pixel-btn text-xs py-2 px-3 transition-colors ${
+          className={`pixel-btn text-xs py-2 px-3 transition-colors min-h-[2.5rem] ${
             resendTimer > 0
               ? 'bg-gray-800 text-gray-500 cursor-not-allowed border-gray-700'
               : 'bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky'
@@ -327,7 +341,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         {flow === 'normal' && (
           <button
             onClick={() => setStep('password-login')}
-            className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
+            className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 min-h-[2.5rem]"
             disabled={loading}
           >
             <div className="flex items-center justify-center gap-1.5">
@@ -339,7 +353,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
 
         <button
           onClick={() => setStep('email')}
-          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 col-span-2"
+          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 col-span-2 min-h-[2.5rem]"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
@@ -417,7 +431,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
             setPassword('');
             setError('');
           }}
-          className="pixel-btn bg-primary-oxfordblue border-secondary-orangePantone text-secondary-ramzinex hover:text-secondary-orangeCrayola transition-colors text-xs py-2 px-3"
+          className="pixel-btn bg-primary-oxfordblue border-secondary-orangePantone text-secondary-ramzinex hover:text-secondary-orangeCrayola transition-colors text-xs py-2 px-3 min-h-[2.5rem]"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
@@ -427,17 +441,29 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         </button>
 
         <button
-          onClick={() => {
-            setStep('code');
+          onClick={async () => {
             setPassword('');
             setError('');
+            setLoading(true);
+            try {
+              await authService.sendCode({ email });
+              setStep('code');
+              setResendTimer(120);
+            } catch (err) {
+              console.error('Send code error:', err);
+              const apiError = err as ApiError;
+              const { message } = extractFieldErrors(apiError.errors);
+              toast.error(message || 'خطا در ارسال کد');
+            } finally {
+              setLoading(false);
+            }
           }}
-          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3"
+          className="pixel-btn bg-primary-oxfordblue border-primary-cerulean text-primary-aero hover:text-primary-sky transition-colors text-xs py-2 px-3 min-h-[2.5rem]"
           disabled={loading}
         >
           <div className="flex items-center justify-center gap-1.5">
-            <FaArrowLeft className="text-xs" />
-            <span>بازگشت</span>
+            <FaSortNumericDown className="text-xs" />
+            <span>ورود با کد تایید</span>
           </div>
         </button>
       </div>

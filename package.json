@@ -22,10 +22,14 @@
   },
   "dependencies": {
     "framer-motion": "^12.23.24",
+    "katex": "^0.16.25",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.9.4"
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.9.4",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

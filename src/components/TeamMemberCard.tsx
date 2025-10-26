@@ -23,7 +23,7 @@ export default function TeamMemberCard({ member }: TeamMemberCardProps) {
   const getImagePath = () => {
     if (!member.image) return null;
     try {
-      return new URL(`../../assets/images/team/${member.image}`, import.meta.url).href;
+      return new URL(`/src/assets/images/team/${member.image}`, import.meta.url).href;
     } catch {
       return null;
     }

@@ -109,6 +109,18 @@ const errorTranslations: Record<string, string> = {
   'Left team successfully': 'با موفقیت از تیم خارج شدید',
   'Team disbanded successfully': 'تیم با موفقیت منحل شد',
   'Invite code revoked and regenerated': 'کد دعوت باطل و کد جدید ساخته شد',
+
+  // Submission Errors
+  'You are not in an active team': 'شما عضو تیم فعالی نیستید',
+  'Your team must be complete to submit': 'تیم شما باید کامل باشد تا بتوانید ارسال کنید',
+  'Phase is required': 'فاز الزامی است',
+  'Content is required': 'متن ارسالی الزامی است',
+  'Phase 0 is not active yet': 'فاز ۰ هنوز فعال نشده است',
+  'Phase 1 is not active yet': 'فاز ۱ هنوز فعال نشده است',
+  'Phase 2 is not active yet': 'فاز ۲ هنوز فعال نشده است',
+  'Phase 3 is not active yet': 'فاز ۳ هنوز فعال نشده است',
+  'Phase 4 is not active yet': 'فاز ۴ هنوز فعال نشده است',
+
   message: '',
 
   // Legacy support for old messages
@@ -180,12 +192,19 @@ export const extractErrorMessage = (error: any): string => {
   }
 
   // Handle error or message field
-  return translateError(error.message || error.error || 'خطای نامشخص');
+  const rawMessage = error.message || error.error || 'خطای نامشخص';
+  console.log('🔍 extractErrorMessage - rawMessage:', rawMessage);
+  const translated = translateError(rawMessage);
+  console.log('🔍 extractErrorMessage - translated:', translated);
+  return translated;
 };
 
 export const translateError = (error?: string): string => {
   if (!error) return '';
-  return errorTranslations[error] || error;
+  const translated = errorTranslations[error];
+  if (translated) return translated;
+  // اگر ترجمه پیدا نشد، همان متن انگلیسی را برگردان (نه "خطای نامشخص")
+  return error;
 };
 
 export const getFieldName = (field: string): string => {
@@ -210,13 +229,18 @@ export const extractFieldErrors = (
   const hasFieldErrors =
     errorData &&
     typeof errorData === 'object' &&
-    Object.keys(errorData).some((key) => !['message', 'error', 'status'].includes(key));
+    Object.keys(errorData).some(
+      (key) => !['message', 'error', 'status', 'detail', 'code', 'messages'].includes(key),
+    );
 
   if (hasFieldErrors) {
     // فقط فیلدهایی که خطا دارند
     const fieldErrorsOnly: Record<string, string[]> = {};
     Object.entries(errorData).forEach(([key, value]) => {
-      if (!['message', 'error', 'status'].includes(key) && Array.isArray(value)) {
+      if (
+        !['message', 'error', 'status', 'detail', 'code', 'messages'].includes(key) &&
+        Array.isArray(value)
+      ) {
         fieldErrorsOnly[key] = value;
       }
     });
@@ -228,10 +252,11 @@ export const extractFieldErrors = (
     };
   }
 
+  // استفاده از extractErrorMessage برای ترجمه صحیح
+  const translatedMessage = extractErrorMessage(errorData);
   return {
     fieldErrors: {},
-    message:
-      translateError(errorData?.message) || translateError(errorData?.error) || 'خطای نامشخص',
+    message: translatedMessage || 'خطای نامشخص',
   };
 };
 

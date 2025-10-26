@@ -1,15 +1,22 @@
 import { useRef, useEffect, useState } from 'react';
 
-import GameJamFloor from '@/components/floors/GameJamFloor';
-import InPersonFloor from '@/components/floors/InPersonFloor';
-import LandingFloor from '@/components/floors/LandingFloor';
-import SponsorsFloor from '@/components/floors/SponsorsFloor';
-import TeamFloor from '@/components/floors/TeamFloor';
-import WorkshopsFloor from '@/components/floors/WorkshopsFloor';
 import HUD from '@/components/HUD';
+import GameJamFloor from '@/pages/floors/GameJamFloor';
+import InPersonFloor from '@/pages/floors/InPersonFloor';
+import LandingFloor from '@/pages/floors/LandingFloor';
+import SponsorsFloor from '@/pages/floors/SponsorsFloor';
+import TeamFloor from '@/pages/floors/TeamFloor';
+import WorkshopsFloor from '@/pages/floors/WorkshopsFloor';
 import '@/styles/gameworld.css';
 
 const floorNames = ['', 'inperson', 'gamejam', 'workshops', 'sponsors', 'team'];
+
+const WHEEL_DELAY = 300;
+const SNAP_WHEEL_DELAY = 300;
+const SNAP_TOUCH_DELAY = 50;
+const SCROLL_DEBOUNCE_DELAY = 100;
+const HASH_CHANGE_DELAY = 50;
+const SCROLL_THRESHOLD = 0.1;
 
 export default function GameWorld() {
   const floorRefs = useRef<(HTMLElement | null)[]>([]);
@@ -31,7 +38,6 @@ export default function GameWorld() {
     if (!container) return;
 
     let lastWheelTime = 0;
-    const wheelDelay = 600;
 
     const handleWheel = (e: WheelEvent) => {
       const target = e.target as HTMLElement;
@@ -44,7 +50,7 @@ export default function GameWorld() {
       if (isSnapping.current) return;
 
       const now = Date.now();
-      if (now - lastWheelTime < wheelDelay) return;
+      if (now - lastWheelTime < WHEEL_DELAY) return;
 
       if (Math.abs(e.deltaY) > 10) {
         lastWheelTime = now;
@@ -61,7 +67,7 @@ export default function GameWorld() {
           scrollToFloor(targetFloor);
           setTimeout(() => {
             isSnapping.current = false;
-          }, 500);
+          }, SNAP_WHEEL_DELAY);
         } else {
           isSnapping.current = false;
         }
@@ -78,7 +84,6 @@ export default function GameWorld() {
       const currentPosition = scrollPosition / viewportHeight;
       let targetFloor = Math.round(currentPosition);
 
-      // محدود کردن به یک طبقه در هر اسکرول
       const diff = targetFloor - lastFloor.current;
       if (Math.abs(diff) > 1) {
         targetFloor = lastFloor.current + (diff > 0 ? 1 : -1);
@@ -89,12 +94,12 @@ export default function GameWorld() {
       scrollTimeout.current = setTimeout(() => {
         const scrollDiff = Math.abs(currentPosition - targetFloor);
 
-        if (scrollDiff > 0.05) {
+        if (scrollDiff > SCROLL_THRESHOLD) {
           isSnapping.current = true;
           scrollToFloor(targetFloor);
           setTimeout(() => {
             isSnapping.current = false;
-          }, 200);
+          }, SNAP_TOUCH_DELAY);
         } else {
           if (targetFloor !== lastFloor.current) {
             lastFloor.current = targetFloor;
@@ -102,7 +107,7 @@ export default function GameWorld() {
             window.history.replaceState(null, '', `#${floorNames[targetFloor]}`);
           }
         }
-      }, 150);
+      }, SCROLL_DEBOUNCE_DELAY);
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
@@ -124,7 +129,7 @@ export default function GameWorld() {
           setCurrentFloor(floorIndex);
           setTimeout(() => {
             floorRefs.current[floorIndex]?.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
+          }, HASH_CHANGE_DELAY);
         }
       }
     };

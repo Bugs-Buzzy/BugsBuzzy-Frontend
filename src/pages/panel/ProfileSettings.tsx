@@ -387,7 +387,7 @@ export default function ProfileSettings() {
                         ? '⚠️ ضعیف'
                         : passwordStrength === 'medium'
                           ? '✓ متوسط'
-                          : '✓✓ قوی'}
+                          : '✓ قوی'}
                     </span>
                   </div>
                 )}

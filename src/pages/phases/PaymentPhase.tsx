@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 
 import PixelFrame from '@/components/PixelFrame';
 import { useToast } from '@/context/ToastContext';
@@ -33,6 +34,7 @@ export default function PaymentPhase({
   const [originalPrice, setOriginalPrice] = useState<number | null>(null);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState<string | null>(null);
   const [priceLoading, setPriceLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,14 +52,12 @@ export default function PaymentPhase({
   }, []);
 
   useEffect(() => {
-    if (purchasedItems.size > 0) {
-      calculatePrice();
+    if (!purchasedLoaded) {
+      return;
     }
-  }, [purchasedItems]);
 
-  useEffect(() => {
     calculatePrice();
-  }, [selectedAdditionalItems]);
+  }, [selectedAdditionalItems, purchasedItems, purchasedLoaded]);
 
   const fetchPurchasedItems = async () => {
     try {
@@ -127,6 +127,10 @@ export default function PaymentPhase({
   };
 
   const calculatePrice = async () => {
+    if (!purchasedLoaded) {
+      return;
+    }
+
     const unpurchasedItems = getUnpurchasedItems();
 
     // If all items are purchased, no need to calculate
@@ -134,6 +138,7 @@ export default function PaymentPhase({
       setCalculatedPrice(0);
       setOriginalPrice(0);
       setPriceLoading(false);
+      setAppliedDiscountCode(null);
       return;
     }
 
@@ -144,6 +149,7 @@ export default function PaymentPhase({
       setOriginalPrice(result.amount);
       setDiscountApplied(false);
       setDiscountPercentage(0);
+      setAppliedDiscountCode(null);
     } catch (err: any) {
       console.error('Price calculation error:', err);
       const apiError = err as ApiError;
@@ -179,13 +185,18 @@ export default function PaymentPhase({
     try {
       const result = await paymentsService.applyDiscount(discountCode, unpurchasedItems);
 
-      if (!originalPrice) {
-        setOriginalPrice(calculatedPrice);
+      if (result.discount_applied) {
+        if (originalPrice === null && calculatedPrice !== null) {
+          setOriginalPrice(calculatedPrice);
+        }
+      } else {
+        setOriginalPrice(result.amount);
       }
 
       setCalculatedPrice(result.amount);
       setDiscountApplied(result.discount_applied);
       setDiscountPercentage(result.discount_percentage);
+      setAppliedDiscountCode(result.discount_applied ? discountCode.trim().toUpperCase() : null);
 
       if (result.discount_applied) {
         const successMsg = `کد تخفیف با موفقیت اعمال شد! (${result.discount_percentage}% تخفیف)`;
@@ -217,6 +228,7 @@ export default function PaymentPhase({
       }
 
       setDiscountApplied(false);
+      setAppliedDiscountCode(null);
     } finally {
       setPriceLoading(false);
     }
@@ -227,6 +239,66 @@ export default function PaymentPhase({
 
     if (unpurchasedItems.length === 0) {
       const errorMsg = 'همه آیتم‌ها قبلاً خریداری شده‌اند';
+      setError(errorMsg);
+      toast.warning(errorMsg);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const latestPrice = await paymentsService.getPrice(unpurchasedItems);
+      const expectedBasePrice = discountApplied ? originalPrice : calculatedPrice;
+
+      if (expectedBasePrice === null) {
+        setOriginalPrice(latestPrice.amount);
+        setCalculatedPrice(latestPrice.amount);
+        setDiscountApplied(false);
+        setDiscountPercentage(0);
+        setAppliedDiscountCode(null);
+        const warningMsg = 'لطفاً دوباره محاسبه و سپس پرداخت را انجام دهید';
+        setError(warningMsg);
+        toast.warning(warningMsg);
+        setLoading(false);
+        return;
+      }
+
+      // Check if price changed
+      if (latestPrice.amount !== expectedBasePrice) {
+        setOriginalPrice(latestPrice.amount);
+        setCalculatedPrice(latestPrice.amount);
+        if (discountApplied) {
+          setDiscountApplied(false);
+          setDiscountPercentage(0);
+          setAppliedDiscountCode(null);
+        }
+        const warningMsg = discountApplied
+          ? 'مبلغ پایه تغییر کرده است. لطفاً کد تخفیف را دوباره اعمال کنید'
+          : 'مبلغ به‌روز شد. لطفاً مجدداً تایید و پرداخت کنید';
+        setError(warningMsg);
+        toast.warning(warningMsg);
+        setLoading(false);
+        return;
+      }
+    } catch (err: any) {
+      console.error('Price re-validation error:', err);
+      const apiError = err as ApiError;
+      if (apiError.status === 404 || apiError.status === 410) {
+        const errorMsg = 'ثبت‌نام در حال حاضر بسته است';
+        setError(errorMsg);
+        toast.error(errorMsg);
+        setBaseItemAvailable(false);
+        setLoading(false);
+        return;
+      }
+      const errorMsg = 'خطا در بررسی قیمت. لطفاً دوباره تلاش کنید';
+      setError(errorMsg);
+      toast.error(errorMsg);
+      setLoading(false);
+      return;
+    }
+
+    if (calculatedPrice === null || calculatedPrice === 0) {
+      const errorMsg = 'لطفاً صبر کنید تا قیمت محاسبه شود';
       setError(errorMsg);
       toast.warning(errorMsg);
       return;
@@ -248,13 +320,13 @@ export default function PaymentPhase({
             : undefined,
         items: unpurchasedItems,
         amount: calculatedPrice,
-        discount_code: discountCode || undefined,
+        discount_code: appliedDiscountCode ?? undefined,
         returnUrl: '/panel/inperson',
       });
 
       const payment = await paymentsService.createPayment({
         items: unpurchasedItems,
-        discount_code: discountCode || undefined,
+        discount_code: appliedDiscountCode ?? undefined,
       });
 
       window.location.href = payment.redirect_url;
@@ -271,6 +343,8 @@ export default function PaymentPhase({
   };
 
   const toggleAdditionalItem = (itemId: string) => {
+    const discountWillReset = discountApplied || appliedDiscountCode;
+
     const newSet = new Set(selectedAdditionalItems);
     if (newSet.has(itemId)) {
       newSet.delete(itemId);
@@ -278,6 +352,13 @@ export default function PaymentPhase({
       newSet.add(itemId);
     }
     setSelectedAdditionalItems(newSet);
+
+    if (discountWillReset) {
+      setDiscountApplied(false);
+      setDiscountPercentage(0);
+      setAppliedDiscountCode(null);
+      toast.info('کد تخفیف به دلیل تغییر گزینه‌ها حذف شد. در صورت نیاز دوباره اعمال کنید');
+    }
   };
 
   // Check if registration is closed
@@ -315,7 +396,7 @@ export default function PaymentPhase({
         {hasBaseItemPurchased() && (
           <div className="bg-green-900 bg-opacity-20 rounded p-4 mb-4 border border-green-600">
             <div className="flex items-center gap-2 text-green-300">
-              <span className="text-2xl">✅</span>
+              <FaCheckCircle className="text-2xl" />
               <div className="flex-1">
                 <p className="font-bold">{baseItemLabel} - پرداخت شده</p>
                 <p className="text-sm text-green-400">شما قبلاً این آیتم را خریداری کرده‌اید</p>
@@ -353,7 +434,12 @@ export default function PaymentPhase({
                     }`}
                   >
                     {item.label}
-                    {isPurchased && <span className="text-xs mr-2">✓ خریداری شده</span>}
+                    {isPurchased && (
+                      <span className="text-xs mr-2 inline-flex items-center gap-1">
+                        <FaCheck />
+                        خریداری شده
+                      </span>
+                    )}
                   </span>
                   {itemPrices[item.id] > 0 && !isPurchased && (
                     <span className="text-primary-aero text-sm font-pixel" dir="ltr">
@@ -380,6 +466,9 @@ export default function PaymentPhase({
                     setDiscountApplied(false);
                     calculatePrice();
                   }
+                  if (appliedDiscountCode) {
+                    setAppliedDiscountCode(null);
+                  }
                   if (fieldErrors.code) {
                     const { code: _code, ...rest } = fieldErrors;
                     setFieldErrors(rest);
@@ -404,7 +493,7 @@ export default function PaymentPhase({
           </div>
           {discountApplied && !fieldErrors.code && (
             <p className="text-green-400 text-sm mt-2 flex items-center gap-1">
-              <span>✅</span>
+              <FaCheckCircle />
               <span>کد تخفیف اعمال شد</span>
             </p>
           )}
@@ -429,7 +518,8 @@ export default function PaymentPhase({
               <div className="flex justify-between text-green-400 text-sm opacity-60">
                 <span>• {baseItemLabel}</span>
                 <span className="font-pixel flex items-center gap-1" dir="ltr">
-                  <span>✓ پرداخت شده</span>
+                  <FaCheck />
+                  <span>پرداخت شده</span>
                 </span>
               </div>
             )}
@@ -449,7 +539,8 @@ export default function PaymentPhase({
                   <span className="font-pixel" dir="ltr">
                     {isPurchased ? (
                       <span className="flex items-center gap-1">
-                        <span>✓ پرداخت شده</span>
+                        <FaCheck />
+                        <span>پرداخت شده</span>
                       </span>
                     ) : itemPrices[itemId] > 0 ? (
                       `${formatPrice(itemPrices[itemId])}`
@@ -539,7 +630,7 @@ export default function PaymentPhase({
           <div className="space-y-3">
             <div className="bg-green-900 bg-opacity-30 rounded p-4 border border-green-600">
               <p className="text-green-300 text-center flex items-center justify-center gap-2">
-                <span>✅</span>
+                <FaCheckCircle className="text-lg" />
                 <span>همه موارد قبلاً پرداخت شده است.</span>
               </p>
             </div>
