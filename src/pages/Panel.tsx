@@ -37,12 +37,12 @@ export default function Panel() {
   ];
 
   return (
-    <div className="relative h-screen bg-gradient-to-br from-primary-oxfordblue via-primary-midnight to-primary-cerulean p-[5px]">
+    <div className="relative min-h-screen md:h-screen bg-gradient-to-br from-primary-oxfordblue via-primary-midnight to-primary-cerulean p-[5px]">
       <ParticlesCanvas />
-      <div className="relative z-10 flex flex-col md:flex-row h-full gap-[5px]">
+      <div className="relative z-10 flex flex-col md:flex-row gap-[5px] md:h-full md:min-h-0">
         {/* Sidebar - Desktop & Mobile */}
-        <aside className="md:w-64 md:flex-shrink-0 bg-black bg-opacity-70 backdrop-blur-sm border-l-4 border-primary-process md:border-l-0 md:border-r-4 md:overflow-y-auto rounded-lg">
-          <PixelFrame className="h-full flex flex-col">
+        <aside className="md:w-64 md:flex-shrink-0 bg-black bg-opacity-70 backdrop-blur-sm border-l-4 border-primary-process md:border-l-0 md:border-r-4 rounded-lg">
+          <PixelFrame className="md:h-full flex flex-col">
             {/* Header */}
             <div className="p-4 md:p-6 border-b border-primary-cerulean border-opacity-30">
               <h1 className="text-2xl md:text-3xl font-bold text-primary-sky font-pixel">
@@ -54,7 +54,7 @@ export default function Panel() {
             </div>
 
             {/* Navigation - Horizontal scroll on mobile, vertical on desktop */}
-            <nav className="flex md:flex-col gap-2 p-2 md:p-4 overflow-x-auto md:overflow-x-visible flex-1 scrollbar-thin scrollbar-thumb-primary-cerulean scrollbar-track-transparent">
+            <nav className="flex md:flex-col gap-2 p-2 md:p-4 overflow-x-auto md:overflow-visible md:flex-1 scrollbar-thin scrollbar-thumb-primary-cerulean scrollbar-track-transparent">
               {menuItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
@@ -102,7 +102,7 @@ export default function Panel() {
           </PixelFrame>
         </aside>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 md:h-screen rounded-lg">
+        <main className="flex-1 md:min-h-0 overflow-y-visible md:overflow-y-auto p-4 md:p-8 rounded-lg">
           <Outlet />
         </main>
       </div>

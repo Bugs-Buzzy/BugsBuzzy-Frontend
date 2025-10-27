@@ -284,7 +284,7 @@ export default function Presentations() {
         ))}
       </div>
 
-      {workshops.length === 0 && (
+      {!loading && workshops.length === 0 && (
         <PixelFrame className="bg-gradient-to-r from-gray-800 to-gray-700 border-2 border-gray-600">
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📚</div>
