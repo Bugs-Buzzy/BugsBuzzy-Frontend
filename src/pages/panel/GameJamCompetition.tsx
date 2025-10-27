@@ -65,8 +65,14 @@ export default function GameJamCompetition() {
         teamResponse.team.status === 'completed' ||
         teamResponse.team.status === 'attended'
       ) {
-        // Phase 2: Team completed/attended (reached MIN_MEMBERS and can compete)
-        actualPhase = 2;
+        // Team is complete, check if competition phase is active
+        if (competition.phase_active) {
+          // Phase 2: Competition is active, can compete
+          actualPhase = 2;
+        } else {
+          // Competition not active yet, stay in team phase and wait
+          actualPhase = 0;
+        }
       } else {
         // Team is active but not complete yet (need more members)
         actualPhase = 0;
@@ -102,11 +108,15 @@ export default function GameJamCompetition() {
       return 'completed';
     }
 
-    // Phase 2: Competition (only available when team is complete)
+    // Phase 2: Competition (only available when team is complete AND phase is active)
     if (phaseId === 2) {
       if (!myTeam) return 'locked';
       if (myTeam.status === 'completed' || myTeam.status === 'attended') {
-        return competitionStatus?.phase_active ? 'available' : 'locked';
+        if (competitionStatus?.phase_active) {
+          return 'available';
+        }
+        // Team complete but phase not active yet
+        return 'locked';
       }
       return 'locked';
     }

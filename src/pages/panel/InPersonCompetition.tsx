@@ -60,11 +60,13 @@ export default function InPersonCompetition() {
       } else if (!hasTeam || !teamComplete) {
         actualPhase = 1;
       } else {
+        // Team is complete, check if any phase is active
         const activePhase = competitionStatus.phases.find((p) => p.active);
         if (activePhase) {
           actualPhase = activePhase.id + 2;
         } else {
-          actualPhase = 2;
+          // No phase active yet, stay in team phase (phase 1) and wait
+          actualPhase = 1;
         }
       }
 
