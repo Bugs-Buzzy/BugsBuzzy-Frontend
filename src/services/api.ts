@@ -113,7 +113,7 @@ class ApiClient {
       });
 
       // Better error message extraction
-      let errorMessage = errorData.detail || errorData.message || errorData.error;
+      let errorMessage = errorData.message || errorData.detail || errorData.error;
 
       // Handle nested messages array (JWT errors)
       if (errorData.messages && Array.isArray(errorData.messages)) {

@@ -67,6 +67,10 @@ class GameJamService {
     return apiClient.post<{ message: string }>(`/gamejam/${teamId}/leave/`);
   }
 
+  async deleteTeam(teamId: number): Promise<{ message: string }> {
+    return apiClient.delete<{ message: string }>(`/gamejam/${teamId}/delete/`);
+  }
+
   async updateTeam(
     teamId: number,
     data: { name: string; description?: string },

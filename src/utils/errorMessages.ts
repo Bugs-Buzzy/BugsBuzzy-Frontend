@@ -112,11 +112,14 @@ const errorTranslations: Record<string, string> = {
   'You already have a gamejam team': 'شما قبلاً یک تیم گیم‌جم دارید',
   'Online competition phase is not active': 'فاز رقابت مجازی فعال نیست',
   'Team leader cannot leave the team': 'سرتیم نمی‌تواند از تیم خارج شود',
+  'Only inactive teams can be deleted. Team has already been activated.':
+    'فقط تیم‌های غیرفعال قابل حذف هستند. تیم شما فعال شده است',
   'You are not a member of this team': 'شما عضو این تیم نیستید',
 
   // General Team Messages
   'Left team successfully': 'با موفقیت از تیم خارج شدید',
   'Team disbanded successfully': 'تیم با موفقیت منحل شد',
+  'Team deleted successfully': 'تیم با موفقیت حذف شد',
   'Invite code revoked and regenerated': 'کد دعوت باطل و کد جدید ساخته شد',
 
   // Submission Errors
