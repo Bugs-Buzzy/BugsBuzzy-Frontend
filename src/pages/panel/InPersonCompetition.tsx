@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import PhaseContent from '@/components/competition/phases/PhaseContent';
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
@@ -161,8 +162,8 @@ export default function InPersonCompetition() {
   if (loading) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-        <div className="text-center py-8">
-          <p className="text-primary-aero">در حال بارگذاری...</p>
+        <div className="py-8">
+          <Loading text="در حال بارگذاری..." />
         </div>
       </PixelFrame>
     );

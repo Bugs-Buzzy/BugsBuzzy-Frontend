@@ -18,6 +18,7 @@ import {
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
 import { inpersonService, type InPersonTeam } from '@/services/inperson.service';
@@ -108,8 +109,8 @@ export default function Dashboard() {
   if (loading) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-        <div className="text-center py-8">
-          <p className="text-primary-aero">در حال بارگذاری...</p>
+        <div className="py-8">
+          <Loading text="در حال بارگذاری..." />
         </div>
       </PixelFrame>
     );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
@@ -557,7 +558,7 @@ export default function PaymentPhase({
               <div className="flex justify-between text-primary-aero">
                 <span>جمع:</span>
                 {priceLoading ? (
-                  <span>در حال محاسبه...</span>
+                  <Loading size="sm" layout="horizontal" text="در حال محاسبه..." />
                 ) : originalPrice !== null ? (
                   <span className="font-pixel" dir="ltr">
                     {formatPrice(originalPrice)}

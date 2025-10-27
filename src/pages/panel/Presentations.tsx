@@ -9,6 +9,7 @@ import {
   FaPlay,
 } from 'react-icons/fa';
 
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { Workshop, workshopService } from '@/services/workshop.service';
 
@@ -260,9 +261,8 @@ export default function Presentations() {
       <div className="space-y-6">
         {loading && (
           <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-sky mx-auto"></div>
-              <p className="text-primary-aero mt-4">در حال دریافت اطلاعات...</p>
+            <div className="py-8">
+              <Loading />
             </div>
           </PixelFrame>
         )}
@@ -280,7 +280,7 @@ export default function Presentations() {
           </PixelFrame>
         )}
         {workshops.map((workshop) => (
-          <PresentationItem workshop={workshop} />
+          <PresentationItem key={workshop.id} workshop={workshop} />
         ))}
       </div>
 
