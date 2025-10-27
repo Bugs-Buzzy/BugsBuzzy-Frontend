@@ -248,6 +248,10 @@ export default function GameJamCompetition() {
               baseItem="gamejam"
               baseItemLabel="ثبت‌نام گیم‌جم"
               onPaymentComplete={handlePaymentComplete}
+              teamId={myTeam.id}
+              onCancelPayment={() => {
+                loadStatus();
+              }}
             />
           </>
         )}

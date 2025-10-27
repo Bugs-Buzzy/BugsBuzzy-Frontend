@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaCheckCircle } from 'react-icons/fa';
+import { FaEdit, FaCheckCircle } from 'react-icons/fa';
 
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
@@ -27,7 +27,6 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRevokeModal, setShowRevokeModal] = useState(false);
 
   useEffect(() => {
@@ -206,33 +205,6 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
     }
   };
 
-  const handleDeleteTeam = async () => {
-    if (!team) return;
-
-    setLoading(true);
-    setError('');
-    try {
-      await gamejamService.deleteTeam(team.id);
-      setTeam(null);
-      setMembers([]);
-      setShowDeleteModal(false);
-      toast.success('تیم با موفقیت حذف شد');
-      await loadTeam();
-    } catch (err) {
-      console.error('Delete team error:', err);
-      const apiError = err as ApiError;
-
-      const rawError = apiError.error || apiError.message || 'خطا در حذف تیم';
-      const errorMessage = translateError(rawError);
-      const { message } = extractFieldErrors(apiError.errors);
-
-      setError(message || errorMessage);
-      toast.error(message || errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleRevokeInviteCode = async () => {
     if (!team) return;
 
@@ -301,31 +273,17 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                     {team.member_count}/{GAMEJAM_TEAM_CONFIG.MAX_MEMBERS}
                   </span>
                   {isLeader && (
-                    <div className="flex gap-1 sm:gap-2">
-                      <button
-                        onClick={handleOpenEditModal}
-                        className="pixel-btn pixel-btn-primary px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
-                        title={
-                          team.status === 'attended'
-                            ? 'تیم شرکت کرده قابل ویرایش نیست'
-                            : 'ویرایش تیم'
-                        }
-                        disabled={team.status === 'attended'}
-                      >
-                        <FaEdit className="text-sm sm:text-base" />
-                        <span className="hidden sm:inline text-xs">ویرایش</span>
-                      </button>
-                      {team.status === 'inactive' && (
-                        <button
-                          onClick={() => setShowDeleteModal(true)}
-                          className="pixel-btn pixel-btn-danger px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
-                          title="حذف تیم (قبل از پرداخت)"
-                        >
-                          <FaTrash className="text-sm sm:text-base" />
-                          <span className="hidden sm:inline text-xs">حذف</span>
-                        </button>
-                      )}
-                    </div>
+                    <button
+                      onClick={handleOpenEditModal}
+                      className="pixel-btn pixel-btn-primary px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
+                      title={
+                        team.status === 'attended' ? 'تیم شرکت کرده قابل ویرایش نیست' : 'ویرایش تیم'
+                      }
+                      disabled={team.status === 'attended'}
+                    >
+                      <FaEdit className="text-sm sm:text-base" />
+                      <span className="hidden sm:inline text-xs">ویرایش</span>
+                    </button>
                   )}
                 </div>
               </div>
@@ -654,52 +612,6 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                     setError('');
                   }}
                   className="pixel-btn pixel-btn-danger py-3 px-6"
-                  disabled={loading}
-                >
-                  انصراف
-                </button>
-              </div>
-            </div>
-          </div>
-        </PixelModal>
-      )}
-
-      {/* Delete Team Modal */}
-      {showDeleteModal && team && (
-        <PixelModal onClose={() => setShowDeleteModal(false)}>
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
-              <FaTrash />
-              <span>حذف تیم</span>
-            </h2>
-
-            <div className="space-y-4">
-              <div className="bg-red-900 bg-opacity-30 border border-red-500 rounded p-4">
-                <p className="text-red-300 text-sm">
-                  ⚠️ این عملیات برگشت‌پذیر نیست! تیم به طور کامل حذف خواهد شد.
-                </p>
-              </div>
-
-              <p className="text-primary-aero">
-                آیا از حذف تیم <span className="text-white font-bold">{team.name}</span> اطمینان
-                دارید؟
-              </p>
-
-              <p className="text-yellow-300 text-sm">
-                توجه: این گزینه فقط برای تیم‌هایی که هنوز پرداخت نکرده‌اند قابل استفاده است.
-              </p>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={handleDeleteTeam}
-                  disabled={loading}
-                  className="pixel-btn pixel-btn-danger py-3 px-6 flex-1"
-                >
-                  {loading ? 'در حال حذف...' : 'بله، حذف کن'}
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="pixel-btn pixel-btn-primary py-3 px-6"
                   disabled={loading}
                 >
                   انصراف

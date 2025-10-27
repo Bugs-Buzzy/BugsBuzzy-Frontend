@@ -66,9 +66,9 @@ class ApiClient {
   }
 
   private async handleResponse<T>(response: Response, retried = false): Promise<T> {
-    if (response.status === 401 && !retried) {
-      const errorData = await response.json().catch(() => ({}));
+    const errorData = await response.json().catch(() => ({}));
 
+    if (response.status === 401 && !retried) {
       // Check if token expired
       if (errorData.code === 'token_not_valid' || errorData.detail?.includes('expired')) {
         if (this.isRefreshing) {
@@ -104,8 +104,6 @@ class ApiClient {
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-
       console.error('API Error Response:', {
         status: response.status,
         url: response.url,
