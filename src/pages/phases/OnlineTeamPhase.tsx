@@ -37,24 +37,24 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
     loadTeam();
   }, []);
 
-  const hasCalledOnCompleteRef = useRef(false);
+  const completedTeamIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     // In GameJam, team must be 'completed' (reached MIN_MEMBERS) or 'attended' to proceed
-    // Only call once to prevent infinite loop
+    // Only call once per team completion to prevent infinite loop
     if (
       team &&
       (team.status === 'completed' || team.status === 'attended') &&
       onTeamComplete &&
-      !hasCalledOnCompleteRef.current
+      completedTeamIdRef.current !== team.id
     ) {
-      hasCalledOnCompleteRef.current = true;
+      completedTeamIdRef.current = team.id;
       onTeamComplete();
     }
 
-    // Reset flag when team becomes non-complete
+    // Reset flag when team becomes non-complete or changes
     if (team && team.status !== 'completed' && team.status !== 'attended') {
-      hasCalledOnCompleteRef.current = false;
+      completedTeamIdRef.current = null;
     }
   }, [team, onTeamComplete]);
 
