@@ -37,9 +37,9 @@ export default function Panel() {
   ];
 
   return (
-    <div className="relative min-h-screen md:h-screen bg-gradient-to-br from-primary-oxfordblue via-primary-midnight to-primary-cerulean p-[5px]">
+    <div className="relative h-svh md:h-screen box-border overflow-hidden bg-gradient-to-br from-primary-oxfordblue via-primary-midnight to-primary-cerulean p-[5px]">
       <ParticlesCanvas />
-      <div className="relative z-10 flex flex-col md:flex-row gap-[5px] md:h-full md:min-h-0">
+      <div className="relative z-10 flex flex-col md:flex-row h-full gap-[5px] overflow-y-auto md:overflow-hidden">
         {/* Sidebar - Desktop & Mobile */}
         <aside className="md:w-64 md:flex-shrink-0 bg-black bg-opacity-70 backdrop-blur-sm border-l-4 border-primary-process md:border-l-0 md:border-r-4 rounded-lg">
           <PixelFrame className="md:h-full flex flex-col">
@@ -102,7 +102,7 @@ export default function Panel() {
           </PixelFrame>
         </aside>
 
-        <main className="flex-1 md:min-h-0 overflow-y-visible md:overflow-y-auto p-4 md:p-8 rounded-lg">
+        <main className="flex-1 overflow-visible md:min-h-0 md:overflow-y-auto p-4 md:p-8 rounded-lg">
           <Outlet />
         </main>
       </div>

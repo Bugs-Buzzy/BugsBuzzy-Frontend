@@ -296,6 +296,13 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                       </p>
                     )}
                   </div>
+                  {team.avatar && (
+                    <img
+                      src={team.avatar}
+                      alt={team.name}
+                      className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover border-2 border-primary-cerulean flex-shrink-0"
+                    />
+                  )}
                 </div>
 
                 <div className="flex gap-2 items-center justify-between sm:justify-start">
