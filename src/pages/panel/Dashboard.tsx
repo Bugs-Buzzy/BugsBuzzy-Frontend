@@ -5,26 +5,38 @@ import {
   FaTrophy,
   FaGamepad,
   FaBullhorn,
-  FaDesktop,
   FaCheckCircle,
   FaTimesCircle,
   FaUsers,
   FaUtensils,
+  FaChalkboardTeacher,
+  FaUser,
+  FaCalendar,
+  FaClock,
+  FaMapMarker,
+  FaVideo,
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import { gamejamService, type OnlineTeam } from '@/services/gamejam.service';
 import { inpersonService, type InPersonTeam } from '@/services/inperson.service';
+import { workshopService, type Workshop } from '@/services/workshop.service';
 
 interface DashboardStats {
   profileCompleted: boolean;
   inPersonTeam: InPersonTeam | null;
   inPersonRegistered: boolean;
   inPersonPaid: boolean;
+  onlineTeam: OnlineTeam | null;
+  onlineRegistered: boolean;
   onlinePaid: boolean;
   purchasedItems: string[];
   totalSpent: number;
+  workshops: Workshop[];
+  nextWorkshop: Workshop | null;
 }
 
 export default function Dashboard() {
@@ -34,9 +46,13 @@ export default function Dashboard() {
     inPersonTeam: null,
     inPersonRegistered: false,
     inPersonPaid: false,
+    onlineTeam: null,
+    onlineRegistered: false,
     onlinePaid: false,
     purchasedItems: [],
     totalSpent: 0,
+    workshops: [],
+    nextWorkshop: null,
   });
   const [loading, setLoading] = useState(true);
 
@@ -45,19 +61,32 @@ export default function Dashboard() {
       if (!user) return;
 
       try {
-        const [inPersonTeamData, purchasedData] = await Promise.all([
+        const [inPersonTeamData, onlineTeamData, purchasedData, workshopsData] = await Promise.all([
           inpersonService.getMyTeam(),
+          gamejamService.getMyTeam(),
           import('@/services/payments.service').then((m) => m.paymentsService.getPurchasedItems()),
+          workshopService.getWorkshops(),
         ]);
+
+        const now = new Date();
+        const upcomingWorkshops = workshopsData
+          .filter((w) => new Date(w.start_datetime) > now)
+          .sort(
+            (a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime(),
+          );
 
         setStats({
           profileCompleted,
           inPersonTeam: inPersonTeamData.team || null,
           inPersonRegistered: !!inPersonTeamData.team,
           inPersonPaid: purchasedData.purchased_items.includes('inperson'),
+          onlineTeam: onlineTeamData.team || null,
+          onlineRegistered: !!onlineTeamData.team,
           onlinePaid: purchasedData.purchased_items.includes('gamejam'),
           purchasedItems: purchasedData.purchased_items,
           totalSpent: purchasedData.total_spent,
+          workshops: workshopsData,
+          nextWorkshop: upcomingWorkshops[0] || null,
         });
       } catch (error) {
         console.error('خطا در بارگذاری داشبورد:', error);
@@ -88,19 +117,19 @@ export default function Dashboard() {
   if (loading) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-        <div className="text-center py-8">
-          <p className="text-primary-aero">در حال بارگذاری...</p>
+        <div className="py-8">
+          <Loading text="در حال بارگذاری..." />
         </div>
       </PixelFrame>
     );
   }
 
-  const nextPresentation = {
-    title: '',
-    speaker: '',
-    date: '',
-    time: '',
-    platform: '',
+  const formatWorkshopDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    return {
+      date: date.toLocaleDateString('fa-IR'),
+      time: date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
+    };
   };
 
   return (
@@ -255,13 +284,60 @@ export default function Dashboard() {
                 {stats.onlinePaid ? 'پرداخت شده' : 'پرداخت نشده'}
               </span>
             </div>
+            <div className="flex justify-between items-center">
+              <span>وضعیت تیم:</span>
+              <span
+                className={`flex items-center gap-1 ${stats.onlineRegistered ? 'text-green-400' : 'text-gray-400'}`}
+              >
+                {stats.onlineRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
+                {stats.onlineRegistered ? 'دارد' : 'ندارد'}
+              </span>
+            </div>
+            {stats.onlineTeam && (
+              <>
+                <div className="flex justify-between items-center text-sm">
+                  <span>نام تیم:</span>
+                  <span className="text-white font-normal flex items-center gap-1">
+                    <FaUsers className="text-primary-aero" />
+                    {stats.onlineTeam.name}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>تعداد اعضا:</span>
+                  <span className="text-primary-aero font-pixel" dir="ltr">
+                    {stats.onlineTeam.member_count}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>وضعیت:</span>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold ${
+                      stats.onlineTeam.status === 'completed' ||
+                      stats.onlineTeam.status === 'attended'
+                        ? 'bg-green-900 bg-opacity-30 text-green-400 border border-green-600'
+                        : stats.onlineTeam.status === 'active'
+                          ? 'bg-blue-900 bg-opacity-30 text-blue-400 border border-blue-600'
+                          : 'bg-gray-800 text-gray-400 border border-gray-600'
+                    }`}
+                  >
+                    {stats.onlineTeam.status === 'completed'
+                      ? 'کامل'
+                      : stats.onlineTeam.status === 'attended'
+                        ? 'شرکت کرده'
+                        : stats.onlineTeam.status === 'active'
+                          ? 'فعال'
+                          : 'پرداخت نشده'}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
           {profileCompleted && (
             <Link
               to="/panel/gamejam"
               className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
             >
-              {stats.onlinePaid ? 'مشاهده جزئیات' : 'ثبت‌نام'}
+              {stats.onlineRegistered ? 'مشاهده جزئیات' : 'ثبت‌نام'}
             </Link>
           )}
         </PixelFrame>
@@ -282,25 +358,56 @@ export default function Dashboard() {
 
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <FaDesktop className="text-primary-sky text-2xl" />
-            <h2 className="text-xl font-bold text-primary-sky">ارائه پیش‌رو</h2>
+            <FaChalkboardTeacher className="text-primary-sky text-2xl" />
+            <h2 className="text-xl font-bold text-primary-sky">کارگاه‌ها و ارائه‌ها</h2>
           </div>
           <div className="space-y-3">
-            <div>
-              <h3 className="text-white font-bold mb-2">{nextPresentation.title}</h3>
-              <div className="text-primary-aero text-sm space-y-1">
-                <p>{nextPresentation.speaker}</p>
-                <p className="font-pixel" dir="ltr">
-                  {nextPresentation.date} | {nextPresentation.time}
-                </p>
-                <p>{nextPresentation.platform}</p>
+            {stats.nextWorkshop ? (
+              <div>
+                <h3 className="text-white font-bold mb-3">{stats.nextWorkshop.title}</h3>
+                <div className="text-primary-aero text-sm space-y-2">
+                  {stats.nextWorkshop.presenter && (
+                    <div className="flex items-center gap-2">
+                      <FaUser className="text-primary-sky" />
+                      <span>{stats.nextWorkshop.presenter}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <FaCalendar className="text-primary-sky" />
+                    <span className="font-pixel" dir="ltr">
+                      {formatWorkshopDateTime(stats.nextWorkshop.start_datetime).date}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FaClock className="text-primary-sky" />
+                    <span className="font-pixel" dir="ltr">
+                      {formatWorkshopDateTime(stats.nextWorkshop.start_datetime).time}
+                    </span>
+                  </div>
+                  {stats.nextWorkshop.place && (
+                    <div className="flex items-center gap-2">
+                      <FaMapMarker className="text-primary-sky" />
+                      <span>{stats.nextWorkshop.place}</span>
+                    </div>
+                  )}
+                  {stats.nextWorkshop.vc_link && (
+                    <div className="flex items-center gap-2">
+                      <FaVideo className="text-primary-sky" />
+                      <span>آنلاین</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-gray-400">کارگاه آینده‌ای در برنامه نیست</p>
+              </div>
+            )}
             <Link
               to="/panel/presentations"
               className="pixel-btn pixel-btn-primary w-full text-center block"
             >
-              مشاهده همه ارائه‌ها
+              مشاهده همه ({stats.workshops.length})
             </Link>
           </div>
         </PixelFrame>

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import PhaseContent from '@/components/competition/phases/PhaseContent';
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
@@ -59,11 +60,13 @@ export default function InPersonCompetition() {
       } else if (!hasTeam || !teamComplete) {
         actualPhase = 1;
       } else {
+        // Team is complete, check if any phase is active
         const activePhase = competitionStatus.phases.find((p) => p.active);
         if (activePhase) {
           actualPhase = activePhase.id + 2;
         } else {
-          actualPhase = 2;
+          // No phase active yet, stay in team phase (phase 1) and wait
+          actualPhase = 1;
         }
       }
 
@@ -113,7 +116,7 @@ export default function InPersonCompetition() {
     ...competitionPhases.map((phase, index) => ({
       id: index + 2,
       title: phase.title,
-      icon: ['🎯', '🎮', '🏁'][index] || '🎯',
+      icon: ['🎪', '🎯', '🎮', '✨', '🏁'][index] || '🎯',
       status: getPhaseStatus(index + 2),
       isClickable: phaseStatus.teamComplete && phase.active,
     })),
@@ -161,8 +164,8 @@ export default function InPersonCompetition() {
   if (loading) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-        <div className="text-center py-8">
-          <p className="text-primary-aero">در حال بارگذاری...</p>
+        <div className="py-8">
+          <Loading text="در حال بارگذاری..." />
         </div>
       </PixelFrame>
     );

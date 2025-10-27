@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { FaCheckCircle, FaCheck } from 'react-icons/fa';
+import { FaCheckCircle, FaCheck, FaTimesCircle } from 'react-icons/fa';
 
+import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
+import { gamejamService } from '@/services/gamejam.service';
 import { paymentsService } from '@/services/payments.service';
 import { extractFieldErrors } from '@/utils/errorMessages';
 import { paymentStorage, formatPrice } from '@/utils/paymentStorage';
@@ -19,6 +21,8 @@ interface PaymentPhaseProps {
   baseItemLabel: string;
   additionalItems?: AdditionalItem[];
   onPaymentComplete: () => void;
+  teamId?: number;
+  onCancelPayment?: () => void;
 }
 
 export default function PaymentPhase({
@@ -26,6 +30,8 @@ export default function PaymentPhase({
   baseItemLabel,
   additionalItems = [],
   onPaymentComplete: _onPaymentComplete,
+  teamId,
+  onCancelPayment,
 }: PaymentPhaseProps) {
   const toast = useToast();
   const [selectedAdditionalItems, setSelectedAdditionalItems] = useState<Set<string>>(new Set());
@@ -342,6 +348,30 @@ export default function PaymentPhase({
     }
   };
 
+  const handleCancelAndDelete = async () => {
+    if (!teamId || baseItem !== 'gamejam') return;
+
+    if (!confirm('آیا از لغو پرداخت و حذف تیم اطمینان دارید؟!')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await gamejamService.deleteTeam(teamId);
+      toast.success('تیم حذف شد و به صفحه تیم‌سازی بازگشتید');
+
+      if (onCancelPayment) {
+        onCancelPayment();
+      }
+    } catch (err: any) {
+      const apiError = err as ApiError;
+      const errorMessage = apiError.error || apiError.message || 'خطا در حذف تیم';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleAdditionalItem = (itemId: string) => {
     const discountWillReset = discountApplied || appliedDiscountCode;
 
@@ -557,7 +587,7 @@ export default function PaymentPhase({
               <div className="flex justify-between text-primary-aero">
                 <span>جمع:</span>
                 {priceLoading ? (
-                  <span>در حال محاسبه...</span>
+                  <Loading size="sm" layout="horizontal" text="در حال محاسبه..." />
                 ) : originalPrice !== null ? (
                   <span className="font-pixel" dir="ltr">
                     {formatPrice(originalPrice)}
@@ -615,16 +645,27 @@ export default function PaymentPhase({
 
         {/* Action Buttons */}
         {getUnpurchasedItems().length > 0 ? (
-          <div className="flex gap-3">
+          <div className="space-y-3">
             <button
               onClick={handlePayment}
               disabled={
                 loading || priceLoading || calculatedPrice === null || calculatedPrice === 0
               }
-              className="pixel-btn pixel-btn-success py-3 px-8 flex-1"
+              className="pixel-btn pixel-btn-success w-full py-3 px-8"
             >
               {loading ? 'در حال انتقال...' : 'پرداخت و ادامه'}
             </button>
+
+            {baseItem === 'gamejam' && teamId && onCancelPayment && (
+              <button
+                onClick={handleCancelAndDelete}
+                disabled={loading}
+                className="pixel-btn pixel-btn-danger w-full py-3 px-8 flex items-center justify-center gap-2"
+              >
+                <FaTimesCircle />
+                <span>لغو پرداخت و حذف تیم</span>
+              </button>
+            )}
           </div>
         ) : (
           <div className="space-y-3">

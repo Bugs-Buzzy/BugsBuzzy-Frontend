@@ -1,26 +1,24 @@
-import { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaImage, FaCheckCircle } from 'react-icons/fa';
+import { useEffect, useState, useRef } from 'react';
+import { FaEdit, FaCheckCircle, FaImage } from 'react-icons/fa';
 
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
-import { INPERSON_TEAM_CONFIG } from '@/constants/inperson';
+import { GAMEJAM_TEAM_CONFIG } from '@/constants/gamejam';
+import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
-import {
-  inpersonService,
-  type InPersonTeam,
-  type InPersonMember,
-} from '@/services/inperson.service';
+import { gamejamService, type OnlineTeam, type OnlineTeamMember } from '@/services/gamejam.service';
 import { extractFieldErrors, translateError } from '@/utils/errorMessages';
 import { ImageProcessor } from '@/utils/imageProcessor';
 
-interface InPersonTeamPhaseProps {
+interface OnlineTeamPhaseProps {
   onTeamComplete?: () => void;
 }
 
-export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseProps) {
-  const [team, setTeam] = useState<InPersonTeam | null>(null);
-  const [members, setMembers] = useState<InPersonMember[]>([]);
+export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps) {
+  const { user } = useAuth();
+  const [team, setTeam] = useState<OnlineTeam | null>(null);
+  const [members, setMembers] = useState<OnlineTeamMember[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -33,23 +31,40 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showDisbandModal, setShowDisbandModal] = useState(false);
   const [showRevokeModal, setShowRevokeModal] = useState(false);
 
-  useEffect(() => {
-    loadTeam();
-  }, []);
+  const hasNotifiedCompleteRef = useRef(false);
 
   useEffect(() => {
-    if (team && (team.status === 'active' || team.status === 'attended') && onTeamComplete) {
+    const initTeam = async () => {
+      await loadTeam();
+
+      // After initial load, check if team is already complete and notify once
+      if (!hasNotifiedCompleteRef.current && onTeamComplete) {
+        hasNotifiedCompleteRef.current = true;
+      }
+    };
+
+    initTeam();
+  }, []);
+
+  // Notify parent only when team status changes TO completed/attended
+  useEffect(() => {
+    if (
+      team &&
+      (team.status === 'completed' || team.status === 'attended') &&
+      onTeamComplete &&
+      !hasNotifiedCompleteRef.current
+    ) {
+      hasNotifiedCompleteRef.current = true;
       onTeamComplete();
     }
-  }, [team, onTeamComplete]);
+  }, [team?.status, onTeamComplete]);
 
   const loadTeam = async () => {
     setLoading(true);
     try {
-      const response = await inpersonService.getMyTeam();
+      const response = await gamejamService.getMyTeam();
 
       if (response.team) {
         setTeam(response.team);
@@ -77,20 +92,28 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
     setError('');
     setFieldErrors({});
     try {
-      const newTeam = await inpersonService.createTeam({
+      const newTeam = await gamejamService.createTeam({
         name: teamName,
         description: teamDescription,
+        avatar: teamAvatar,
       });
 
       setTeam(newTeam);
       setShowCreateForm(false);
-      toast.success('تیم با موفقیت ساخته شد!');
+      setTeamName('');
+      setTeamDescription('');
+      setTeamAvatar('');
+      toast.success('تیم ساخته شد. لطفاً برای فعال‌سازی تیم، پرداخت را انجام دهید');
+
+      // Reload team and trigger phase change to move to payment
       await loadTeam();
+      if (onTeamComplete) {
+        onTeamComplete();
+      }
     } catch (err) {
       console.error('Create team error:', err);
       const apiError = err as ApiError;
 
-      // Extract error message (backend returns {error: 'message'} or field errors)
       const rawError = apiError.error || apiError.message || 'خطا در ساخت تیم';
       const errorMessage = translateError(rawError);
       const { fieldErrors, message } = extractFieldErrors(apiError.errors);
@@ -113,7 +136,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
     setError('');
     setFieldErrors({});
     try {
-      const newTeam = await inpersonService.joinTeam(inviteCode);
+      const newTeam = await gamejamService.joinTeam(inviteCode);
 
       setTeam(newTeam);
       setShowJoinForm(false);
@@ -123,7 +146,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       console.error('Join team error:', err);
       const apiError = err as ApiError;
 
-      // Extract error message (backend returns {error: 'message'} or field errors)
       const rawError = apiError.error || apiError.message || 'خطا در پیوستن به تیم';
       const errorMessage = translateError(rawError);
       const { fieldErrors, message } = extractFieldErrors(apiError.errors);
@@ -142,7 +164,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
     setLoading(true);
     setError('');
     try {
-      await inpersonService.leaveTeam(team.id);
+      await gamejamService.leaveTeam(team.id);
       setTeam(null);
       setMembers([]);
       toast.success('از تیم خارج شدید');
@@ -178,10 +200,10 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       const result = await ImageProcessor.selectAndProcessAvatar();
       if (result) {
         setTeamAvatar(result.dataUri);
-        toast.success('تصویر با موفقیت انتخاب شد');
       }
-    } catch (err: any) {
-      toast.error(err.message || 'خطا در پردازش تصویر');
+    } catch (err) {
+      console.error('Avatar selection error:', err);
+      toast.error('خطا در انتخاب تصویر');
     }
   };
 
@@ -195,15 +217,14 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
     setError('');
     setFieldErrors({});
     try {
-      const updatedTeam = await inpersonService.updateTeam(team.id, {
+      await gamejamService.updateTeam(team.id, {
         name: teamName,
         description: teamDescription,
         avatar: teamAvatar,
       });
 
-      setTeam(updatedTeam);
-      setShowEditModal(false);
       toast.success('اطلاعات تیم با موفقیت به‌روزرسانی شد');
+      setShowEditModal(false);
       await loadTeam();
     } catch (err) {
       console.error('Update team error:', err);
@@ -221,40 +242,13 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
     }
   };
 
-  const handleDisbandTeam = async () => {
-    if (!team) return;
-
-    setLoading(true);
-    setError('');
-    try {
-      await inpersonService.disbandTeam(team.id);
-      setTeam(null);
-      setMembers([]);
-      setShowDisbandModal(false);
-      toast.success('تیم با موفقیت منحل شد');
-      await loadTeam();
-    } catch (err) {
-      console.error('Disband team error:', err);
-      const apiError = err as ApiError;
-
-      const rawError = apiError.error || apiError.message || 'خطا در انحلال تیم';
-      const errorMessage = translateError(rawError);
-      const { message } = extractFieldErrors(apiError.errors);
-
-      setError(message || errorMessage);
-      toast.error(message || errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleRevokeInviteCode = async () => {
     if (!team) return;
 
     setLoading(true);
     setError('');
     try {
-      const response = await inpersonService.revokeInviteCode(team.id);
+      const response = await gamejamService.revokeInviteCode(team.id);
       setTeam(response.team);
       setShowRevokeModal(false);
       toast.success(`کد دعوت باطل شد. کد جدید: ${response.new_invite_code}`);
@@ -273,6 +267,8 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       setLoading(false);
     }
   };
+
+  const isLeader = team ? user?.email === team.leader.email : false;
 
   return (
     <div className="space-y-6">
@@ -304,7 +300,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                     <img
                       src={team.avatar}
                       alt={team.name}
-                      className="w-12 h-12 sm:w-16 sm:h-16 rounded border-2 border-primary-cerulean flex-shrink-0"
+                      className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover border-2 border-primary-cerulean flex-shrink-0"
                     />
                   )}
                 </div>
@@ -312,89 +308,99 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                 <div className="flex gap-2 items-center justify-between sm:justify-start">
                   <span
                     className={`pixel-btn ${
-                      team.status === 'active' || team.status === 'attended'
+                      team.status === 'active' || team.status === 'completed'
                         ? 'pixel-btn-success'
                         : 'pixel-btn-warning'
                     } px-3 py-1 sm:px-4 sm:py-2 font-pixel text-sm sm:text-base`}
                     dir="ltr"
                   >
-                    {team.member_count}/{INPERSON_TEAM_CONFIG.MAX_MEMBERS}
+                    {team.member_count}/{GAMEJAM_TEAM_CONFIG.MAX_MEMBERS}
                   </span>
-                  {team.is_leader && (
-                    <div className="flex gap-1 sm:gap-2">
-                      <button
-                        onClick={handleOpenEditModal}
-                        className="pixel-btn pixel-btn-primary px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
-                        title={
-                          team.status === 'attended'
-                            ? 'تیم شرکت کرده قابل ویرایش نیست'
-                            : 'ویرایش تیم'
-                        }
-                        disabled={team.status === 'attended'}
-                      >
-                        <FaEdit className="text-sm sm:text-base" />
-                        <span className="hidden sm:inline text-xs">ویرایش</span>
-                      </button>
-                      <button
-                        onClick={() => setShowDisbandModal(true)}
-                        className="pixel-btn pixel-btn-danger px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
-                        title={
-                          team.status === 'attended'
-                            ? 'تیم شرکت کرده قابل حذف نیست'
-                            : 'منحل کردن تیم'
-                        }
-                        disabled={team.status === 'attended'}
-                      >
-                        <FaTrash className="text-sm sm:text-base" />
-                        <span className="hidden sm:inline text-xs">حذف</span>
-                      </button>
-                    </div>
+                  {isLeader && (
+                    <button
+                      onClick={handleOpenEditModal}
+                      className="pixel-btn pixel-btn-primary px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1"
+                      title={
+                        team.status === 'attended' ? 'تیم شرکت کرده قابل ویرایش نیست' : 'ویرایش تیم'
+                      }
+                      disabled={team.status === 'attended'}
+                    >
+                      <FaEdit className="text-sm sm:text-base" />
+                      <span className="hidden sm:inline text-xs">ویرایش</span>
+                    </button>
                   )}
                 </div>
               </div>
             </div>
 
-            {team.status === 'incomplete' && (
-              <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
-                <div className="flex justify-between items-start mb-2">
-                  <p className="text-primary-aero">کد دعوت:</p>
-                  {team.is_leader && (
-                    <button
-                      onClick={() => setShowRevokeModal(true)}
-                      className="pixel-btn pixel-btn-warning px-3 py-1 text-xs flex items-center gap-1"
-                      title="باطل کردن و ساخت کد جدید"
-                    >
-                      <span>🔄</span>
-                      <span>کد جدید</span>
-                    </button>
-                  )}
+            {(team.status === 'active' || team.status === 'completed') &&
+              team.member_count < GAMEJAM_TEAM_CONFIG.MAX_MEMBERS &&
+              team.invite_code && (
+                <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
+                  <div className="flex justify-between items-start mb-2">
+                    <p className="text-primary-aero">کد دعوت:</p>
+                    {isLeader && (
+                      <button
+                        onClick={() => setShowRevokeModal(true)}
+                        className="pixel-btn pixel-btn-warning px-3 py-1 text-xs flex items-center gap-1"
+                        title="باطل کردن و ساخت کد جدید"
+                      >
+                        <span>🔄</span>
+                        <span>کد جدید</span>
+                      </button>
+                    )}
+                  </div>
+                  <p
+                    className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
+                    dir="ltr"
+                  >
+                    {team.invite_code}
+                  </p>
+                  <p className="text-primary-aero text-sm mt-2 text-center">
+                    این کد را به هم‌گروهی‌های خود ارسال کنید
+                  </p>
                 </div>
-                <p
-                  className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
-                  dir="ltr"
-                >
-                  {team.invite_code}
-                </p>
-                <p className="text-primary-aero text-sm mt-2 text-center">
-                  این کد را به هم‌گروهی‌های خود ارسال کنید
+              )}
+
+            {team.status === 'inactive' && isLeader && (
+              <div className="bg-red-900 bg-opacity-30 rounded p-4 mb-4 border border-red-600">
+                <p className="text-red-300 text-sm font-bold flex items-center gap-2">
+                  ⚠️ ابتدا باید پرداخت انجام شود تا تیم فعال شود و بتوانید اعضا دعوت کنید.
                 </p>
               </div>
             )}
 
-            {team.status === 'incomplete' && (
+            {team.status === 'inactive' && !isLeader && (
               <div className="bg-yellow-900 bg-opacity-30 rounded p-4 mb-4 border border-yellow-700">
                 <p className="text-yellow-300 text-sm">
-                  ⚠️ تیم شما باید {INPERSON_TEAM_CONFIG.MIN_MEMBERS} نفره باشد تا برای رقابت واجد
-                  شرایط شود.
+                  ⏳ در انتظار پرداخت سرتیم برای فعال‌سازی تیم...
                 </p>
               </div>
             )}
 
-            {(team.status === 'active' || team.status === 'attended') && (
+            {team.status === 'active' && (
+              <div className="bg-blue-900 bg-opacity-30 rounded p-4 mb-4 border border-blue-600">
+                <p className="text-blue-300 text-sm">
+                  ✅ پرداخت موفق! اکنون می‌توانید اعضا را دعوت کنید. برای شرکت در رقابت حداقل{' '}
+                  {GAMEJAM_TEAM_CONFIG.MIN_MEMBERS} نفر نیاز است.
+                </p>
+              </div>
+            )}
+
+            {team.status === 'completed' && (
               <div className="bg-green-900 bg-opacity-30 rounded p-4 mb-4 border border-green-600">
                 <p className="text-green-300 text-sm flex items-center gap-2">
                   <FaCheckCircle className="text-lg" />
-                  <span>تیم شما واجد شرایط است! ثبت‌نام شما تکمیل شده است.</span>
+                  <span>تیم شما واجد شرایط است! می‌توانید وارد فاز رقابت شوید.</span>
+                </p>
+              </div>
+            )}
+
+            {team.status === 'attended' && (
+              <div className="bg-purple-900 bg-opacity-30 rounded p-4 mb-4 border border-purple-600">
+                <p className="text-purple-300 text-sm flex items-center gap-2">
+                  <FaCheckCircle className="text-lg" />
+                  <span>تیم شما در رقابت شرکت کرده است. موفق باشید! 🎮</span>
                 </p>
               </div>
             )}
@@ -427,11 +433,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   className="bg-primary-midnight rounded p-3 sm:p-4 border border-primary-cerulean"
                 >
                   <div className="flex items-center gap-2">
-                    {!member.has_paid && (
-                      <span className="pixel-btn pixel-btn-warning px-2 py-1 text-xs whitespace-nowrap">
-                        در انتظار پرداخت
-                      </span>
-                    )}
                     <div className="min-w-0 flex-1 text-right">
                       <p className="text-primary-sky font-bold text-sm sm:text-base truncate">
                         {member.user.first_name} {member.user.last_name}
@@ -445,7 +446,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
               ))}
             </div>
 
-            {!team.is_leader && (
+            {!isLeader && (
               <button
                 onClick={handleLeaveTeam}
                 disabled={loading || team.status === 'attended'}
@@ -527,6 +528,51 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                     rows={3}
                   />
                 </div>
+
+                <div>
+                  <label className="block text-primary-sky font-bold mb-2">
+                    تصویر تیم (اختیاری)
+                  </label>
+                  <div className="flex items-center gap-4">
+                    {teamAvatar ? (
+                      <img
+                        src={teamAvatar}
+                        alt="Team Avatar"
+                        className="w-24 h-24 rounded-xl object-cover border-2 border-primary-cerulean"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-xl bg-primary-midnight border-2 border-primary-cerulean flex items-center justify-center">
+                        <FaImage className="text-primary-aero text-3xl" />
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleSelectAvatar}
+                      className="pixel-btn pixel-btn-primary py-2 px-4 flex items-center gap-2"
+                    >
+                      <FaImage />
+                      <span>{teamAvatar ? 'تغییر تصویر' : 'افزودن تصویر'}</span>
+                    </button>
+                  </div>
+                  <p className="text-primary-aero text-xs mt-2">
+                    (حداکثر 10MB - تبدیل خودکار به 128×128)
+                  </p>
+                </div>
+
+                {/* Warning about irreversible action */}
+                <PixelFrame className="bg-yellow-900 bg-opacity-30 border-yellow-600">
+                  <div className="flex items-start gap-3">
+                    <span className="text-yellow-400 text-xl flex-shrink-0">⚠️</span>
+                    <div className="text-yellow-200 text-sm leading-relaxed">
+                      <p className="font-bold mb-2">توجه: این تصمیم برگشت‌پذیر نیست!</p>
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>بعد از ساخت تیم و پرداخت، نمی‌توانید تیم را حذف کنید</li>
+                        <li>امکان پیوستن به تیم دیگری وجود نخواهد داشت</li>
+                        <li>فقط اعضا می‌توانند از تیم خارج شوند (نه سرتیم)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </PixelFrame>
 
                 <div className="flex gap-4">
                   <button
@@ -614,32 +660,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
             </h2>
 
             <div className="space-y-4">
-              {/* Avatar Section */}
-              <div className="flex flex-col items-center gap-4 mb-4">
-                <div className="relative">
-                  {teamAvatar ? (
-                    <img
-                      src={teamAvatar}
-                      alt="Team Avatar"
-                      className="w-32 h-32 rounded border-4 border-primary-cerulean"
-                    />
-                  ) : (
-                    <div className="w-32 h-32 rounded border-4 border-primary-cerulean bg-primary-midnight flex items-center justify-center">
-                      <FaImage className="text-primary-aero text-4xl" />
-                    </div>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={handleSelectAvatar}
-                  className="pixel-btn pixel-btn-primary px-4 py-2 flex items-center gap-2"
-                >
-                  <FaImage />
-                  <span>{teamAvatar ? 'تغییر تصویر' : 'افزودن تصویر'}</span>
-                </button>
-                <p className="text-xs text-gray-400">(حداکثر 10MB - تبدیل خودکار به 128×128)</p>
-              </div>
-
               <div>
                 <label className="block text-primary-sky font-bold mb-2">نام تیم</label>
                 <input
@@ -669,6 +689,34 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   className="w-full pixel-input bg-primary-midnight text-primary-aero border-primary-cerulean p-3"
                   rows={3}
                 />
+              </div>
+
+              <div>
+                <label className="block text-primary-sky font-bold mb-2">تصویر تیم (اختیاری)</label>
+                <div className="flex items-center gap-4">
+                  {teamAvatar ? (
+                    <img
+                      src={teamAvatar}
+                      alt="Team Avatar"
+                      className="w-24 h-24 rounded-xl object-cover border-2 border-primary-cerulean"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-xl bg-primary-midnight border-2 border-primary-cerulean flex items-center justify-center">
+                      <FaImage className="text-primary-aero text-3xl" />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleSelectAvatar}
+                    className="pixel-btn pixel-btn-primary py-2 px-4 flex items-center gap-2"
+                  >
+                    <FaImage />
+                    <span>{teamAvatar ? 'تغییر تصویر' : 'افزودن تصویر'}</span>
+                  </button>
+                </div>
+                <p className="text-primary-aero text-xs mt-2">
+                  (حداکثر 10MB - تبدیل خودکار به 128×128)
+                </p>
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -741,50 +789,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                 </button>
                 <button
                   onClick={() => setShowRevokeModal(false)}
-                  className="pixel-btn pixel-btn-primary py-3 px-6"
-                  disabled={loading}
-                >
-                  انصراف
-                </button>
-              </div>
-            </div>
-          </div>
-        </PixelModal>
-      )}
-
-      {/* Disband Team Modal */}
-      {showDisbandModal && team && (
-        <PixelModal onClose={() => setShowDisbandModal(false)}>
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
-              <FaTrash />
-              <span>منحل کردن تیم</span>
-            </h2>
-
-            <div className="space-y-4">
-              <div className="bg-red-900 bg-opacity-30 border border-red-500 rounded p-4">
-                <p className="text-red-300 text-sm">⚠️ هشدار: این عملیات غیرقابل بازگشت است!</p>
-              </div>
-
-              <p className="text-primary-aero">
-                آیا از منحل کردن تیم <strong className="text-primary-sky">{team.name}</strong>{' '}
-                اطمینان دارید؟
-              </p>
-
-              <p className="text-yellow-400 text-sm">
-                با منحل شدن تیم، تمام اعضا از تیم خارج خواهند شد و کد دعوت باطل می‌شود.
-              </p>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={handleDisbandTeam}
-                  disabled={loading}
-                  className="pixel-btn pixel-btn-danger py-3 px-6 flex-1"
-                >
-                  {loading ? 'در حال انحلال...' : 'بله، تیم را منحل کن'}
-                </button>
-                <button
-                  onClick={() => setShowDisbandModal(false)}
                   className="pixel-btn pixel-btn-primary py-3 px-6"
                   disabled={loading}
                 >

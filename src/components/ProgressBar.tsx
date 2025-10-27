@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export interface Phase {
@@ -15,6 +16,22 @@ interface ProgressBarProps {
 }
 
 export default function ProgressBar({ phases, currentPhase, onPhaseClick }: ProgressBarProps) {
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const currentPhaseButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Auto-scroll to current phase on mobile
+  useEffect(() => {
+    if (currentPhaseButtonRef.current && mobileScrollRef.current) {
+      setTimeout(() => {
+        currentPhaseButtonRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }, 100);
+    }
+  }, [currentPhase]);
+
   return (
     <div className="relative">
       {/* Container with pixel border */}
@@ -32,11 +49,11 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
         {/* Progress Track */}
         <div className="relative">
           {/* Desktop View */}
-          <div className="hidden md:flex items-center justify-between gap-4">
+          <div className="hidden md:flex items-center justify-center gap-4">
             {phases.map((phase, index) => (
-              <div key={phase.id} className="flex items-center flex-1">
+              <div key={phase.id} className="flex items-center">
                 {/* Phase Node */}
-                <div className="flex-1 flex flex-col items-center">
+                <div className="flex flex-col items-center">
                   <button
                     onClick={() => phase.isClickable && onPhaseClick(phase.id)}
                     disabled={!phase.isClickable}
@@ -117,8 +134,8 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
 
                 {/* Connector */}
                 {index < phases.length - 1 && (
-                  <div className="flex-1 px-2 flex items-center">
-                    <div className="w-full relative h-2">
+                  <div className="px-4 flex items-center">
+                    <div className="w-16 relative h-2">
                       {/* Background track */}
                       <div className="absolute inset-0 bg-gray-700 rounded-full" />
 
@@ -158,11 +175,12 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
           </div>
 
           {/* Mobile View - Horizontal Scroll */}
-          <div className="md:hidden overflow-x-auto pb-4">
+          <div className="md:hidden overflow-x-auto pb-4 scroll-smooth" ref={mobileScrollRef}>
             <div className="flex items-center gap-3 min-w-max px-2">
               {phases.map((phase, index) => (
                 <div key={phase.id} className="flex items-center">
                   <button
+                    ref={phase.status === 'current' ? currentPhaseButtonRef : null}
                     onClick={() => phase.isClickable && onPhaseClick(phase.id)}
                     disabled={!phase.isClickable}
                     className={`

@@ -103,11 +103,23 @@ const errorTranslations: Record<string, string> = {
 
   // Leave Team Errors (from TeamLeaveView)
   'Team leader cannot leave. Disband team instead.': 'سرتیم نمی‌تواند خارج شود. تیم را منحل کنید',
+  'Cannot disband a team that has attended the event':
+    'نمی‌توان تیمی که در رویداد شرکت کرده را منحل کرد',
+  'Cannot leave a team that has attended the event':
+    'نمی‌توان تیمی که در رویداد شرکت کرده را ترک کرد',
+  'Cannot edit a team that has attended the event':
+    'نمی‌توان تیمی که در رویداد شرکت کرده را ویرایش کرد',
+  'You already have a gamejam team': 'شما قبلاً یک تیم گیم‌جم دارید',
+  'Online competition phase is not active': 'فاز رقابت مجازی فعال نیست',
+  'Team leader cannot leave the team': 'سرتیم نمی‌تواند از تیم خارج شود',
+  'Only inactive teams can be deleted. Team has already been activated.':
+    'فقط تیم‌های غیرفعال قابل حذف هستند. تیم شما فعال شده است',
   'You are not a member of this team': 'شما عضو این تیم نیستید',
 
   // General Team Messages
   'Left team successfully': 'با موفقیت از تیم خارج شدید',
   'Team disbanded successfully': 'تیم با موفقیت منحل شد',
+  'Team deleted successfully': 'تیم با موفقیت حذف شد',
   'Invite code revoked and regenerated': 'کد دعوت باطل و کد جدید ساخته شد',
 
   // Submission Errors
@@ -197,7 +209,10 @@ export const extractErrorMessage = (error: any): string => {
 
 export const translateError = (error?: string): string => {
   if (!error) return '';
-  return errorTranslations[error] || error;
+  const translated = errorTranslations[error];
+  if (translated) return translated;
+  // اگر ترجمه پیدا نشد، همان متن انگلیسی را برگردان (نه "خطای نامشخص")
+  return error;
 };
 
 export const getFieldName = (field: string): string => {
