@@ -21,7 +21,6 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   const [team, setTeam] = useState<OnlineTeam | null>(null);
   const [members, setMembers] = useState<OnlineTeamMember[]>([]);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const toast = useToast();
@@ -77,11 +76,12 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       }
     } catch (err) {
       console.error('Failed to load team:', err);
+      toast.error('خطا در بارگذاری تیم');
+      setError('خطا در بارگذاری تیم');
       setTeam(null);
       setMembers([]);
     } finally {
       setLoading(false);
-      setInitialLoading(false);
     }
   };
 
@@ -273,7 +273,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
   const isLeader = team ? user?.email === team.leader.email : false;
 
-  if (initialLoading) {
+  if (loading) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="py-8">

@@ -61,6 +61,8 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       }
     } catch (err) {
       console.error('Failed to load team:', err);
+      toast.error('خطا در بارگذاری اطلاعات تیم');
+      setError('خطا در بارگذاری اطلاعات تیم');
       setTeam(null);
       setMembers([]);
     } finally {

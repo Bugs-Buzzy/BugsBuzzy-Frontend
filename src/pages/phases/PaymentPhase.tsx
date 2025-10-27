@@ -398,6 +398,16 @@ export default function PaymentPhase({
     }
   };
 
+  if (loading) {
+    return (
+      <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+        <div className="py-8">
+          <Loading text="در حال بارگذاری وضعیت پرداخت..." />
+        </div>
+      </PixelFrame>
+    );
+  }
+
   // Check if registration is closed
   if (baseItemAvailable === false && purchasedLoaded && !hasBaseItemPurchased()) {
     return (
