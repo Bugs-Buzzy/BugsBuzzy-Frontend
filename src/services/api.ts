@@ -66,44 +66,48 @@ class ApiClient {
   }
 
   private async handleResponse<T>(response: Response, retried = false): Promise<T> {
-    const errorData = await response.json().catch(() => ({}));
-
-    if (response.status === 401 && !retried) {
-      // Check if token expired
-      if (errorData.code === 'token_not_valid' || errorData.detail?.includes('expired')) {
-        if (this.isRefreshing) {
-          // Wait for ongoing refresh
-          return new Promise((resolve, reject) => {
-            this.addRefreshSubscriber(async (token: string) => {
-              try {
-                const newResponse = await fetch(response.url, {
-                  method: response.url.includes('?') ? 'GET' : 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                  },
-                });
-                resolve(this.handleResponse(newResponse, true));
-              } catch (err) {
-                reject(err);
-              }
-            });
-          });
-        }
-
-        this.isRefreshing = true;
-        const newToken = await this.refreshToken();
-        this.isRefreshing = false;
-
-        if (newToken) {
-          this.onAccessTokenFetched(newToken);
-          // Retry original request with new token
-          return this.retryRequest<T>(response, newToken);
-        }
-      }
-    }
+    let errorData: any = {};
 
     if (!response.ok) {
+      // Read the response body once
+      errorData = await response.json().catch(() => ({}));
+
+      // Handle 401 authentication errors with token refresh
+      if (response.status === 401 && !retried) {
+        // Check if token expired
+        if (errorData.code === 'token_not_valid' || errorData.detail?.includes('expired')) {
+          if (this.isRefreshing) {
+            // Wait for ongoing refresh
+            return new Promise((resolve, reject) => {
+              this.addRefreshSubscriber(async (token: string) => {
+                try {
+                  const newResponse = await fetch(response.url, {
+                    method: response.url.includes('?') ? 'GET' : 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
+                  resolve(this.handleResponse(newResponse, true));
+                } catch (err) {
+                  reject(err);
+                }
+              });
+            });
+          }
+
+          this.isRefreshing = true;
+          const newToken = await this.refreshToken();
+          this.isRefreshing = false;
+
+          if (newToken) {
+            this.onAccessTokenFetched(newToken);
+            // Retry original request with new token
+            return this.retryRequest<T>(response, newToken);
+          }
+        }
+      }
+
       console.error('API Error Response:', {
         status: response.status,
         url: response.url,
