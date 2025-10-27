@@ -12,6 +12,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ToastProvider } from '@/context/ToastContext';
 import GameWorld from '@/pages/GameWorld';
+import MiniGamePage from '@/pages/MiniGamePage';
 import Panel from '@/pages/Panel';
 import Announcements from '@/pages/panel/Announcements';
 import Dashboard from '@/pages/panel/Dashboard';
@@ -41,6 +42,16 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<GameWorld />} />
+
+      {/* Minigame - full screen, requires authentication */}
+      <Route
+        path="/minigame"
+        element={
+          <ProtectedRoute>
+            <MiniGamePage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Payment callback routes */}
       <Route path="/payment/success" element={<PaymentSuccess />} />

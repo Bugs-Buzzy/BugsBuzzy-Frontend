@@ -18,6 +18,7 @@ export default [
       '*.d.ts',
       'vite.config.d.ts',
       'vitest.config.d.ts',
+      'public/mini-game/**', // Pure JS game files
     ],
   },
   js.configs.recommended,

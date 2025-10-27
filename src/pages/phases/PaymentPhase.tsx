@@ -314,6 +314,13 @@ export default function PaymentPhase({
     setError('');
     setFieldErrors({});
     try {
+      // Determine return URL based on competition type
+      const returnUrl = unpurchasedItems.includes('inperson')
+        ? '/panel/inperson'
+        : unpurchasedItems.includes('gamejam')
+          ? '/panel/gamejam'
+          : '/panel';
+
       paymentStorage.set({
         category: 'competition',
         title: baseItemLabel,
@@ -327,7 +334,7 @@ export default function PaymentPhase({
         items: unpurchasedItems,
         amount: calculatedPrice,
         discount_code: appliedDiscountCode ?? undefined,
-        returnUrl: '/panel/inperson',
+        returnUrl,
       });
 
       const payment = await paymentsService.createPayment({
