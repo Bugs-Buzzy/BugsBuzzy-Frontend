@@ -34,7 +34,11 @@ export default function GameJamCompetition() {
     loadStatus();
   }, []);
 
-  const loadStatus = async () => {
+  const loadStatus = async (resetManualSelection = false) => {
+    if (resetManualSelection) {
+      manualPhaseSelectionRef.current = false;
+    }
+
     setLoading(true);
     try {
       const [competition, teamResponse] = await Promise.all([

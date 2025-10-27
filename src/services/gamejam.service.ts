@@ -15,6 +15,7 @@ export interface OnlineTeam {
   id: number;
   name: string;
   description: string | null;
+  avatar: string;
   status: 'inactive' | 'active' | 'completed' | 'attended';
   leader: {
     id: number;
@@ -54,7 +55,11 @@ class GameJamService {
     return apiClient.get<{ team: OnlineTeam | null }>('/gamejam/my-team/');
   }
 
-  async createTeam(data: { name: string; description?: string }): Promise<OnlineTeam> {
+  async createTeam(data: {
+    name: string;
+    description?: string;
+    avatar?: string;
+  }): Promise<OnlineTeam> {
     return apiClient.post<OnlineTeam>('/gamejam/create/', data);
   }
 
@@ -72,7 +77,7 @@ class GameJamService {
 
   async updateTeam(
     teamId: number,
-    data: { name: string; description?: string },
+    data: { name: string; description?: string; avatar?: string },
   ): Promise<OnlineTeam> {
     return apiClient.put<OnlineTeam>(`/gamejam/${teamId}/update/`, data);
   }

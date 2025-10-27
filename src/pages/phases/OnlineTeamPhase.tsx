@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { FaEdit, FaCheckCircle } from 'react-icons/fa';
+import { useEffect, useState, useRef } from 'react';
+import { FaEdit, FaCheckCircle, FaImage } from 'react-icons/fa';
 
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
@@ -9,6 +9,7 @@ import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { gamejamService, type OnlineTeam, type OnlineTeamMember } from '@/services/gamejam.service';
 import { extractFieldErrors, translateError } from '@/utils/errorMessages';
+import { ImageProcessor } from '@/utils/imageProcessor';
 
 interface OnlineTeamPhaseProps {
   onTeamComplete?: () => void;
@@ -25,6 +26,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
   const [teamName, setTeamName] = useState('');
   const [teamDescription, setTeamDescription] = useState('');
+  const [teamAvatar, setTeamAvatar] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showJoinForm, setShowJoinForm] = useState(false);
@@ -35,10 +37,24 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
     loadTeam();
   }, []);
 
+  const hasCalledOnCompleteRef = useRef(false);
+
   useEffect(() => {
     // In GameJam, team must be 'completed' (reached MIN_MEMBERS) or 'attended' to proceed
-    if (team && (team.status === 'completed' || team.status === 'attended') && onTeamComplete) {
+    // Only call once to prevent infinite loop
+    if (
+      team &&
+      (team.status === 'completed' || team.status === 'attended') &&
+      onTeamComplete &&
+      !hasCalledOnCompleteRef.current
+    ) {
+      hasCalledOnCompleteRef.current = true;
       onTeamComplete();
+    }
+
+    // Reset flag when team becomes non-complete
+    if (team && team.status !== 'completed' && team.status !== 'attended') {
+      hasCalledOnCompleteRef.current = false;
     }
   }, [team, onTeamComplete]);
 
@@ -76,12 +92,14 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       const newTeam = await gamejamService.createTeam({
         name: teamName,
         description: teamDescription,
+        avatar: teamAvatar,
       });
 
       setTeam(newTeam);
       setShowCreateForm(false);
       setTeamName('');
       setTeamDescription('');
+      setTeamAvatar('');
       toast.success('تیم ساخته شد. لطفاً برای فعال‌سازی تیم، پرداخت را انجام دهید');
 
       // Reload team and trigger phase change to move to payment
@@ -167,9 +185,22 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
     if (team) {
       setTeamName(team.name);
       setTeamDescription(team.description || '');
+      setTeamAvatar(team.avatar || '');
       setShowEditModal(true);
       setError('');
       setFieldErrors({});
+    }
+  };
+
+  const handleSelectAvatar = async () => {
+    try {
+      const result = await ImageProcessor.selectAndProcessAvatar();
+      if (result) {
+        setTeamAvatar(result.dataUri);
+      }
+    } catch (err) {
+      console.error('Avatar selection error:', err);
+      toast.error('خطا در انتخاب تصویر');
     }
   };
 
@@ -186,6 +217,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       await gamejamService.updateTeam(team.id, {
         name: teamName,
         description: teamDescription,
+        avatar: teamAvatar,
       });
 
       toast.success('اطلاعات تیم با موفقیت به‌روزرسانی شد');
@@ -291,9 +323,9 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
               </div>
             </div>
 
-            {team.invite_code &&
-              (team.status === 'active' || team.status === 'completed') &&
-              team.member_count < GAMEJAM_TEAM_CONFIG.MAX_MEMBERS && (
+            {(team.status === 'active' || team.status === 'completed') &&
+              team.member_count < GAMEJAM_TEAM_CONFIG.MAX_MEMBERS &&
+              team.invite_code && (
                 <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
                   <div className="flex justify-between items-start mb-2">
                     <p className="text-primary-aero">کد دعوت:</p>
@@ -487,6 +519,36 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                   />
                 </div>
 
+                <div>
+                  <label className="block text-primary-sky font-bold mb-2">
+                    تصویر تیم (اختیاری)
+                  </label>
+                  <div className="flex items-center gap-4">
+                    {teamAvatar ? (
+                      <img
+                        src={teamAvatar}
+                        alt="Team Avatar"
+                        className="w-24 h-24 rounded-xl object-cover border-2 border-primary-cerulean"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-xl bg-primary-midnight border-2 border-primary-cerulean flex items-center justify-center">
+                        <FaImage className="text-primary-aero text-3xl" />
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleSelectAvatar}
+                      className="pixel-btn pixel-btn-primary py-2 px-4 flex items-center gap-2"
+                    >
+                      <FaImage />
+                      <span>{teamAvatar ? 'تغییر تصویر' : 'افزودن تصویر'}</span>
+                    </button>
+                  </div>
+                  <p className="text-primary-aero text-xs mt-2">
+                    حداکثر 256x256 پیکسل. فرمت PNG، JPG یا GIF
+                  </p>
+                </div>
+
                 {/* Warning about irreversible action */}
                 <PixelFrame className="bg-yellow-900 bg-opacity-30 border-yellow-600">
                   <div className="flex items-start gap-3">
@@ -617,6 +679,34 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                   className="w-full pixel-input bg-primary-midnight text-primary-aero border-primary-cerulean p-3"
                   rows={3}
                 />
+              </div>
+
+              <div>
+                <label className="block text-primary-sky font-bold mb-2">تصویر تیم (اختیاری)</label>
+                <div className="flex items-center gap-4">
+                  {teamAvatar ? (
+                    <img
+                      src={teamAvatar}
+                      alt="Team Avatar"
+                      className="w-24 h-24 rounded-xl object-cover border-2 border-primary-cerulean"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-xl bg-primary-midnight border-2 border-primary-cerulean flex items-center justify-center">
+                      <FaImage className="text-primary-aero text-3xl" />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleSelectAvatar}
+                    className="pixel-btn pixel-btn-primary py-2 px-4 flex items-center gap-2"
+                  >
+                    <FaImage />
+                    <span>{teamAvatar ? 'تغییر تصویر' : 'افزودن تصویر'}</span>
+                  </button>
+                </div>
+                <p className="text-primary-aero text-xs mt-2">
+                  حداکثر 256x256 پیکسل. فرمت PNG، JPG یا GIF
+                </p>
               </div>
 
               <div className="flex gap-3 pt-4">
