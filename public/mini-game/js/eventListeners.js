@@ -1,8 +1,16 @@
 // Initialize touch controls
-touchControls = new TouchControls(keys);
+if (typeof TouchControls !== 'undefined') {
+  touchControls = new TouchControls(keys);
+}
 
 // Keyboard event listeners
 window.addEventListener('keydown', (event) => {
+  // Only handle keyboard if not on mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+  if (isMobile) return;
+
   switch (event.key) {
     case 'w':
     case 'ArrowUp':
@@ -27,6 +35,11 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+  if (isMobile) return;
+
   switch (event.key) {
     case 'w':
     case 'ArrowUp':
@@ -49,7 +62,9 @@ window.addEventListener('keyup', (event) => {
 // Handle window focus changes
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
-    lastTime = performance.now();
+    if (typeof lastTime !== 'undefined') {
+      lastTime = performance.now();
+    }
     // Reset all keys when tab becomes visible again
     keys.w.pressed = false;
     keys.a.pressed = false;
@@ -58,4 +73,4 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// Handle window blur (when user switches tabs or
+// Handle window blur (when user switches tabs)
