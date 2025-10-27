@@ -289,32 +289,34 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
               </div>
             </div>
 
-            {team.invite_code && team.member_count < GAMEJAM_TEAM_CONFIG.MAX_MEMBERS && (
-              <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
-                <div className="flex justify-between items-start mb-2">
-                  <p className="text-primary-aero">کد دعوت:</p>
-                  {isLeader && (
-                    <button
-                      onClick={() => setShowRevokeModal(true)}
-                      className="pixel-btn pixel-btn-warning px-3 py-1 text-xs flex items-center gap-1"
-                      title="باطل کردن و ساخت کد جدید"
-                    >
-                      <span>🔄</span>
-                      <span>کد جدید</span>
-                    </button>
-                  )}
+            {team.invite_code &&
+              (team.status === 'active' || team.status === 'completed') &&
+              team.member_count < GAMEJAM_TEAM_CONFIG.MAX_MEMBERS && (
+                <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
+                  <div className="flex justify-between items-start mb-2">
+                    <p className="text-primary-aero">کد دعوت:</p>
+                    {isLeader && (
+                      <button
+                        onClick={() => setShowRevokeModal(true)}
+                        className="pixel-btn pixel-btn-warning px-3 py-1 text-xs flex items-center gap-1"
+                        title="باطل کردن و ساخت کد جدید"
+                      >
+                        <span>🔄</span>
+                        <span>کد جدید</span>
+                      </button>
+                    )}
+                  </div>
+                  <p
+                    className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
+                    dir="ltr"
+                  >
+                    {team.invite_code}
+                  </p>
+                  <p className="text-primary-aero text-sm mt-2 text-center">
+                    این کد را به هم‌گروهی‌های خود ارسال کنید
+                  </p>
                 </div>
-                <p
-                  className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
-                  dir="ltr"
-                >
-                  {team.invite_code}
-                </p>
-                <p className="text-primary-aero text-sm mt-2 text-center">
-                  این کد را به هم‌گروهی‌های خود ارسال کنید
-                </p>
-              </div>
-            )}
+              )}
 
             {team.status === 'inactive' && isLeader && (
               <div className="bg-red-900 bg-opacity-30 rounded p-4 mb-4 border border-red-600">
@@ -332,11 +334,29 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
               </div>
             )}
 
-            {(team.status === 'active' || team.status === 'completed') && (
+            {team.status === 'active' && (
+              <div className="bg-blue-900 bg-opacity-30 rounded p-4 mb-4 border border-blue-600">
+                <p className="text-blue-300 text-sm">
+                  ✅ پرداخت موفق! اکنون می‌توانید اعضا را دعوت کنید. برای شرکت در رقابت حداقل{' '}
+                  {GAMEJAM_TEAM_CONFIG.MIN_MEMBERS} نفر نیاز است.
+                </p>
+              </div>
+            )}
+
+            {team.status === 'completed' && (
               <div className="bg-green-900 bg-opacity-30 rounded p-4 mb-4 border border-green-600">
                 <p className="text-green-300 text-sm flex items-center gap-2">
                   <FaCheckCircle className="text-lg" />
-                  <span>تیم شما واجد شرایط است! ثبت‌نام شما تکمیل شده است.</span>
+                  <span>تیم شما واجد شرایط است! می‌توانید وارد فاز رقابت شوید.</span>
+                </p>
+              </div>
+            )}
+
+            {team.status === 'attended' && (
+              <div className="bg-purple-900 bg-opacity-30 rounded p-4 mb-4 border border-purple-600">
+                <p className="text-purple-300 text-sm flex items-center gap-2">
+                  <FaCheckCircle className="text-lg" />
+                  <span>تیم شما در رقابت شرکت کرده است. موفق باشید! 🎮</span>
                 </p>
               </div>
             )}
