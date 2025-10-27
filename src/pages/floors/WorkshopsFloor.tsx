@@ -118,8 +118,20 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       videoUrl:
         'https://drive.google.com/file/d/19NH-AoSHiybVIsCXcNpzdLi0GCadogds/view?usp=drive_link',
     },
-    { title: 'قسمت 5: پیاده‌سازی منطق بازی', img: info5, date: '۵ آبان' },
-    { title: 'قسمت 6: پیاده‌سازی شبکه ۱', img: info6, date: '۵ آبان' },
+    {
+      title: 'قسمت 5: پیاده‌سازی منطق بازی',
+      img: info5,
+      date: '۵ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1UHR0fdT2GyHBXw-r920t1c9mhvk3uxDd/view?usp=sharing',
+    },
+    {
+      title: 'قسمت 6: پیاده‌سازی شبکه ۱',
+      img: info6,
+      date: '۵ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1t7lU4j8H4BAXTheDIO_TXsWXvY2i3Cz-/view?usp=drive_link',
+    },
     { title: 'قسمت 7: پیاده‌سازی شبکه ۲', img: info7, date: '۶ آبان' },
     { title: 'قسمت 8: منو و صداگذاری', img: info8, date: '۶ آبان' },
   ];
