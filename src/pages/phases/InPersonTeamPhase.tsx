@@ -23,7 +23,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
   const [team, setTeam] = useState<InPersonTeam | null>(null);
   const [members, setMembers] = useState<InPersonMember[]>([]);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const toast = useToast();
@@ -66,7 +65,6 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       setMembers([]);
     } finally {
       setLoading(false);
-      setInitialLoading(false);
     }
   };
 
@@ -277,7 +275,7 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
     }
   };
 
-  if (initialLoading) {
+  if (loading) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="py-8">
