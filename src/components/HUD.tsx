@@ -72,7 +72,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             className="cursor-pointer"
             onClick={() => {
               if (isAuthenticated) {
-                navigate('/panel/minigame');
+                navigate('/minigame');
               } else {
                 setShowLoginModal(true);
               }

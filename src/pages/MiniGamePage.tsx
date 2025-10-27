@@ -42,7 +42,7 @@ const MiniGamePage = () => {
 
   const checkMinigameStatus = async () => {
     try {
-      const response = await apiClient.get<MinigameStatusResponse>('/minigame/status/');
+      const response = await apiClient.get<MinigameStatusResponse>('minigame/status/');
       setHasPlayed(response.has_played);
       if (response.has_played && response.result) {
         setGameResult(response.result);
@@ -58,7 +58,7 @@ const MiniGamePage = () => {
   const handleGameEnd = useCallback(
     async (carrotCount: number, coinCount: number) => {
       try {
-        const response = await apiClient.post<MinigameSubmitResponse>('/minigame/submit/', {
+        const response = await apiClient.post<MinigameSubmitResponse>('minigame/submit/', {
           carrot_count: carrotCount,
           coin_count: coinCount,
         });
@@ -121,10 +121,10 @@ const MiniGamePage = () => {
           </div>
           <p className="text-gray-400 mb-4">هر کاربر فقط یک بار می‌تواند بازی کند</p>
           <button
-            onClick={() => navigate('/panel')}
+            onClick={() => navigate('/')}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
           >
-            بازگشت به پنل
+            بازگشت به صفحه اصلی
           </button>
         </div>
       </div>

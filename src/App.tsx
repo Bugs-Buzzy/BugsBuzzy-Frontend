@@ -43,6 +43,16 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<GameWorld />} />
 
+      {/* Minigame - full screen, requires authentication */}
+      <Route
+        path="/minigame"
+        element={
+          <ProtectedRoute>
+            <MiniGamePage />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Payment callback routes */}
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/failed" element={<PaymentFailed />} />
@@ -62,7 +72,6 @@ function AppRoutes() {
         <Route path="gamejam" element={<GameJamCompetition />} />
         <Route path="announcements" element={<Announcements />} />
         <Route path="presentations" element={<Presentations />} />
-        <Route path="minigame" element={<MiniGamePage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
