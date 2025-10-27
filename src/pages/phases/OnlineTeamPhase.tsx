@@ -33,30 +33,33 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRevokeModal, setShowRevokeModal] = useState(false);
 
+  const hasNotifiedCompleteRef = useRef(false);
+
   useEffect(() => {
-    loadTeam();
+    const initTeam = async () => {
+      await loadTeam();
+
+      // After initial load, check if team is already complete and notify once
+      if (!hasNotifiedCompleteRef.current && onTeamComplete) {
+        hasNotifiedCompleteRef.current = true;
+      }
+    };
+
+    initTeam();
   }, []);
 
-  const completedTeamIdRef = useRef<number | null>(null);
-
+  // Notify parent only when team status changes TO completed/attended
   useEffect(() => {
-    // In GameJam, team must be 'completed' (reached MIN_MEMBERS) or 'attended' to proceed
-    // Only call once per team completion to prevent infinite loop
     if (
       team &&
       (team.status === 'completed' || team.status === 'attended') &&
       onTeamComplete &&
-      completedTeamIdRef.current !== team.id
+      !hasNotifiedCompleteRef.current
     ) {
-      completedTeamIdRef.current = team.id;
+      hasNotifiedCompleteRef.current = true;
       onTeamComplete();
     }
-
-    // Reset flag when team becomes non-complete or changes
-    if (team && team.status !== 'completed' && team.status !== 'attended') {
-      completedTeamIdRef.current = null;
-    }
-  }, [team, onTeamComplete]);
+  }, [team?.status, onTeamComplete]);
 
   const loadTeam = async () => {
     setLoading(true);
