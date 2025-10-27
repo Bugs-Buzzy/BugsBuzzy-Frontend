@@ -12,6 +12,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ToastProvider } from '@/context/ToastContext';
 import GameWorld from '@/pages/GameWorld';
+import MiniGamePage from '@/pages/MiniGamePage';
 import Panel from '@/pages/Panel';
 import Announcements from '@/pages/panel/Announcements';
 import Dashboard from '@/pages/panel/Dashboard';
@@ -61,6 +62,7 @@ function AppRoutes() {
         <Route path="gamejam" element={<GameJamCompetition />} />
         <Route path="announcements" element={<Announcements />} />
         <Route path="presentations" element={<Presentations />} />
+        <Route path="minigame" element={<MiniGamePage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
