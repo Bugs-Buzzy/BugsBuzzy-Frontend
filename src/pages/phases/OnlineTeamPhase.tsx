@@ -488,7 +488,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
               <h2 className="text-2xl font-bold text-primary-sky mb-4">➕ ساخت تیم جدید</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-primary-sky font-bold mb-2">نام تیم *</label>
+                  <label className="block text-primary-sky font-bold mb-2">نام تیم</label>
                   <input
                     type="text"
                     value={teamName}
@@ -545,7 +545,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                     </button>
                   </div>
                   <p className="text-primary-aero text-xs mt-2">
-                    حداکثر 256x256 پیکسل. فرمت PNG، JPG یا GIF
+                    (حداکثر 10MB - تبدیل خودکار به 128×128)
                   </p>
                 </div>
 
@@ -651,7 +651,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
             <div className="space-y-4">
               <div>
-                <label className="block text-primary-sky font-bold mb-2">نام تیم *</label>
+                <label className="block text-primary-sky font-bold mb-2">نام تیم</label>
                 <input
                   type="text"
                   value={teamName}
@@ -705,7 +705,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
                   </button>
                 </div>
                 <p className="text-primary-aero text-xs mt-2">
-                  حداکثر 256x256 پیکسل. فرمت PNG، JPG یا GIF
+                  (حداکثر 10MB - تبدیل خودکار به 128×128)
                 </p>
               </div>
 
