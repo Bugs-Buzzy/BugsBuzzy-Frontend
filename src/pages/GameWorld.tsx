@@ -34,9 +34,6 @@ export default function GameWorld() {
   };
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
     let lastWheelTime = 0;
 
     const handleWheel = (e: WheelEvent) => {
@@ -79,8 +76,8 @@ export default function GameWorld() {
 
       clearTimeout(scrollTimeout.current);
 
-      const scrollPosition = container.scrollTop;
-      const viewportHeight = container.clientHeight;
+      const scrollPosition = window.scrollY;
+      const viewportHeight = window.innerHeight;
       const currentPosition = scrollPosition / viewportHeight;
       let targetFloor = Math.round(currentPosition);
 
@@ -110,12 +107,12 @@ export default function GameWorld() {
       }, SCROLL_DEBOUNCE_DELAY);
     };
 
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      container.removeEventListener('wheel', handleWheel);
-      container.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('scroll', handleScroll);
       clearTimeout(scrollTimeout.current);
     };
   }, []);
