@@ -1,4 +1,3 @@
-/* eslint-disable */
 class Carrot {
   constructor({ x, y }) {
     this.x = x;

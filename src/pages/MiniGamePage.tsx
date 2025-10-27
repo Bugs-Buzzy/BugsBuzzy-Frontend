@@ -42,7 +42,7 @@ const MiniGamePage = () => {
 
   const checkMinigameStatus = async () => {
     try {
-      const response = await apiClient.get<MinigameStatusResponse>('minigame/status/');
+      const response = await apiClient.get<MinigameStatusResponse>('/minigame/status/');
       setHasPlayed(response.has_played);
       if (response.has_played && response.result) {
         setGameResult(response.result);
@@ -58,7 +58,7 @@ const MiniGamePage = () => {
   const handleGameEnd = useCallback(
     async (carrotCount: number, coinCount: number) => {
       try {
-        const response = await apiClient.post<MinigameSubmitResponse>('minigame/submit/', {
+        const response = await apiClient.post<MinigameSubmitResponse>('/minigame/submit/', {
           carrot_count: carrotCount,
           coin_count: coinCount,
         });
@@ -141,10 +141,13 @@ const MiniGamePage = () => {
               هویج و سکه جمع کنید تا کوپن تخفیف دریافت کنید!
             </p>
             <div className="text-lg text-gray-300 space-y-2 mb-6">
-              <p>• هر هویج: 0.2% تخفیف</p>
-              <p>• هر سکه: 2% تخفیف</p>
-              <p className="text-yellow-300 font-bold">
-                • فرمول: (هویج ÷ 5) + (سکه × 2) = درصد تخفیف
+              <p>🥕 هر چه هویج بیشتر، تخفیف بالاتر!</p>
+              <p>🪙 سکه‌ها ارزش بیشتری دارند</p>
+              <p className="text-yellow-300 font-bold mt-4">
+                امتیاز شما تخفیف تا 40% به شما می‌دهد
+              </p>
+              <p className="text-sm text-gray-400 mt-2">
+                فقط یک شانس دارید، پس بهترین تلاشتان را بکنید!
               </p>
             </div>
             <button

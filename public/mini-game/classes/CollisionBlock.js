@@ -1,4 +1,3 @@
-/* eslint-disable */
 class CollisionBlock {
   constructor({ x, y, size }) {
     this.x = x;
