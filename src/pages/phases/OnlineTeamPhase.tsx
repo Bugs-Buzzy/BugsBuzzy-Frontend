@@ -4,6 +4,7 @@ import { FaEdit, FaCheckCircle } from 'react-icons/fa';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { GAMEJAM_TEAM_CONFIG } from '@/constants/gamejam';
+import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { gamejamService, type OnlineTeam, type OnlineTeamMember } from '@/services/gamejam.service';
@@ -14,6 +15,7 @@ interface OnlineTeamPhaseProps {
 }
 
 export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps) {
+  const { user } = useAuth();
   const [team, setTeam] = useState<OnlineTeam | null>(null);
   const [members, setMembers] = useState<OnlineTeamMember[]>([]);
   const [loading, setLoading] = useState(false);
@@ -231,7 +233,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
     }
   };
 
-  const isLeader = team?.is_leader || false;
+  const isLeader = team ? user?.email === team.leader.email : false;
 
   return (
     <div className="space-y-6">

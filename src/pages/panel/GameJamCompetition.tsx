@@ -127,7 +127,7 @@ export default function GameJamCompetition() {
     },
     {
       id: 2,
-      title: 'رقابت آنلاین',
+      title: 'گیم‌جم آنلاین',
       icon: '🎮',
       status: getPhaseStatus(2),
       isClickable:

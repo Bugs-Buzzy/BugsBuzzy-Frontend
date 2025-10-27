@@ -25,7 +25,6 @@ export interface OnlineTeam {
   invite_code: string | null;
   members: OnlineTeamMember[];
   member_count: number;
-  is_leader: boolean;
   created_at: string;
 }
 
