@@ -114,7 +114,7 @@ export default function InPersonCompetition() {
     ...competitionPhases.map((phase, index) => ({
       id: index + 2,
       title: phase.title,
-      icon: ['🎯', '🎮', '🏁'][index] || '🎯',
+      icon: ['🎪', '🎯', '🎮', '✨', '🏁'][index] || '🎯',
       status: getPhaseStatus(index + 2),
       isClickable: phaseStatus.teamComplete && phase.active,
     })),

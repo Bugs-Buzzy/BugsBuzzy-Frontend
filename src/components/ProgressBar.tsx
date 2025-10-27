@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export interface Phase {
@@ -15,6 +16,22 @@ interface ProgressBarProps {
 }
 
 export default function ProgressBar({ phases, currentPhase, onPhaseClick }: ProgressBarProps) {
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const currentPhaseButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Auto-scroll to current phase on mobile
+  useEffect(() => {
+    if (currentPhaseButtonRef.current && mobileScrollRef.current) {
+      setTimeout(() => {
+        currentPhaseButtonRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }, 100);
+    }
+  }, [currentPhase]);
+
   return (
     <div className="relative">
       {/* Container with pixel border */}
@@ -158,11 +175,12 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
           </div>
 
           {/* Mobile View - Horizontal Scroll */}
-          <div className="md:hidden overflow-x-auto pb-4">
+          <div className="md:hidden overflow-x-auto pb-4 scroll-smooth" ref={mobileScrollRef}>
             <div className="flex items-center gap-3 min-w-max px-2">
               {phases.map((phase, index) => (
                 <div key={phase.id} className="flex items-center">
                   <button
+                    ref={phase.status === 'current' ? currentPhaseButtonRef : null}
                     onClick={() => phase.isClickable && onPhaseClick(phase.id)}
                     disabled={!phase.isClickable}
                     className={`
