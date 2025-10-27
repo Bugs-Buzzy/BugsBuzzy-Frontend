@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom';
 import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import { gamejamService, type OnlineTeam } from '@/services/gamejam.service';
 import { inpersonService, type InPersonTeam } from '@/services/inperson.service';
 import { workshopService, type Workshop } from '@/services/workshop.service';
 
@@ -29,6 +30,8 @@ interface DashboardStats {
   inPersonTeam: InPersonTeam | null;
   inPersonRegistered: boolean;
   inPersonPaid: boolean;
+  onlineTeam: OnlineTeam | null;
+  onlineRegistered: boolean;
   onlinePaid: boolean;
   purchasedItems: string[];
   totalSpent: number;
@@ -43,6 +46,8 @@ export default function Dashboard() {
     inPersonTeam: null,
     inPersonRegistered: false,
     inPersonPaid: false,
+    onlineTeam: null,
+    onlineRegistered: false,
     onlinePaid: false,
     purchasedItems: [],
     totalSpent: 0,
@@ -56,8 +61,9 @@ export default function Dashboard() {
       if (!user) return;
 
       try {
-        const [inPersonTeamData, purchasedData, workshopsData] = await Promise.all([
+        const [inPersonTeamData, onlineTeamData, purchasedData, workshopsData] = await Promise.all([
           inpersonService.getMyTeam(),
+          gamejamService.getMyTeam(),
           import('@/services/payments.service').then((m) => m.paymentsService.getPurchasedItems()),
           workshopService.getWorkshops(),
         ]);
@@ -74,6 +80,8 @@ export default function Dashboard() {
           inPersonTeam: inPersonTeamData.team || null,
           inPersonRegistered: !!inPersonTeamData.team,
           inPersonPaid: purchasedData.purchased_items.includes('inperson'),
+          onlineTeam: onlineTeamData.team || null,
+          onlineRegistered: !!onlineTeamData.team,
           onlinePaid: purchasedData.purchased_items.includes('gamejam'),
           purchasedItems: purchasedData.purchased_items,
           totalSpent: purchasedData.total_spent,
@@ -276,13 +284,60 @@ export default function Dashboard() {
                 {stats.onlinePaid ? 'پرداخت شده' : 'پرداخت نشده'}
               </span>
             </div>
+            <div className="flex justify-between items-center">
+              <span>وضعیت تیم:</span>
+              <span
+                className={`flex items-center gap-1 ${stats.onlineRegistered ? 'text-green-400' : 'text-gray-400'}`}
+              >
+                {stats.onlineRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
+                {stats.onlineRegistered ? 'دارد' : 'ندارد'}
+              </span>
+            </div>
+            {stats.onlineTeam && (
+              <>
+                <div className="flex justify-between items-center text-sm">
+                  <span>نام تیم:</span>
+                  <span className="text-white font-normal flex items-center gap-1">
+                    <FaUsers className="text-primary-aero" />
+                    {stats.onlineTeam.name}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>تعداد اعضا:</span>
+                  <span className="text-primary-aero font-pixel" dir="ltr">
+                    {stats.onlineTeam.member_count}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>وضعیت:</span>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold ${
+                      stats.onlineTeam.status === 'completed' ||
+                      stats.onlineTeam.status === 'attended'
+                        ? 'bg-green-900 bg-opacity-30 text-green-400 border border-green-600'
+                        : stats.onlineTeam.status === 'active'
+                          ? 'bg-blue-900 bg-opacity-30 text-blue-400 border border-blue-600'
+                          : 'bg-gray-800 text-gray-400 border border-gray-600'
+                    }`}
+                  >
+                    {stats.onlineTeam.status === 'completed'
+                      ? 'کامل'
+                      : stats.onlineTeam.status === 'attended'
+                        ? 'شرکت کرده'
+                        : stats.onlineTeam.status === 'active'
+                          ? 'فعال'
+                          : 'پرداخت نشده'}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
           {profileCompleted && (
             <Link
               to="/panel/gamejam"
               className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
             >
-              {stats.onlinePaid ? 'مشاهده جزئیات' : 'ثبت‌نام'}
+              {stats.onlineRegistered ? 'مشاهده جزئیات' : 'ثبت‌نام'}
             </Link>
           )}
         </PixelFrame>
