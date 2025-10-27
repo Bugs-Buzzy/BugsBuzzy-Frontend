@@ -49,11 +49,11 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
         {/* Progress Track */}
         <div className="relative">
           {/* Desktop View */}
-          <div className="hidden md:flex items-center justify-between gap-4">
+          <div className="hidden md:flex items-center justify-center gap-4">
             {phases.map((phase, index) => (
-              <div key={phase.id} className="flex items-center flex-1">
+              <div key={phase.id} className="flex items-center">
                 {/* Phase Node */}
-                <div className="flex-1 flex flex-col items-center">
+                <div className="flex flex-col items-center">
                   <button
                     onClick={() => phase.isClickable && onPhaseClick(phase.id)}
                     disabled={!phase.isClickable}
@@ -134,8 +134,8 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
 
                 {/* Connector */}
                 {index < phases.length - 1 && (
-                  <div className="flex-1 px-2 flex items-center">
-                    <div className="w-full relative h-2">
+                  <div className="px-4 flex items-center">
+                    <div className="w-16 relative h-2">
                       {/* Background track */}
                       <div className="absolute inset-0 bg-gray-700 rounded-full" />
 
