@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useToast } from '@/context/ToastContext';
@@ -33,12 +33,11 @@ const MiniGamePage = () => {
   const [hasPlayed, setHasPlayed] = useState(false);
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [needsLandscape, setNeedsLandscape] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const { success, error } = useToast();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    checkMinigameStatus();
-  }, []);
 
   const checkMinigameStatus = async () => {
     try {
@@ -54,6 +53,56 @@ const MiniGamePage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkMinigameStatus();
+  }, []);
+
+  useEffect(() => {
+    // Check if mobile device
+    const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
+    setIsMobile(mobile);
+
+    // Check initial orientation
+    if (mobile) {
+      const isLandscape = window.innerHeight < window.innerWidth;
+      setNeedsLandscape(!isLandscape);
+
+      // Listen for orientation changes
+      const handleOrientationChange = () => {
+        const isLandscapeNow = window.innerHeight < window.innerWidth;
+        setNeedsLandscape(!isLandscapeNow);
+      };
+
+      window.addEventListener('resize', handleOrientationChange);
+      window.addEventListener('orientationchange', handleOrientationChange);
+
+      return () => {
+        window.removeEventListener('resize', handleOrientationChange);
+        window.removeEventListener('orientationchange', handleOrientationChange);
+      };
+    }
+  }, []);
+
+  // Auto-focus iframe when game starts
+  useEffect(() => {
+    if (gameStarted && iframeRef.current) {
+      // Focus the iframe window for keyboard input
+      setTimeout(() => {
+        iframeRef.current?.contentWindow?.focus();
+        iframeRef.current?.focus();
+      }, 100);
+
+      // Request fullscreen on mobile
+      if (isMobile && document.documentElement.requestFullscreen) {
+        document.documentElement
+          .requestFullscreen()
+          .catch((err) => console.log('Fullscreen request failed:', err));
+      }
+    }
+  }, [gameStarted, isMobile]);
 
   const handleGameEnd = useCallback(
     async (carrotCount: number, coinCount: number) => {
@@ -92,6 +141,14 @@ const MiniGamePage = () => {
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [gameStarted, handleGameEnd]);
+
+  const handleStartGame = () => {
+    if (isMobile && needsLandscape) {
+      // Don't start if landscape is needed but not in landscape mode
+      return;
+    }
+    setGameStarted(true);
+  };
 
   if (loading) {
     return (
@@ -134,8 +191,8 @@ const MiniGamePage = () => {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {!gameStarted && (
-        <div className="absolute inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="text-center p-8 bg-gray-800 rounded-lg max-w-lg">
+        <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+          <div className="text-center p-8 bg-gray-800 rounded-lg max-w-lg mx-4">
             <h1 className="text-5xl font-bold text-green-500 mb-6">مینی‌گیم باگزبازی</h1>
             <p className="text-2xl text-white mb-6">
               هویج و سکه جمع کنید تا کوپن تخفیف دریافت کنید!
@@ -150,9 +207,24 @@ const MiniGamePage = () => {
                 فقط یک شانس دارید، پس بهترین تلاشتان را بکنید!
               </p>
             </div>
+
+            {/* Landscape warning for mobile */}
+            {isMobile && needsLandscape && (
+              <div className="mb-6 p-4 bg-yellow-600 bg-opacity-80 rounded-lg text-white">
+                <p className="text-2xl mb-2">📱</p>
+                <p className="text-lg font-bold">لطفاً دستگاه را افقی کنید</p>
+                <p className="text-sm mt-2">برای تجربه بهتر، صفحه را افقی نگه دارید</p>
+              </div>
+            )}
+
             <button
-              onClick={() => setGameStarted(true)}
-              className="px-8 py-4 text-2xl bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition"
+              onClick={handleStartGame}
+              disabled={isMobile && needsLandscape}
+              className={`px-8 py-4 text-2xl rounded-lg font-bold transition ${
+                isMobile && needsLandscape
+                  ? 'bg-gray-600 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700'
+              } text-white`}
             >
               شروع بازی
             </button>
@@ -162,9 +234,11 @@ const MiniGamePage = () => {
 
       {gameStarted && (
         <iframe
+          ref={iframeRef}
           src="/mini-game/index.html"
           title="BugsBuzzy Mini-Game"
           className="w-full h-full border-none"
+          allow="fullscreen"
         />
       )}
     </div>

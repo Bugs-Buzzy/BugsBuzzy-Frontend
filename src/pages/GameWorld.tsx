@@ -11,26 +11,26 @@ import '@/styles/gameworld.css';
 
 const floorNames = ['', 'inperson', 'gamejam', 'workshops', 'sponsors', 'team'];
 
-const WHEEL_DELAY = 100;
-const SNAP_WHEEL_DELAY = 100;
-const SNAP_TOUCH_DELAY = 50;
-const SCROLL_DEBOUNCE_DELAY = 100;
-const HASH_CHANGE_DELAY = 50;
-const SCROLL_THRESHOLD = 0.1;
+const WHEEL_DELAY = 600;
+const SNAP_WHEEL_DELAY = 600;
 
 export default function GameWorld() {
   const floorRefs = useRef<(HTMLElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentFloor, setCurrentFloor] = useState(0);
+  const forcedChange = useRef(false);
   const isSnapping = useRef(false);
   const lastFloor = useRef(0);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const scrollToFloor = (index: number) => {
+  const changeFloor = (index: number, scroll: boolean) => {
     setCurrentFloor(index);
     lastFloor.current = index;
     window.history.replaceState(null, '', `#${floorNames[index]}`);
-    floorRefs.current[index]?.scrollIntoView({ behavior: 'smooth' });
+    forcedChange.current = true;
+    if (scroll) {
+      floorRefs.current[index]?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function GameWorld() {
         }
 
         if (targetFloor !== lastFloor.current) {
-          scrollToFloor(targetFloor);
+          changeFloor(targetFloor, true);
           setTimeout(() => {
             isSnapping.current = false;
           }, SNAP_WHEEL_DELAY);
@@ -75,10 +75,6 @@ export default function GameWorld() {
     };
 
     const handleScroll = () => {
-      if (isSnapping.current) return;
-
-      clearTimeout(scrollTimeout.current);
-
       const scrollPosition = container.scrollTop;
       const viewportHeight = container.clientHeight;
       const currentPosition = scrollPosition / viewportHeight;
@@ -90,24 +86,7 @@ export default function GameWorld() {
       }
 
       targetFloor = Math.max(0, Math.min(5, targetFloor));
-
-      scrollTimeout.current = setTimeout(() => {
-        const scrollDiff = Math.abs(currentPosition - targetFloor);
-
-        if (scrollDiff > SCROLL_THRESHOLD) {
-          isSnapping.current = true;
-          scrollToFloor(targetFloor);
-          setTimeout(() => {
-            isSnapping.current = false;
-          }, SNAP_TOUCH_DELAY);
-        } else {
-          if (targetFloor !== lastFloor.current) {
-            lastFloor.current = targetFloor;
-            setCurrentFloor(targetFloor);
-            window.history.replaceState(null, '', `#${floorNames[targetFloor]}`);
-          }
-        }
-      }, SCROLL_DEBOUNCE_DELAY);
+      changeFloor(targetFloor, false);
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
@@ -126,22 +105,20 @@ export default function GameWorld() {
       if (hash) {
         const floorIndex = floorNames.indexOf(hash);
         if (floorIndex !== -1 && floorIndex !== currentFloor) {
-          setCurrentFloor(floorIndex);
-          setTimeout(() => {
-            floorRefs.current[floorIndex]?.scrollIntoView({ behavior: 'smooth' });
-          }, HASH_CHANGE_DELAY);
+          changeFloor(floorIndex, !forcedChange.current);
         }
+        forcedChange.current = false;
       }
     };
 
     handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [currentFloor]);
+  }, []);
 
   return (
     <>
-      <HUD onFloorNavigate={scrollToFloor} currentFloor={currentFloor} />
+      <HUD onFloorNavigate={changeFloor} currentFloor={currentFloor} />
       <div ref={containerRef} className="game-world-container">
         <LandingFloor ref={(el) => (floorRefs.current[0] = el)} />
         <InPersonFloor ref={(el) => (floorRefs.current[1] = el)} />

@@ -4,8 +4,12 @@
    ======================================== */
 
 .game-world-container {
-  width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
 }
 
 /* Note: Individual floor styles are in components.css under .floor class */
