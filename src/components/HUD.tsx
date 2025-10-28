@@ -17,7 +17,7 @@ import { useAuth } from '@/context/AuthContext';
 import LoginModal from '@/pages/modals/LoginModal';
 
 interface HUDProps {
-  onFloorNavigate: (_index: number) => void;
+  onFloorNavigate: (_index: number, _scroll: boolean) => void;
   currentFloor: number;
 }
 export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
@@ -135,7 +135,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
               return (
                 <button
                   key={index}
-                  onClick={() => onFloorNavigate(index)}
+                  onClick={() => onFloorNavigate(index, true)}
                   className={`${baseClasses} ${activeClasses}`}
                   title={floor.name}
                 >
