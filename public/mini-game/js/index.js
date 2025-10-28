@@ -1,6 +1,6 @@
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
-const dpr = window.devicePixelRatio || 1;
+const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR at 2 for performance
 
 // Set display size (CSS pixels)
 canvas.style.width = '1024px';
@@ -10,6 +10,9 @@ canvas.width = 1024 * dpr;
 canvas.height = 576 * dpr;
 
 c.scale(dpr, dpr);
+
+// Enable alpha for proper canvas clearing
+c.imageSmoothingEnabled = false;
 const skyLayerData = {
   l_Sky: l_Sky,
 };
@@ -599,10 +602,14 @@ function animate(backgroundCanvas) {
   }
 
   // Render scene
+  // Clear the entire canvas first (important for mobile)
+  c.clearRect(0, 0, canvas.width, canvas.height);
+
   c.save();
   c.scale(dpr, dpr);
   c.translate(-camera.x, camera.y);
-  c.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw background layers
   c.drawImage(skyBackgroundCanvas, camera.x * 0.32, 0);
   c.drawImage(mountBackgroundCanvas, camera.x * 0.18, 0);
   c.drawImage(backgroundCanvas, 0, 0);
@@ -654,123 +661,5 @@ const startRendering = async () => {
     console.error('Error during rendering:', error);
   }
 };
-
-// touchControls.js
-class TouchControls {
-  constructor(keys) {
-    this.keys = keys;
-    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent,
-    );
-
-    if (this.isMobile) {
-      this.initTouchControls();
-    }
-  }
-
-  initTouchControls() {
-    // Movement buttons
-    const leftBtn = document.getElementById('left-btn');
-    const rightBtn = document.getElementById('right-btn');
-    const upBtn = document.getElementById('up-btn');
-    const downBtn = document.getElementById('down-btn');
-    // const jumpBtn = document.getElementById('jump-btn');
-    // const actionBtn = document.getElementById('action-btn');
-
-    // Left button
-    this.setupButton(
-      leftBtn,
-      () => {
-        this.keys.a.pressed = true;
-      },
-      () => {
-        this.keys.a.pressed = false;
-      },
-    );
-
-    // Right button
-    this.setupButton(
-      rightBtn,
-      () => {
-        this.keys.d.pressed = true;
-      },
-      () => {
-        this.keys.d.pressed = false;
-      },
-    );
-
-    // Up button (alternative jump)
-    this.setupButton(
-      upBtn,
-      () => {
-        if (!this.keys.w.pressed) {
-          player.jump();
-        }
-        this.keys.w.pressed = true;
-      },
-      () => {
-        this.keys.w.pressed = false;
-      },
-    );
-
-    // Action button (X) - convert carrots to coins
-    this.setupButton(
-      downBtn,
-      () => {
-        this.keys.x.pressed = true;
-        convertCarrotsToCoin();
-      },
-      () => {
-        this.keys.x.pressed = false;
-      },
-    );
-
-    // Prevent context menu on long press
-    document.addEventListener('contextmenu', (e) => {
-      if (this.isMobile) e.preventDefault();
-    });
-
-    console.log('Touch controls initialized');
-  }
-
-  setupButton(button, onStart, onEnd) {
-    if (!button) return;
-
-    // Touch events
-    button.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      onStart();
-    });
-
-    button.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      onEnd();
-    });
-
-    button.addEventListener('touchcancel', (e) => {
-      e.preventDefault();
-      onEnd();
-    });
-
-    // Mouse events for testing on desktop
-    button.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      onStart();
-    });
-
-    button.addEventListener('mouseup', (e) => {
-      e.preventDefault();
-      onEnd();
-    });
-
-    button.addEventListener('mouseleave', (e) => {
-      e.preventDefault();
-      onEnd();
-    });
-  }
-}
-
-// Initialize touch controls globally
-let touchControls;
 
 startRendering();

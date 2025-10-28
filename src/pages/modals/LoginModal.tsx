@@ -14,6 +14,7 @@ import {
   FaEdit,
   FaTimes,
   FaExclamationTriangle,
+  FaSignInAlt,
 } from 'react-icons/fa';
 
 import PixelModal from '@/components/modals/PixelModal';
@@ -234,8 +235,8 @@ export default function LoginModal({ onClose }: LoginModalProps) {
           </>
         ) : (
           <>
-            <FaEnvelope />
-            <span>ارسال کد تایید</span>
+            <FaSignInAlt />
+            <span>ورود / ثبت نام</span>
           </>
         )}
       </button>
