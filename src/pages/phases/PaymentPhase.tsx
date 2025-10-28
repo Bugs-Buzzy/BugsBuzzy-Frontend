@@ -102,7 +102,7 @@ export default function PaymentPhase({
         const itemId = allItems[idx];
         if (res.status === 'fulfilled') {
           pricesMap[itemId] = res.value.amount;
-          if (itemId === baseItem) baseOk = true;
+          if (itemId === baseItem) baseOk = res.value.amount > 0;
         } else {
           if (itemId === baseItem) baseOk = false;
         }
