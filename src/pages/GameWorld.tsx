@@ -11,8 +11,8 @@ import '@/styles/gameworld.css';
 
 const floorNames = ['', 'inperson', 'gamejam', 'workshops', 'sponsors', 'team'];
 
-const WHEEL_DELAY = 300;
-const SNAP_WHEEL_DELAY = 300;
+const WHEEL_DELAY = 100;
+const SNAP_WHEEL_DELAY = 100;
 const SNAP_TOUCH_DELAY = 50;
 const SCROLL_DEBOUNCE_DELAY = 100;
 const HASH_CHANGE_DELAY = 50;
@@ -34,6 +34,9 @@ export default function GameWorld() {
   };
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
     let lastWheelTime = 0;
 
     const handleWheel = (e: WheelEvent) => {
@@ -76,8 +79,8 @@ export default function GameWorld() {
 
       clearTimeout(scrollTimeout.current);
 
-      const scrollPosition = window.scrollY;
-      const viewportHeight = window.innerHeight;
+      const scrollPosition = container.scrollTop;
+      const viewportHeight = container.clientHeight;
       const currentPosition = scrollPosition / viewportHeight;
       let targetFloor = Math.round(currentPosition);
 
@@ -107,12 +110,12 @@ export default function GameWorld() {
       }, SCROLL_DEBOUNCE_DELAY);
     };
 
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('scroll', handleScroll);
+      container.removeEventListener('wheel', handleWheel);
+      container.removeEventListener('scroll', handleScroll);
       clearTimeout(scrollTimeout.current);
     };
   }, []);

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { FaEdit, FaCheckCircle, FaImage } from 'react-icons/fa';
 
+import Loading from '@/components/Loading';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { GAMEJAM_TEAM_CONFIG } from '@/constants/gamejam';
@@ -75,6 +76,8 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       }
     } catch (err) {
       console.error('Failed to load team:', err);
+      toast.error('خطا در بارگذاری تیم');
+      setError('خطا در بارگذاری تیم');
       setTeam(null);
       setMembers([]);
     } finally {
@@ -269,6 +272,16 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   };
 
   const isLeader = team ? user?.email === team.leader.email : false;
+
+  if (loading) {
+    return (
+      <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+        <div className="py-8">
+          <Loading text="در حال بارگذاری تیم..." />
+        </div>
+      </PixelFrame>
+    );
+  }
 
   return (
     <div className="space-y-6">

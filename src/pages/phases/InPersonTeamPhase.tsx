@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaEdit, FaTrash, FaImage, FaCheckCircle } from 'react-icons/fa';
 
+import Loading from '@/components/Loading';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { INPERSON_TEAM_CONFIG } from '@/constants/inperson';
@@ -60,6 +61,8 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       }
     } catch (err) {
       console.error('Failed to load team:', err);
+      toast.error('خطا در بارگذاری اطلاعات تیم');
+      setError('خطا در بارگذاری اطلاعات تیم');
       setTeam(null);
       setMembers([]);
     } finally {
@@ -273,6 +276,16 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+        <div className="py-8">
+          <Loading text="در حال بارگذاری تیم..." />
+        </div>
+      </PixelFrame>
+    );
+  }
 
   return (
     <div className="space-y-6">

@@ -102,7 +102,7 @@ export default function PaymentPhase({
         const itemId = allItems[idx];
         if (res.status === 'fulfilled') {
           pricesMap[itemId] = res.value.amount;
-          if (itemId === baseItem) baseOk = true;
+          if (itemId === baseItem) baseOk = res.value.amount > 0;
         } else {
           if (itemId === baseItem) baseOk = false;
         }
@@ -397,6 +397,16 @@ export default function PaymentPhase({
       toast.info('کد تخفیف به دلیل تغییر گزینه‌ها حذف شد. در صورت نیاز دوباره اعمال کنید');
     }
   };
+
+  if (loading) {
+    return (
+      <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+        <div className="py-8">
+          <Loading text="در حال بارگذاری وضعیت پرداخت..." />
+        </div>
+      </PixelFrame>
+    );
+  }
 
   // Check if registration is closed
   if (baseItemAvailable === false && purchasedLoaded && !hasBaseItemPurchased()) {
