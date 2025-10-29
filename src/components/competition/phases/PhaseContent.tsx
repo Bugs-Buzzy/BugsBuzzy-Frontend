@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
@@ -36,9 +36,7 @@ export default function PhaseContent({
   isActive = false,
 }: PhaseContentProps) {
   const toast = useToast();
-  const [submission, setSubmission] = useState<InPersonSubmission | null>(null);
   const [submissions, setSubmissions] = useState<InPersonSubmission[]>([]);
-  const [submissionContent, setSubmissionContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false);
@@ -52,6 +50,7 @@ export default function PhaseContent({
   const canSubmit = phaseId != 1 && isActive && hasStarted && !hasEnded;
 
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
+  const submissionRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     loadSubmissions();
@@ -60,34 +59,15 @@ export default function PhaseContent({
   const loadSubmissions = async () => {
     try {
       const response = await inpersonService.getSubmissions();
-      setSubmissions(response.submissions.filter((s) => s.phase === phaseId));
-
-      // Find the final submission for this phase, if any
-      const currentPhaseSubmission =
-        submissions
-          .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
-          .find((s) => s.is_final) || null;
-
-      if (currentPhaseSubmission) {
-        setSubmission(currentPhaseSubmission);
-        setSubmissionContent(currentPhaseSubmission.content);
-      } else {
-        // If no final submission, but there are previous submissions for the phase, pick the latest
-        const latest = submissions.sort(
-          (a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime(),
-        )[0];
-        if (latest) {
-          setSubmission(latest);
-          setSubmissionContent(latest.content);
-        }
-      }
+      const currentPhaseSubmissions = response.submissions.filter((s) => s.phase === phaseId);
+      setSubmissions(currentPhaseSubmissions);
     } catch (err) {
       console.error('Failed to load submissions:', err);
     }
   };
 
   const handleSubmit = async () => {
-    if (!submissionContent.trim()) {
+    if (submissionRef.current?.value.trim() === '') {
       setError('لطفاً متن ارسالی را وارد کنید');
       toast.error('لطفاً متن ارسالی را وارد کنید');
       return;
@@ -96,13 +76,14 @@ export default function PhaseContent({
     setLoading(true);
     setError('');
     try {
-      const newSubmission = await inpersonService.createSubmission({
+      await inpersonService.createSubmission({
         phase: phaseId,
-        content: submissionContent,
+        content: submissionRef.current?.value.trim() || '',
       });
 
-      setSubmission(newSubmission);
-      toast.success(submission ? 'ارسال با موفقیت به‌روزرسانی شد' : 'ارسال با موفقیت ثبت شد');
+      toast.success(
+        submissions.length > 0 ? 'ارسال با موفقیت به‌روزرسانی شد' : 'ارسال با موفقیت ثبت شد',
+      );
       await loadSubmissions();
     } catch (err) {
       console.error('Submission error:', err);
@@ -240,7 +221,7 @@ export default function PhaseContent({
             <span>ارسال</span>
           </h3>
 
-          {submission && (
+          {submissions.length > 0 && (
             <div className="bg-green-900 bg-opacity-20 border border-green-600 rounded p-3 mb-4">
               <p className="text-green-300 text-sm flex items-center gap-2">
                 <FaCheckCircle className="text-lg" />
@@ -256,8 +237,7 @@ export default function PhaseContent({
             <div className="space-y-2">
               <label className="block text-white font-bold text-sm">متن ارسال</label>
               <textarea
-                value={submissionContent}
-                onChange={(e) => setSubmissionContent(e.target.value)}
+                ref={submissionRef}
                 placeholder="متن ارسالی خود را اینجا وارد کنید..."
                 className="w-full pixel-input bg-primary-midnight/80 text-white/90 border-primary-cerulean/60 focus:border-primary-columbia focus:ring-2 focus:ring-primary-columbia/40 transition-all"
                 rows={7}
@@ -273,10 +253,14 @@ export default function PhaseContent({
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleSubmit}
-                disabled={!submissionContent.trim() || loading}
+                disabled={submissionRef.current?.value.trim() === '' || loading}
                 className="pixel-btn pixel-btn-success py-3 px-6 disabled:opacity-60"
               >
-                {loading ? 'در حال ارسال...' : submission ? 'به‌روزرسانی ارسال' : 'ارسال کار'}
+                {loading
+                  ? 'در حال ارسال...'
+                  : submissions.length > 0
+                    ? 'به‌روزرسانی ارسال'
+                    : 'ارسال کار'}
               </button>
 
               {submissions.length > 0 && (
