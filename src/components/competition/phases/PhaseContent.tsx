@@ -52,8 +52,6 @@ export default function PhaseContent({
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
   const submissionRef = useRef<HTMLTextAreaElement | null>(null);
 
-  console.log('kir', submissionRef.current?.value.trim());
-
   useEffect(() => {
     loadSubmissions();
   }, [phaseId]);
@@ -69,7 +67,7 @@ export default function PhaseContent({
   };
 
   const handleSubmit = async () => {
-    if (submissionRef.current?.value.trim() === '') {
+    if (!submissionRef.current?.value.trim()) {
       setError('لطفاً متن ارسالی را وارد کنید');
       toast.error('لطفاً متن ارسالی را وارد کنید');
       return;
@@ -255,7 +253,7 @@ export default function PhaseContent({
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleSubmit}
-                disabled={submissionRef.current?.value.trim() === '' || loading}
+                disabled={!submissionRef.current?.value.trim() || loading}
                 className="pixel-btn pixel-btn-success py-3 px-6 disabled:opacity-60"
               >
                 {loading
