@@ -97,6 +97,7 @@ export default function PhaseContent({
       toast.error(message || errorMessage);
     } finally {
       setLoading(false);
+      setCurrentSub('');
     }
   };
 
@@ -303,7 +304,7 @@ export default function PhaseContent({
           <div className="p-6">
             <h2 className="text-2xl font-bold text-primary-columbia mb-6">📋 تاریخچه ارسال‌ها</h2>
 
-            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto overflow-x-auto">
               {submissions.map((sub) => (
                 <PixelFrame
                   key={sub.id}
