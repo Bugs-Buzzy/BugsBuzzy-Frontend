@@ -53,6 +53,10 @@ export default function PhaseContent({
   const submissionRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
+    console.log('dul', !submissionRef.current?.value.trim());
+  }, [submissionRef.current?.value]);
+
+  useEffect(() => {
     loadSubmissions();
   }, [phaseId]);
 
