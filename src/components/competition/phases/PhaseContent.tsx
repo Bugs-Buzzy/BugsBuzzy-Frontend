@@ -64,8 +64,7 @@ export default function PhaseContent({
 
       // Find the final submission for this phase, if any
       const currentPhaseSubmission =
-        response.submissions
-          .filter((s) => s.phase === phaseId)
+        submissions
           .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
           .find((s) => s.is_final) || null;
 
@@ -74,11 +73,9 @@ export default function PhaseContent({
         setSubmissionContent(currentPhaseSubmission.content);
       } else {
         // If no final submission, but there are previous submissions for the phase, pick the latest
-        const latest = response.submissions
-          .filter((s) => s.phase === phaseId)
-          .sort(
-            (a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime(),
-          )[0];
+        const latest = submissions.sort(
+          (a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime(),
+        )[0];
         if (latest) {
           setSubmission(latest);
           setSubmissionContent(latest.content);
