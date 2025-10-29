@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
 
@@ -157,8 +158,9 @@ export default function PhaseContent({
         {/* Markdown Content */}
         <div className="prose prose-invert max-w-none mb-6">
           <ReactMarkdown
+            skipHtml={false}
             remarkPlugins={[remarkMath]}
-            rehypePlugins={[rehypeKatex]}
+            rehypePlugins={[rehypeRaw, rehypeKatex]}
             components={{
               h1: ({ ...props }) => (
                 <h1 className="text-3xl font-bold text-primary-sky mb-4" {...props} />
@@ -209,7 +211,7 @@ export default function PhaseContent({
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <h3 className="text-2xl font-bold text-primary-sky mb-4 flex items-center gap-2">
             <span>📝</span>
-            <span>ارسال کار</span>
+            <span>ارسال</span>
           </h3>
 
           {submission && (
@@ -217,7 +219,8 @@ export default function PhaseContent({
               <p className="text-green-300 text-sm flex items-center gap-2">
                 <FaCheckCircle className="text-lg" />
                 <span>
-                  شما قبلاً برای این فاز ارسال کرده‌اید. می‌توانید ارسال خود را به‌روزرسانی کنید.
+                  شما قبلاً برای این فاز ارسال کرده‌اید. در صورت ارسال مجدد، آخرین ارسال به‌عنوان
+                  ارسال نهایی در نظر گرفته می‌شود.
                 </span>
               </p>
             </div>
@@ -225,17 +228,19 @@ export default function PhaseContent({
 
           <div className="space-y-4">
             <div>
-              <label className="block text-primary-sky font-bold mb-2">متن ارسالی *</label>
+              <label className="block text-primary-sky font-bold mb-2">متن ارسال</label>
               <textarea
                 value={submissionContent}
                 onChange={(e) => setSubmissionContent(e.target.value)}
-                placeholder="توضیحات خود را اینجا وارد کنید..."
+                placeholder="متن ارسالی خود را اینجا وارد کنید..."
                 className="w-full pixel-input bg-primary-midnight text-primary-aero border-primary-cerulean p-4"
                 rows={8}
                 disabled={loading}
               />
               <p className="text-xs text-gray-400 mt-1">
-                نکات خود درباره این فاز را به تفصیل بنویسید
+                بر اساس توضیحات ارائه شده، و در قالب اعلام شده، متن ارسالی خود برای این فاز را در
+                کادر فوق وارد نمائید. دقت کنید که مسئولیت ارسال متن خارج از قالب تعیین شده با خود
+                تیم می‌باشد.
               </p>
             </div>
 
