@@ -49,7 +49,7 @@ export default function PhaseContent({
 
   const hasStarted = start ? now >= start : false;
   const hasEnded = end ? now >= end : false;
-  const canSubmit = isActive && hasStarted && !hasEnded;
+  const canSubmit = phaseId != 1 && isActive && hasStarted && !hasEnded;
 
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
 
@@ -62,10 +62,27 @@ export default function PhaseContent({
       const response = await inpersonService.getSubmissions();
       setSubmissions(response.submissions);
 
-      const currentPhaseSubmission = response.submissions.find((s) => s.phase === phaseId);
+      // Find the final submission for this phase, if any
+      const currentPhaseSubmission =
+        response.submissions
+          .filter((s) => s.phase === phaseId)
+          .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
+          .find((s) => s.is_final) || null;
+
       if (currentPhaseSubmission) {
         setSubmission(currentPhaseSubmission);
         setSubmissionContent(currentPhaseSubmission.content);
+      } else {
+        // If no final submission, but there are previous submissions for the phase, pick the latest
+        const latest = response.submissions
+          .filter((s) => s.phase === phaseId)
+          .sort(
+            (a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime(),
+          )[0];
+        if (latest) {
+          setSubmission(latest);
+          setSubmissionContent(latest.content);
+        }
       }
     } catch (err) {
       console.error('Failed to load submissions:', err);
@@ -270,7 +287,7 @@ export default function PhaseContent({
                   onClick={() => setShowSubmissionsModal(true)}
                   className="pixel-btn pixel-btn-primary py-3 px-6"
                 >
-                  مشاهده ارسال‌های قبلی ({submissions.length})
+                  مشاهده ارسال‌های نهایی فازها ({submissions.length})
                 </button>
               )}
             </div>
@@ -314,6 +331,11 @@ export default function PhaseContent({
                   <div className="mb-3">
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-primary-sky font-bold">Phase {sub.phase}</span>
+                      {sub.is_final && (
+                        <span className="ml-2 inline-block text-xs bg-green-700 text-green-100 px-2 py-0.5 rounded">
+                          FINAL
+                        </span>
+                      )}
                       <span className="text-xs text-gray-400">
                         {new Date(sub.submitted_at).toLocaleString('fa-IR')}
                       </span>

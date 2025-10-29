@@ -43,7 +43,7 @@ export function Countdown({ target }: { target: string | Date }) {
   if (ended) {
     return (
       <div className="text-xl font-orbitron tracking-[0.25em] uppercase text-primary-columbia">
-        The Event is Live!
+        شمارش معکوس به پایان رسید!
       </div>
     );
   }

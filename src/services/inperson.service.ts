@@ -49,6 +49,7 @@ export interface InPersonSubmission {
   team: InPersonTeam;
   phase: number;
   content: string;
+  is_final?: boolean;
   score: number | null;
   judge_notes: string;
   submitted_at: string;
