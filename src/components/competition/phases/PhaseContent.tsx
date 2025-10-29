@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCheckCircle, FaCheck } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
@@ -37,6 +37,7 @@ export default function PhaseContent({
 }: PhaseContentProps) {
   const toast = useToast();
   const [submissions, setSubmissions] = useState<InPersonSubmission[]>([]);
+  const [currentSub, setCurrentSub] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showSubmissionsModal, setShowSubmissionsModal] = useState(false);
@@ -50,11 +51,6 @@ export default function PhaseContent({
   const canSubmit = phaseId != 1 && isActive && hasStarted && !hasEnded;
 
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
-  const submissionRef = useRef<HTMLTextAreaElement | null>(null);
-
-  useEffect(() => {
-    console.log('dul', !submissionRef.current?.value.trim());
-  }, [submissionRef.current?.value]);
 
   useEffect(() => {
     loadSubmissions();
@@ -71,7 +67,7 @@ export default function PhaseContent({
   };
 
   const handleSubmit = async () => {
-    if (!submissionRef.current?.value.trim()) {
+    if (currentSub.trim() == '') {
       setError('لطفاً متن ارسالی را وارد کنید');
       toast.error('لطفاً متن ارسالی را وارد کنید');
       return;
@@ -82,7 +78,7 @@ export default function PhaseContent({
     try {
       await inpersonService.createSubmission({
         phase: phaseId,
-        content: submissionRef.current?.value.trim() || '',
+        content: currentSub.trim() || '',
       });
 
       toast.success(
@@ -241,7 +237,8 @@ export default function PhaseContent({
             <div className="space-y-2">
               <label className="block text-white font-bold text-sm">متن ارسال</label>
               <textarea
-                ref={submissionRef}
+                value={currentSub}
+                onClick={(e) => setCurrentSub(e.currentTarget.value)}
                 placeholder="متن ارسالی خود را اینجا وارد کنید..."
                 className="w-full pixel-input bg-primary-midnight/80 text-white/90 border-primary-cerulean/60 focus:border-primary-columbia focus:ring-2 focus:ring-primary-columbia/40 transition-all"
                 rows={7}
@@ -257,7 +254,7 @@ export default function PhaseContent({
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleSubmit}
-                disabled={!submissionRef.current?.value.trim() || loading}
+                disabled={currentSub.trim() == '' || loading}
                 className="pixel-btn pixel-btn-success py-3 px-6 disabled:opacity-60"
               >
                 {loading
