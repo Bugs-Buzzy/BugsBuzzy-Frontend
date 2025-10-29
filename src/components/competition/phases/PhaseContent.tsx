@@ -48,7 +48,7 @@ export default function PhaseContent({
 
   const hasStarted = start ? now >= start : false;
   const hasEnded = end ? now >= end : false;
-  const canSubmit = isActive && hasStarted && !hasEnded;
+  const canSubmit = false; // isActive && hasStarted && !hasEnded;
 
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
 
@@ -137,8 +137,6 @@ export default function PhaseContent({
             <span className="pixel-btn pixel-btn-warning px-4 py-2 text-sm">⏰ هنوز شروع نشده</span>
           )}
         </div>
-
-        {description && <p className="text-primary-aero mb-4 text-lg">{description}</p>}
 
         {/* Countdown to Start */}
         {start && !hasStarted && (
