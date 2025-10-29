@@ -49,7 +49,7 @@ export default function PhaseContent({
 
   const hasStarted = start ? now >= start : false;
   const hasEnded = end ? now >= end : false;
-  const canSubmit = false; // isActive && hasStarted && !hasEnded;
+  const canSubmit = isActive && hasStarted && !hasEnded;
 
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
 
