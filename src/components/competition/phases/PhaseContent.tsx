@@ -238,7 +238,7 @@ export default function PhaseContent({
               <label className="block text-white font-bold text-sm">متن ارسال</label>
               <textarea
                 value={currentSub}
-                onClick={(e) => setCurrentSub(e.currentTarget.value)}
+                onChange={(e) => setCurrentSub(e.currentTarget.value)}
                 placeholder="متن ارسالی خود را اینجا وارد کنید..."
                 className="w-full pixel-input bg-primary-midnight/80 text-white/90 border-primary-cerulean/60 focus:border-primary-columbia focus:ring-2 focus:ring-primary-columbia/40 transition-all"
                 rows={7}
