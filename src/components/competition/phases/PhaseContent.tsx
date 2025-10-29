@@ -60,7 +60,7 @@ export default function PhaseContent({
   const loadSubmissions = async () => {
     try {
       const response = await inpersonService.getSubmissions();
-      setSubmissions(response.submissions);
+      setSubmissions(response.submissions.filter((s) => s.phase === phaseId));
 
       // Find the final submission for this phase, if any
       const currentPhaseSubmission =
