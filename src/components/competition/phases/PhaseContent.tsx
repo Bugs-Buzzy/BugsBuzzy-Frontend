@@ -52,6 +52,8 @@ export default function PhaseContent({
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
   const submissionRef = useRef<HTMLTextAreaElement | null>(null);
 
+  console.log('kir', submissionRef.current?.value.trim());
+
   useEffect(() => {
     loadSubmissions();
   }, [phaseId]);
