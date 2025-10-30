@@ -132,8 +132,20 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
       videoUrl:
         'https://drive.google.com/file/d/1t7lU4j8H4BAXTheDIO_TXsWXvY2i3Cz-/view?usp=drive_link',
     },
-    { title: 'قسمت 7: پیاده‌سازی شبکه ۲', img: info7, date: '۶ آبان' },
-    { title: 'قسمت 8: منو و صداگذاری', img: info8, date: '۶ آبان' },
+    {
+      title: 'قسمت 7: پیاده‌سازی شبکه ۲',
+      img: info7,
+      date: '۶ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1naxHbtfdiKUIz8DXAqXFngIySwRlzyCy/view?usp=drive_link',
+    },
+    {
+      title: 'قسمت 8: منو و صداگذاری',
+      img: info8,
+      date: '۶ آبان',
+      videoUrl:
+        'https://drive.google.com/file/d/1NQjJ1oMWc7IUMAzU1-v2x51gz26zG_It/view?usp=sharing',
+    },
   ];
 
   const presentations = [
