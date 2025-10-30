@@ -3,6 +3,7 @@ import { apiClient } from './api';
 export interface InPersonTeam {
   id: number;
   name: string;
+  team_number?: string;
   description: string;
   avatar: string;
   status: 'incomplete' | 'active' | 'attended' | 'disbanded';

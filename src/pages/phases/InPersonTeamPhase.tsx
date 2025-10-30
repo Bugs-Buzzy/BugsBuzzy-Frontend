@@ -421,22 +421,46 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
                   </p>
                 </div>
 
-                {/* Upload Code for Attended Teams */}
-                {team.invite_code && (
-                  <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
-                    <p className="text-primary-aero mb-2 font-bold">کد اعتبارسنجی تیم:</p>
-                    <p
-                      className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
-                      dir="ltr"
-                    >
-                      {team.invite_code}
-                    </p>
-                    <p className="text-primary-aero text-sm mt-2 text-center">
-                      از این کد برای اعتبارسنجی‌های تیم (مانند آپلود) استفاده کنید. این کد را در
-                      اختیار فردی خارج از اعضای تیم خود قرار ندهید.
-                    </p>
+                {/* Team Number and Upload Code for Attended Teams */}
+                <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
+                  <div className="space-y-4">
+                    {/* Team Number */}
+                    {team.team_number && (
+                      <div>
+                        <p className="text-primary-aero mb-2 font-bold">شماره تیم:</p>
+                        <p
+                          className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
+                          dir="ltr"
+                        >
+                          {team.team_number}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Divider */}
+                    {team.team_number && team.invite_code && (
+                      <div className="border-t border-primary-cerulean opacity-50"></div>
+                    )}
+
+                    {/* Upload Code */}
+                    {team.invite_code && (
+                      <div>
+                        <p className="text-primary-aero mb-2 font-bold">کد اعتبارسنجی تیم:</p>
+                        <p
+                          className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
+                          dir="ltr"
+                        >
+                          {team.invite_code}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )}
+
+                  <p className="text-primary-aero text-sm mt-4 text-center">
+                    از شماره تیم و کد اعتبارسنجی برای آپلود و سایر عملیات تیم استفاده کنید. این
+                    اطلاعات را در اختیار فردی خارج از اعضای تیم خود قرار ندهید.
+                  </p>
+                </div>
               </>
             )}
           </PixelFrame>
