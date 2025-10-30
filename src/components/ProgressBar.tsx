@@ -49,7 +49,7 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
         {/* Progress Track */}
         <div className="relative">
           {/* Desktop View */}
-          <div className="hidden md:flex items-center justify-center gap-4">
+          <div className="hidden md:flex overflow-x-auto items-center justify-center gap-4">
             {phases.map((phase, index) => (
               <div key={phase.id} className="flex items-center">
                 {/* Phase Node */}
