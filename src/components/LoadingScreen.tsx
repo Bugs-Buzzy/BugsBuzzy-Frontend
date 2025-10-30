@@ -57,64 +57,68 @@ export default function LoadingScreen({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col justify-between items-center bg-cover bg-center bg-no-repeat overflow-hidden relative min-h-screen"
+      className="fixed inset-0 z-50 flex flex-col items-center bg-cover bg-center bg-no-repeat overflow-hidden relative w-screen h-screen p-100"
       style={{
         backgroundImage: `url(${bgLoading})`,
       }}
     >
       {/* Background overlay to avoid bottom color line */}
       <div className="absolute inset-0 bg-black/10 pointer-events-none" />
-      {/* Top: Logo */}
-      <div className="animate-pulse mt-20 sm:mt-24 md:mt-28 z-10 flex-shrink-0">
-        <img
-          src={logo}
-          alt="BugsBuzzy"
-          className="w-28 h-28 sm:w-36 sm:h-36 md:w-52 md:h-52 drop-shadow-lg mx-auto"
-        />
-      </div>
 
-      {/* Middle: Text + Progress */}
-      <div className="flex flex-col items-center justify-center text-center flex-grow z-10 px-4">
-        <p
-          className="text-3xl sm:text-5xl md:text-7xl font-pixel text-white tracking-widest mb-8 sm:mb-12"
-          style={
-            {
-              WebkitTextStroke: '2px rgba(0,0,0,0.5)',
-              paintOrder: 'stroke fill',
-            } as CSSProperties
-          }
-        >
-          درحال بارگذاری
-          <span className="inline-block w-8 sm:w-12 md:w-20 text-right">{dots}</span>
-        </p>
-
-        <div className="w-64 sm:w-80 md:w-full md:max-w-2xl">
-          <div className="relative h-3 sm:h-4 md:h-6 bg-gray-700 rounded-full overflow-hidden border-2 md:border-3 border-gray-600 shadow-lg">
-            <div
-              className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 rounded-full transition-all duration-100 shadow-lg relative"
-              style={{ width: `${progress}%` }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-40 animate-shimmer" />
-            </div>
-          </div>
-          <p className="text-center text-gray-300 font-pixel text-sm sm:text-base md:text-lg mt-3">
-            {Math.round(progress)}%
-          </p>
+      {/* Container with proper spacing */}
+      <div className="w-full h-full flex flex-col items-center px-2 sm:px-4 relative z-10 justify-around sm:py-100">
+        {/* Top: Logo */}
+        <div className="animate-pulse pt-2 sm:pt-3 md:pt-4 flex-shrink-0">
+          <img
+            src={logo}
+            alt="BugsBuzzy"
+            className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 drop-shadow-lg mx-auto mt-100"
+          />
         </div>
-      </div>
 
-      {/* Bottom: Logos */}
-      <div className="flex flex-row items-center justify-center gap-6 sm:gap-10 md:gap-16 mb-6 sm:mb-10 z-10 flex-wrap">
-        <img
-          src={sharifImg}
-          alt="Sharif University"
-          className="h-14 sm:h-16 md:h-24 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
-        />
-        <img
-          src={ramzImg}
-          alt="Ramz"
-          className="h-14 sm:h-16 md:h-24 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
-        />
+        {/* Middle: Text + Progress */}
+        <div className="flex flex-col items-center justify-center text-center w-full px-3">
+          <p
+            className="text-3xl sm:text-5xl md:text-6xl font-pixel text-white tracking-widest mb-6 sm:mb-8 md:mb-10"
+            style={
+              {
+                WebkitTextStroke: '1.5px rgba(0,0,0,0.5)',
+                paintOrder: 'stroke fill',
+              } as CSSProperties
+            }
+          >
+            درحال بارگذاری
+            <span className="inline-block w-7 sm:w-10 md:w-16 text-right">{dots}</span>
+          </p>
+
+          <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl px-3">
+            <div className="relative h-3 sm:h-4 md:h-6 bg-gray-700 rounded-full overflow-hidden border-2 md:border-3 border-gray-600 shadow-lg">
+              <div
+                className="h-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 rounded-full transition-all duration-100 shadow-lg relative"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-40 animate-shimmer" />
+              </div>
+            </div>
+            <p className="text-center text-gray-300 font-pixel text-sm sm:text-base md:text-lg mt-3">
+              {Math.round(progress)}%
+            </p>
+          </div>
+        </div>
+
+        {/* Bottom: Logos */}
+        <div className="flex flex-row items-center justify-center gap-6 sm:gap-12 md:gap-16 pb-6 sm:pb-8 md:pb-10 flex-wrap flex-shrink-0 mb-100">
+          <img
+            src={sharifImg}
+            alt="Sharif University"
+            className="h-20 sm:h-28 md:h-32 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
+          />
+          <img
+            src={ramzImg}
+            alt="Ramz"
+            className="h-20 sm:h-28 md:h-32 object-contain drop-shadow-lg hover:drop-shadow-xl transition-all"
+          />
+        </div>
       </div>
 
       {/* Floating particles */}
