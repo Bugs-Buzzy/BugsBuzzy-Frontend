@@ -13,6 +13,11 @@ import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { Workshop, workshopService } from '@/services/workshop.service';
 
+const digitsEnToFa = (numStr: number) => {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return numStr.toString().replace(/\d/g, (digit) => persianDigits[parseInt(digit)]);
+};
+
 const getWorkshopStatus = (workshop: Workshop): 'upcoming' | 'live' | 'completed' => {
   const now = new Date();
   const startTime = new Date(workshop.start_datetime);
@@ -191,7 +196,7 @@ const PresentationItem = ({ workshop }: { workshop: Workshop }) => {
           <div>
             <div className="text-gray-400 text-xs">ساعت</div>
             <div className="text-white font-medium text-right">{time}</div>
-            <div className="text-gray-300 text-xs">{workshop.duration} دقیقه</div>
+            <div className="text-gray-300 text-xs">{digitsEnToFa(workshop.duration)} دقیقه</div>
           </div>
         </div>
 

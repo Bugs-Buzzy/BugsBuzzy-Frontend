@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import PhaseContent from '@/components/competition/phases/PhaseContent';
 import Loading from '@/components/Loading';
+import PhaseContent from '@/components/phases/PhaseContent';
 import PixelFrame from '@/components/PixelFrame';
 import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
-import OnlineSubmissionForm from '@/pages/phases/OnlineSubmissionForm';
 import OnlineTeamPhase from '@/pages/phases/OnlineTeamPhase';
 import PaymentPhase from '@/pages/phases/PaymentPhase';
 import type { ApiError } from '@/services/api';
@@ -26,7 +25,6 @@ export default function GameJamCompetition() {
   const [viewingPhase, setViewingPhase] = useState(0);
   const manualPhaseSelectionRef = useRef(false);
   const [loading, setLoading] = useState(true);
-
   const [competitionStatus, setCompetitionStatus] = useState<OnlineCompetition | null>(null);
   const [myTeam, setMyTeam] = useState<OnlineTeam | null>(null);
 
@@ -275,21 +273,19 @@ export default function GameJamCompetition() {
         (myTeam.status === 'completed' || myTeam.status === 'attended') &&
         competitionStatus && (
           <div className="space-y-6">
+            {/* Competition Phase - Only show if team is completed/attended */}
             <PhaseContent
-              phaseNumber={2}
+              phaseNumber={0}
               phaseId={0}
-              phaseName={competitionStatus.title || 'رقابت گیم‌جم'}
-              description={
-                competitionStatus.description ||
-                'بازی خود را بسازید و برای رقابت ارسال کنید. موفق باشید!'
-              }
-              startDate={competitionStatus.start || undefined}
-              endDate={competitionStatus.end || undefined}
+              phaseName={competitionStatus.title || 'فاز آنلاین'}
+              description={competitionStatus.description || 'جزئیات این فاز به‌زودی اعلام خواهد شد'}
+              startDate={competitionStatus.start}
+              endDate={competitionStatus.end}
               isActive={competitionStatus.phase_active}
               icon="🎮"
+              service={gamejamService}
+              allowSubmissionPhases={[0]}
             />
-
-            <OnlineSubmissionForm competition={competitionStatus} />
           </div>
         )}
     </div>
