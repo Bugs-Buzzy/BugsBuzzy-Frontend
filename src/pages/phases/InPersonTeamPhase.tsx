@@ -403,13 +403,41 @@ export default function InPersonTeamPhase({ onTeamComplete }: InPersonTeamPhaseP
               </div>
             )}
 
-            {(team.status === 'active' || team.status === 'attended') && (
+            {team.status === 'active' && (
               <div className="bg-green-900 bg-opacity-30 rounded p-4 mb-4 border border-green-600">
                 <p className="text-green-300 text-sm flex items-center gap-2">
                   <FaCheckCircle className="text-lg" />
                   <span>تیم شما واجد شرایط است! ثبت‌نام شما تکمیل شده است.</span>
                 </p>
               </div>
+            )}
+
+            {team.status === 'attended' && (
+              <>
+                <div className="bg-purple-900 bg-opacity-30 rounded p-4 mb-4 border border-purple-600">
+                  <p className="text-purple-300 text-sm flex items-center gap-2">
+                    <FaCheckCircle className="text-lg" />
+                    <span>تیم شما در رویداد شرکت کرده است. موفق باشید! 🎮</span>
+                  </p>
+                </div>
+
+                {/* Upload Code for Attended Teams */}
+                {team.invite_code && (
+                  <div className="bg-primary-midnight rounded p-4 mb-4 border border-primary-cerulean">
+                    <p className="text-primary-aero mb-2 font-bold">کد اعتبارسنجی تیم:</p>
+                    <p
+                      className="text-primary-sky text-2xl font-bold tracking-widest text-center font-mono"
+                      dir="ltr"
+                    >
+                      {team.invite_code}
+                    </p>
+                    <p className="text-primary-aero text-sm mt-2 text-center">
+                      از این کد برای اعتبارسنجی‌های تیم (مانند آپلود) استفاده کنید. این کد را در
+                      اختیار فردی خارج از اعضای تیم خود قرار ندهید.
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </PixelFrame>
 
