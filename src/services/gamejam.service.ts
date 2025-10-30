@@ -40,10 +40,15 @@ export interface OnlineCompetition {
 export interface OnlineSubmission {
   id: number;
   team: OnlineTeam;
-  title: string;
-  description: string;
-  file: string | null;
-  game_url: string;
+  submitted_by: {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+  } | null;
+  phase: number;
+  is_final: boolean;
+  content: string;
   score: number | null;
   judge_notes: string;
   submitted_at: string;
@@ -93,28 +98,15 @@ class GameJamService {
   }
 
   async getCompetitionStatus(): Promise<OnlineCompetition> {
-    return apiClient.get<OnlineCompetition>('/gamejam/competition/status/');
+    return apiClient.get<OnlineCompetition>('/gamejam/status/');
   }
 
-  async createSubmission(data: {
-    title: string;
-    description: string;
-    game_url: string;
-    file?: File;
-  }): Promise<OnlineSubmission> {
-    const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    formData.append('game_url', data.game_url);
-    if (data.file) {
-      formData.append('file', data.file);
-    }
-
-    return apiClient.post<OnlineSubmission>('/gamejam/competition/submission/', formData);
+  async createSubmission(data: { phase: number; content: string }): Promise<OnlineSubmission> {
+    return apiClient.post<OnlineSubmission>('/gamejam/submission/', data);
   }
 
   async getSubmissions(): Promise<{ submissions: OnlineSubmission[] }> {
-    return apiClient.get<{ submissions: OnlineSubmission[] }>('/gamejam/competition/submissions/');
+    return apiClient.get<{ submissions: OnlineSubmission[] }>('/gamejam/submissions/');
   }
 }
 

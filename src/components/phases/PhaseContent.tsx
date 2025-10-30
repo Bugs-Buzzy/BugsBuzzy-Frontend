@@ -11,8 +11,23 @@ import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
-import { inpersonService, type InPersonSubmission } from '@/services/inperson.service';
 import { extractFieldErrors, translateError } from '@/utils/errorMessages';
+
+interface Submission {
+  id: number;
+  phase: number;
+  is_final?: boolean;
+  content: string;
+  score: number | null;
+  judge_notes: string;
+  submitted_at: string;
+  updated_at: string;
+}
+
+interface SubmissionService {
+  getSubmissions: () => Promise<{ submissions: Submission[] }>;
+  createSubmission: (data: { phase: number; content: string }) => Promise<Submission>;
+}
 
 interface PhaseContentProps {
   phaseNumber: number;
@@ -23,6 +38,8 @@ interface PhaseContentProps {
   description?: string;
   icon?: string;
   isActive?: boolean;
+  service: SubmissionService;
+  allowSubmissionPhases?: number[]; // Which phase IDs allow submission (default: all except 1)
 }
 
 export default function PhaseContent({
@@ -34,9 +51,11 @@ export default function PhaseContent({
   description,
   icon = '🎯',
   isActive = false,
+  service,
+  allowSubmissionPhases,
 }: PhaseContentProps) {
   const toast = useToast();
-  const [submissions, setSubmissions] = useState<InPersonSubmission[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [currentSub, setCurrentSub] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,7 +67,13 @@ export default function PhaseContent({
 
   const hasStarted = start ? now >= start : false;
   const hasEnded = end ? now >= end : false;
-  const canSubmit = phaseId != 1 && isActive && hasStarted && !hasEnded;
+
+  // Check if this phase allows submissions
+  const phaseAllowsSubmission = allowSubmissionPhases
+    ? allowSubmissionPhases.includes(phaseId)
+    : phaseId !== 1; // Default: all phases except 1
+
+  const canSubmit = phaseAllowsSubmission && isActive && hasStarted && !hasEnded;
 
   const markdownContent = description || `# ${phaseName}\n\nجزئیات این فاز به‌زودی اعلام خواهد شد.`;
 
@@ -58,7 +83,7 @@ export default function PhaseContent({
 
   const loadSubmissions = async () => {
     try {
-      const response = await inpersonService.getSubmissions();
+      const response = await service.getSubmissions();
       const currentPhaseSubmissions = response.submissions.filter((s) => s.phase === phaseId);
       setSubmissions(currentPhaseSubmissions);
     } catch (err) {
@@ -76,7 +101,7 @@ export default function PhaseContent({
     setLoading(true);
     setError('');
     try {
-      await inpersonService.createSubmission({
+      await service.createSubmission({
         phase: phaseId,
         content: currentSub.trim() || '',
       });

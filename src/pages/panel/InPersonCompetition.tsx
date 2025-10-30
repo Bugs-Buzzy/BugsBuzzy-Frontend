@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import PhaseContent from '@/components/competition/phases/PhaseContent';
 import Loading from '@/components/Loading';
+import PhaseContent from '@/components/phases/PhaseContent';
 import PixelFrame from '@/components/PixelFrame';
 import ProgressBar, { type Phase } from '@/components/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
@@ -213,6 +213,7 @@ export default function InPersonCompetition() {
           endDate={competitionPhases[viewingPhase - 2]?.end}
           isActive={competitionPhases[viewingPhase - 2]?.active}
           icon={['🎪', '🎯', '🎮', '✨', '🏁'][viewingPhase - 2] || '🎯'}
+          service={inpersonService}
         />
       )}
     </div>
