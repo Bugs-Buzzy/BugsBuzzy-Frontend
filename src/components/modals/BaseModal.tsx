@@ -117,6 +117,7 @@ export default function BaseModal({
     <div
       ref={overlayRef}
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${overlayClassName}`}
+      style={{ margin: '0', padding: '0' }}
       onClick={handleOverlayClick}
     >
       <div
