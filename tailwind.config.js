@@ -24,6 +24,7 @@ export default {
       },
       fontFamily: {
         pixel: ['"Pixelify Sans"', '"Unixel"', 'monospace'],
+        orbitron: ['"Orbitron"', 'sans-serif'],
         normal: ['"Comic Sans MS"', '"Comic Sans"', '"IRANSansX"', 'Tahoma', 'Arial', 'sans-serif'],
       },
       animation: {

@@ -41,7 +41,11 @@ export function Countdown({ target }: { target: string | Date }) {
   }, [targetTime, ended]);
 
   if (ended) {
-    return <div className="text-2xl font-orbitron">The Event is Live!</div>;
+    return (
+      <div className="text-xl font-orbitron tracking-[0.25em] uppercase text-primary-columbia">
+        شمارش معکوس به پایان رسید!
+      </div>
+    );
   }
 
   const boxes: { label: string; value: number }[] = [
@@ -52,16 +56,16 @@ export function Countdown({ target }: { target: string | Date }) {
   ];
 
   return (
-    <div className="flex justify-center gap-2 sm:gap-4 sm:md:gap-8 my-12" dir="ltr">
+    <div className="flex justify-center gap-3 md:gap-5 my-8 md:my-10" dir="ltr">
       {boxes.map((b) => (
         <div
           key={b.label}
-          className="flex flex-col items-center justify-center bg-primary-midnight/60 border border-primary-cerulean/40 rounded-lg w-16 p-2 backdrop-blur-sm shadow-md shadow-primary-midnight/40 sm:w-24 sm:p-3 sm:md:w-28 sm:md:p-4"
+          className="flex flex-col items-center justify-center bg-primary-midnight/70 border border-primary-cerulean/40 rounded-xl w-14 p-2 backdrop-blur-sm shadow-md shadow-primary-midnight/30 md:w-20 md:p-3"
         >
-          <div className="tabular-nums leading-none font-orbitron text-xl h-8 flex items-center justify-center sm:text-4xl sm:h-14 sm:md:text-6xl sm:md:h-20">
+          <div className="tabular-nums leading-none font-orbitron text-lg md:text-3xl lg:text-4xl h-8 md:h-12 flex items-center justify-center text-primary-columbia">
             {pad(b.value)}
           </div>
-          <div className="text-[8px] tracking-wider uppercase text-primary-sky mt-2 sm:text-[10px] sm:md:text-xs">
+          <div className="text-[9px] tracking-[0.3em] uppercase text-primary-sky/80 mt-1 md:text-xs">
             {b.label}
           </div>
         </div>

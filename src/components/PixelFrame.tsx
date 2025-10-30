@@ -1,12 +1,24 @@
-import { ReactNode, MouseEventHandler } from 'react';
+import { ReactNode, MouseEventHandler, CSSProperties } from 'react';
 
 interface PixelFrameProps {
   children: ReactNode;
   className?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  padding?: number | string;
 }
 
-export default function PixelFrame({ children, className = '', onClick }: PixelFrameProps) {
+export default function PixelFrame({
+  children,
+  className = '',
+  onClick,
+  padding = 20,
+}: PixelFrameProps) {
+  const resolvedPadding = typeof padding === 'number' ? `${padding}px` : padding;
+
+  const contentStyle: CSSProperties = {
+    padding: resolvedPadding,
+  };
+
   return (
     <div
       className={`relative ${className}`}
@@ -50,7 +62,7 @@ export default function PixelFrame({ children, className = '', onClick }: PixelF
       </div>
 
       {/* Content Area */}
-      <div className="relative z-30 flex-1 flex flex-col min-h-0" style={{ padding: '20px' }}>
+      <div className="relative z-30 flex-1 flex flex-col min-h-0" style={contentStyle}>
         {children}
       </div>
     </div>

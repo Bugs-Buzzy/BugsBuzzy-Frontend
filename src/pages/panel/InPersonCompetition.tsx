@@ -212,7 +212,7 @@ export default function InPersonCompetition() {
           startDate={competitionPhases[viewingPhase - 2]?.start}
           endDate={competitionPhases[viewingPhase - 2]?.end}
           isActive={competitionPhases[viewingPhase - 2]?.active}
-          icon={['🎯', '🎮', '🏁'][viewingPhase - 2] || '🎯'}
+          icon={['🎪', '🎯', '🎮', '✨', '🏁'][viewingPhase - 2] || '🎯'}
         />
       )}
     </div>
