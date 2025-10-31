@@ -61,7 +61,8 @@ export default function InPersonCompetition() {
         actualPhase = 1;
       } else {
         // Team is complete, check if any phase is active
-        const activePhase = competitionStatus.phases.find((p) => p.active);
+        const activePhases = competitionStatus.phases.filter((p) => p.active);
+        const activePhase = activePhases[activePhases.length - 1];
         if (activePhase) {
           actualPhase = activePhase.id + 2;
         } else {
