@@ -15,6 +15,8 @@ import img1 from '@/assets/images/presents/img1.jpg';
 import img10 from '@/assets/images/presents/img10.jpg';
 import img11 from '@/assets/images/presents/img11.jpg';
 import img12 from '@/assets/images/presents/img12.jpg';
+import img13 from '@/assets/images/presents/img13.jpg';
+import img14 from '@/assets/images/presents/img14.jpg';
 import img2 from '@/assets/images/presents/img2.jpg';
 import img3 from '@/assets/images/presents/img3.jpg';
 import img4 from '@/assets/images/presents/img4.jpg';
@@ -161,6 +163,8 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
     { img: img10 },
     { img: img11 },
     { img: img12 },
+    { img: img13 },
+    { img: img14 },
     { img: img21 },
   ];
 
