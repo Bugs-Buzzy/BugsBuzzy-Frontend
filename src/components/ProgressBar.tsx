@@ -175,8 +175,11 @@ export default function ProgressBar({ phases, currentPhase, onPhaseClick }: Prog
           </div>
 
           {/* Mobile View - Horizontal Scroll */}
-          <div className="md:hidden overflow-x-auto pb-4 scroll-smooth" ref={mobileScrollRef}>
-            <div className="flex items-center gap-3 min-w-max px-2">
+          <div
+            className="md:hidden overflow-x-auto pb-4 scroll-smooth -mx-6 px-6"
+            ref={mobileScrollRef}
+          >
+            <div className="flex items-center gap-3 min-w-max">
               {phases.map((phase, index) => (
                 <div key={phase.id} className="flex items-center">
                   <button

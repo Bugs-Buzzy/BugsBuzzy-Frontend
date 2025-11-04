@@ -246,22 +246,22 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                   {[
                     {
                       label: 'پایان ثبت‌نام',
-                      date: '۱۴ آبان',
+                      date: '۲۰ آبان',
                       icon: <FaEdit className="text-white text-lg" />,
                     },
                     {
                       label: 'افتتاحیه و اعلام تم',
-                      date: '۱۴ آبان',
+                      date: '۲۰ آبان',
                       icon: <FaFlag className="text-white text-lg" />,
                     },
                     {
                       label: 'مهلت ارسال آثار',
-                      date: '۲۴ آبان',
+                      date: '۳۰ آبان',
                       icon: <FaUpload className="text-white text-lg" />,
                     },
                     {
                       label: 'اختتامیه و اعلام برندگان',
-                      date: '۲۸ آبان',
+                      date: '۹ آذر',
                       icon: <FaMedal className="text-white text-lg" />,
                     },
                   ].map((item, idx) => (
