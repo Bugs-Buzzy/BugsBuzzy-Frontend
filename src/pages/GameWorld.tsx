@@ -2,8 +2,8 @@ import { useRef, useEffect, useState } from 'react';
 
 import HUD from '@/components/HUD';
 import GameJamFloor from '@/pages/floors/GameJamFloor';
-import InPersonFloor from '@/pages/floors/InPersonFloor';
 import LandingFloor from '@/pages/floors/LandingFloor';
+import QnAFloor from '@/pages/floors/QnAFloor';
 import SponsorsFloor from '@/pages/floors/SponsorsFloor';
 import TeamFloor from '@/pages/floors/TeamFloor';
 import WorkshopsFloor from '@/pages/floors/WorkshopsFloor';
@@ -121,8 +121,8 @@ export default function GameWorld() {
       <HUD onFloorNavigate={changeFloor} currentFloor={currentFloor} />
       <div ref={containerRef} className="game-world-container">
         <LandingFloor ref={(el) => (floorRefs.current[0] = el)} />
-        <InPersonFloor ref={(el) => (floorRefs.current[1] = el)} />
-        <GameJamFloor ref={(el) => (floorRefs.current[2] = el)} />
+        <GameJamFloor ref={(el) => (floorRefs.current[1] = el)} />
+        <QnAFloor ref={(el) => (floorRefs.current[2] = el)} />
         <WorkshopsFloor ref={(el) => (floorRefs.current[3] = el)} />
         <SponsorsFloor ref={(el) => (floorRefs.current[4] = el)} />
         <TeamFloor ref={(el) => (floorRefs.current[5] = el)} />

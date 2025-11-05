@@ -32,7 +32,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
             }}
             className="pixel-btn pixel-btn-secondary relative overflow-hidden bg-gradient-to-r text-white py-5 px-8 text-3xl font-extrabold rounded-2xl shadow-xl animate-pulse hover:scale-110 transition-transform duration-300"
           >
-            <span className="relative z-10">ثبت‌نام در رویداد</span>
+            <span className="relative z-10">ثبت‌نام در گیم‌جم</span>
             <span className="absolute inset-0 bg-white/20 blur-xl opacity-0 hover:opacity-60 transition-opacity duration-700"></span>
           </button>
           <SocialLinks />

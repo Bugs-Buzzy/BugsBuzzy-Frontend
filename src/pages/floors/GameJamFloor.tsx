@@ -162,12 +162,9 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                   icon: <FaMedal className="text-white text-base" />,
                 },
               ].map((item, idx) => (
-                <div key={idx} className="flex gap-3 items-start">
+                <div key={idx} className="flex gap-3 items-center">
                   <div className="flex flex-col items-center flex-shrink-0 pt-1">
-                    {idx > 0 && (
-                      <div className="w-0.5 h-4 bg-gradient-to-b from-orange-400 to-transparent mb-1"></div>
-                    )}
-                    <div className="relative">
+                    <div className="relative flex-col justify-center">
                       <div className="absolute inset-0 bg-orange-400 rounded-full blur opacity-40 animate-pulse"></div>
                       <div className="relative w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-lg z-10">
                         {item.icon}
@@ -242,7 +239,7 @@ const GameJamFloor = forwardRef<HTMLElement>((props, ref) => {
                 </svg>
 
                 {/* Timeline Items Grid */}
-                <div className="grid grid-cols-2 gap-6 relative z-10">
+                <div className="grid grid-cols-4 gap-6 relative z-10">
                   {[
                     {
                       label: 'پایان ثبت‌نام',
