@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
   FaHome,
-  FaTrophy,
   FaGamepad,
   FaLaptopCode,
   FaGem,
   FaUsers,
   FaUser,
   FaSignInAlt,
+  FaQuestion,
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -55,8 +55,9 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
 
   const floors = [
     { name: 'باگزبازی', Icon: FaHome },
-    { name: 'رقابت حضوری', Icon: FaTrophy },
+    // { name: 'رقابت حضوری', Icon: FaTrophy },
     { name: 'گیم‌جم', Icon: FaGamepad },
+    { name: 'سوالات متداول', Icon: FaQuestion },
     { name: 'کارگاه‌ها', Icon: FaLaptopCode },
     { name: 'حامی رویداد', Icon: FaGem },
     { name: 'تیم برگزاری', Icon: FaUsers },
