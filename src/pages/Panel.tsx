@@ -30,10 +30,16 @@ export default function Panel() {
   const menuItems = [
     { path: '/panel/dashboard', label: 'داشبورد', icon: FaChartBar, enabled: true },
     { path: '/panel/profile', label: 'پروفایل', icon: FaUser, enabled: true },
-    { path: '/panel/inperson', label: 'رقابت حضوری', icon: FaTrophy, enabled: user?.is_verified },
-    { path: '/panel/gamejam', label: 'گیم‌جم مجازی', icon: FaGamepad, enabled: user?.is_verified },
+    {
+      path: '/panel/gamejam',
+      label: 'گیم‌جم مجازی',
+      icon: FaGamepad,
+      enabled: user?.is_verified,
+      highlighted: true,
+    },
     { path: '/panel/announcements', label: 'اطلاعیه‌ها', icon: FaBullhorn, enabled: true },
     { path: '/panel/presentations', label: 'ارائه‌ها', icon: FaDesktop, enabled: true },
+    { path: '/panel/inperson', label: 'رقابت حضوری', icon: FaTrophy, enabled: user?.is_verified },
   ];
 
   return (
@@ -69,6 +75,7 @@ export default function Panel() {
                           ? 'pixel-btn pixel-btn-primary hover:scale-105 hover:shadow-lg hover:shadow-primary-process/50'
                           : 'bg-gray-800 text-gray-500 cursor-not-allowed pointer-events-none border border-gray-700 opacity-60'
                       }
+                      ${item.highlighted ? 'ring-1 ring-yellow-400 animate-pulse' : ''}
                     `}
                   >
                     <IconComponent className="text-2xl md:text-xl" />

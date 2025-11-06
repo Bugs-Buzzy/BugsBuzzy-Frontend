@@ -56,7 +56,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
   const floors = [
     { name: 'باگزبازی', Icon: FaHome },
     // { name: 'رقابت حضوری', Icon: FaTrophy },
-    { name: 'گیم‌جم', Icon: FaGamepad },
+    { name: 'گیم‌جم', Icon: FaGamepad, highlighted: true },
     { name: 'سوالات متداول', Icon: FaQuestion },
     { name: 'کارگاه‌ها', Icon: FaLaptopCode },
     { name: 'حامی رویداد', Icon: FaGem },
@@ -128,6 +128,9 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             {floors.map((floor, index) => {
               const FloorIcon = floor.Icon;
               const isActive = currentFloor === index;
+              const highlightedClasses = floor.highlighted
+                ? 'ring-1 ring-yellow-400 animate-pulse'
+                : '';
               const baseClasses =
                 'pixel-btn p-2 flex flex-col items-center gap-1 text-xs transition-all bg-black bg-opacity-80';
               const activeClasses = isActive
@@ -137,7 +140,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
                 <button
                   key={index}
                   onClick={() => onFloorNavigate(index, true)}
-                  className={`${baseClasses} ${activeClasses}`}
+                  className={`${baseClasses} ${activeClasses} ${highlightedClasses}`}
                   title={floor.name}
                 >
                   <FloorIcon className="text-xl md:text-2xl" />
