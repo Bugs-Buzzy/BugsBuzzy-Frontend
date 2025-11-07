@@ -240,7 +240,45 @@ export default function Presentations() {
       try {
         setLoading(true);
         const data = await workshopService.getWorkshops();
-        setWorkshops(data);
+
+        // Sort workshops according to user requirement:
+        // 1) Upcoming/live (not completed) ordered by start date ascending
+        // 2) Completed and have recording (record_link present)
+        // 3) Completed and no recording
+        const sortWorkshops = (items: Workshop[]) => {
+          const groups = items.reduce(
+            (acc, w) => {
+              const status = getWorkshopStatus(w);
+              if (status !== 'completed') acc.upcoming.push(w);
+              else if (w.record_link) acc.completedWithRecord.push(w);
+              else acc.completedWithoutRecord.push(w);
+              return acc;
+            },
+            {
+              upcoming: [] as Workshop[],
+              completedWithRecord: [] as Workshop[],
+              completedWithoutRecord: [] as Workshop[],
+            },
+          );
+
+          const byDateAsc = (a: Workshop, b: Workshop) =>
+            new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime();
+
+          const byDateDesc = (a: Workshop, b: Workshop) =>
+            new Date(b.start_datetime).getTime() - new Date(a.start_datetime).getTime();
+
+          groups.upcoming.sort(byDateAsc);
+          groups.completedWithRecord.sort(byDateDesc);
+          groups.completedWithoutRecord.sort(byDateDesc);
+
+          return [
+            ...groups.upcoming,
+            ...groups.completedWithRecord,
+            ...groups.completedWithoutRecord,
+          ];
+        };
+
+        setWorkshops(sortWorkshops(data));
       } catch (err) {
         setError('خطا در دریافت اطلاعات کارگاه‌ها');
         console.error('Error fetching workshops:', err);

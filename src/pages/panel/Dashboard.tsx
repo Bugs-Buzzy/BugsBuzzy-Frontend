@@ -8,7 +8,6 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaUsers,
-  FaUtensils,
   FaChalkboardTeacher,
   FaUser,
   FaCalendar,
@@ -187,90 +186,6 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <FaTrophy className="text-primary-sky text-2xl" />
-            <h2 className="text-xl font-bold text-primary-sky">رقابت حضوری</h2>
-          </div>
-          <div className="space-y-2 text-primary-aero">
-            <div>
-              <div className="flex justify-between items-center">
-                <span>وضعیت پرداخت:</span>
-                <span
-                  className={`flex items-center gap-1 ${stats.inPersonPaid ? 'text-green-400' : 'text-gray-400'}`}
-                >
-                  {stats.inPersonPaid ? <FaCheckCircle /> : <FaTimesCircle />}
-                  {stats.inPersonPaid ? 'پرداخت شده' : 'پرداخت نشده'}
-                </span>
-              </div>
-              {stats.inPersonPaid && (
-                <div className="flex items-center gap-2 text-xs text-primary-aero mt-1">
-                  <FaUtensils />
-                  <span>
-                    ناهار: روز اول {stats.purchasedItems.includes('thursday_lunch') ? '✓' : '✗'} |
-                    روز دوم {stats.purchasedItems.includes('friday_lunch') ? '✓' : '✗'}
-                  </span>
-                </div>
-              )}
-            </div>
-            <div className="flex justify-between items-center">
-              <span>وضعیت تیم:</span>
-              <span
-                className={`flex items-center gap-1 ${stats.inPersonRegistered ? 'text-green-400' : 'text-gray-400'}`}
-              >
-                {stats.inPersonRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
-                {stats.inPersonRegistered ? 'دارد' : 'ندارد'}
-              </span>
-            </div>
-            {stats.inPersonTeam && (
-              <>
-                <div className="flex justify-between items-center text-sm">
-                  <span>نام تیم:</span>
-                  <span className="text-white font-normal flex items-center gap-1">
-                    <FaUsers className="text-primary-aero" />
-                    {stats.inPersonTeam.name}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span>تعداد اعضا:</span>
-                  <span className="text-primary-aero font-pixel" dir="ltr">
-                    {stats.inPersonTeam.member_count}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span>وضعیت:</span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-bold ${
-                      stats.inPersonTeam.status === 'active' ||
-                      stats.inPersonTeam.status === 'attended'
-                        ? 'bg-green-900 bg-opacity-30 text-green-400 border border-green-600'
-                        : stats.inPersonTeam.status === 'incomplete'
-                          ? 'bg-yellow-900 bg-opacity-30 text-yellow-400 border border-yellow-600'
-                          : 'bg-gray-800 text-gray-400 border border-gray-600'
-                    }`}
-                  >
-                    {stats.inPersonTeam.status === 'active'
-                      ? 'فعال'
-                      : stats.inPersonTeam.status === 'attended'
-                        ? 'شرکت کرده'
-                        : stats.inPersonTeam.status === 'incomplete'
-                          ? 'ناقص'
-                          : 'منحل شده'}
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-          {profileCompleted && (
-            <Link
-              to="/panel/inperson"
-              className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
-            >
-              {stats.inPersonRegistered ? 'مشاهده جزئیات' : 'ثبت‌نام'}
-            </Link>
-          )}
-        </PixelFrame>
-
-        <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-          <div className="flex items-center gap-3 mb-4">
             <FaGamepad className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">گیم‌جم مجازی</h2>
           </div>
@@ -344,20 +259,6 @@ export default function Dashboard() {
 
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
-            <FaBullhorn className="text-primary-sky text-2xl" />
-            <h2 className="text-xl font-bold text-primary-sky">اطلاعیه‌ها</h2>
-          </div>
-          <p className="text-primary-aero mb-4">آخرین اخبار و اطلاعیه‌های رویداد</p>
-          <Link
-            to="/panel/announcements"
-            className="pixel-btn pixel-btn-primary w-full text-center block"
-          >
-            مشاهده اطلاعیه‌ها
-          </Link>
-        </PixelFrame>
-
-        <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-          <div className="flex items-center gap-3 mb-4">
             <FaChalkboardTeacher className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">کارگاه‌ها و ارائه‌ها</h2>
           </div>
@@ -409,6 +310,64 @@ export default function Dashboard() {
             >
               مشاهده همه ({stats.workshops.length})
             </Link>
+          </div>
+        </PixelFrame>
+
+        <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+          <div className="flex items-center gap-3 mb-4">
+            <FaBullhorn className="text-primary-sky text-2xl" />
+            <h2 className="text-xl font-bold text-primary-sky">اطلاعیه‌ها</h2>
+          </div>
+          <p className="text-primary-aero mb-4">آخرین اخبار و اطلاعیه‌های رویداد</p>
+          <Link
+            to="/panel/announcements"
+            className="pixel-btn pixel-btn-primary w-full text-center block"
+          >
+            مشاهده اطلاعیه‌ها
+          </Link>
+        </PixelFrame>
+
+        <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+          <div className="flex items-center gap-3 mb-4">
+            <FaTrophy className="text-primary-sky text-2xl" />
+            <h2 className="text-xl font-bold text-primary-sky">رقابت حضوری</h2>
+          </div>
+          <div className="space-y-2 text-primary-aero">
+            <div className="flex justify-between items-center">
+              <span>وضعیت:</span>
+              <span
+                className={`flex items-center gap-1 ${stats.inPersonTeam && stats.inPersonTeam.status == 'attended' ? 'text-green-400' : 'text-gray-400'}`}
+              >
+                {stats.inPersonTeam && stats.inPersonTeam.status == 'attended' ? (
+                  <FaCheckCircle />
+                ) : (
+                  <FaTimesCircle />
+                )}
+                {stats.inPersonTeam && stats.inPersonTeam.status == 'attended'
+                  ? 'شرکت کرده'
+                  : 'شرکت نکرده'}
+              </span>
+            </div>
+            {stats.inPersonTeam && (
+              <>
+                <div className="flex justify-between items-center text-sm">
+                  <span>نام تیم:</span>
+                  <span className="text-white font-normal flex items-center gap-1">
+                    <FaUsers className="text-primary-aero" />
+                    {stats.inPersonTeam.name}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span>تعداد اعضا:</span>
+                  <span className="text-primary-aero font-pixel" dir="ltr">
+                    {stats.inPersonTeam.member_count}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="pixel-btn bg-gray-500 text-gray-300 cursor-not-allowed w-full mt-4 text-center block opacity-70">
+            رقابت به پایان رسیده
           </div>
         </PixelFrame>
       </div>
