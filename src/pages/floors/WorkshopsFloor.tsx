@@ -10,7 +10,6 @@ import info5 from '@/assets/images/godot/info5.png';
 import info6 from '@/assets/images/godot/info6.png';
 import info7 from '@/assets/images/godot/info7.png';
 import info8 from '@/assets/images/godot/info8.png';
-import img21 from '@/assets/images/presents/coming_soon.jpg';
 import img1 from '@/assets/images/presents/img1.jpg';
 import img10 from '@/assets/images/presents/img10.jpg';
 import img11 from '@/assets/images/presents/img11.jpg';
@@ -167,7 +166,6 @@ const WorkshopsFloor = forwardRef<HTMLElement>((props, ref) => {
     { img: img13 },
     { img: img15 },
     { img: img14 },
-    { img: img21 },
   ];
 
   return (
