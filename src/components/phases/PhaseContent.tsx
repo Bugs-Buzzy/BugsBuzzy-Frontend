@@ -214,6 +214,14 @@ export default function PhaseContent({
                 <ol className="text-white/90 list-decimal list-inside mb-3 space-y-1" {...props} />
               ),
               li: ({ ...props }) => <li className="text-white/90" {...props} />,
+              a: ({ ...props }) => (
+                <a
+                  className="text-primary-columbia hover:text-primary-sky underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {...props}
+                />
+              ),
               strong: ({ ...props }) => (
                 <strong className="text-primary-columbia font-bold" {...props} />
               ),
