@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useState } from 'react';
+import { type CSSProperties, useEffect, useState, useRef } from 'react';
 
 import bgLoading from '@/assets/bkg_loading.png';
 import logo from '@/assets/logo.svg';
@@ -19,13 +19,13 @@ export default function LoadingScreen({
 }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [dots, setDots] = useState('');
+  const lastProgressRef = useRef(0);
 
   const { loaded: imagesLoaded, progress: imageProgress } = useImagePreloader(imagesToPreload);
 
   // Progress logic - never decrease
   useEffect(() => {
     const startTime = Date.now();
-    let lastProgress = 0;
 
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -33,8 +33,8 @@ export default function LoadingScreen({
       const combinedProgress =
         imagesToPreload.length > 0 ? timeProgress * 0.7 + imageProgress * 0.3 : timeProgress;
 
-      const newProgress = Math.max(lastProgress, combinedProgress);
-      lastProgress = newProgress;
+      const newProgress = Math.max(lastProgressRef.current, combinedProgress);
+      lastProgressRef.current = newProgress;
       setProgress(newProgress);
 
       const shouldComplete = timeProgress >= 100 && (imagesToPreload.length === 0 || imagesLoaded);
@@ -45,7 +45,7 @@ export default function LoadingScreen({
     }, 16);
 
     return () => clearInterval(interval);
-  }, [duration, onComplete, imageProgress, imagesLoaded, imagesToPreload.length]);
+  }, [duration, onComplete, imagesLoaded, imagesToPreload.length]);
 
   // Animated dots
   useEffect(() => {
