@@ -59,20 +59,19 @@ export default function TelegramSupportWidget({
       className={`fixed right-3 bottom-24 flex flex-col items-end gap-3 pointer-events-none sm:right-6 sm:bottom-6 ${containerZIndex}`}
     >
       {isWidgetVisible && (
-        <div className="pointer-events-auto w-[min(100vw-3rem,340px)] transition-all duration-200 ease-out">
+        <div className="pointer-events-auto w-[min(100vw-3rem,340px)] transition-all duration-200 ease-out relative">
+          <button
+            type="button"
+            className="absolute left-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-rose-500 text-white shadow-lg shadow-rose-900/50 transition-transform duration-150 hover:scale-105 focus:outline-none z-10 sm:-top-4 sm:-left-4"
+            aria-label="بستن پشتیبانی تلگرام"
+            onClick={handleClose}
+          >
+            <FaTimes className="text-base" />
+          </button>
           <PixelFrame
-            className="relative bg-slate-950/95 shadow-xl shadow-primary-cerulean/30 backdrop-blur-md rounded-3xl overflow-hidden"
+            className="relative bg-slate-950/95 shadow-xl shadow-primary-cerulean/30 backdrop-blur-md rounded-3xl"
             padding={20}
           >
-            <button
-              type="button"
-              className="absolute left-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-rose-500 text-white shadow-lg shadow-rose-900/50 transition-transform duration-150 hover:scale-105 focus:outline-none sm:-top-4 sm:-left-4"
-              aria-label="بستن پشتیبانی تلگرام"
-              onClick={handleClose}
-            >
-              <FaTimes className="text-base" />
-            </button>
-
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
               <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 via-sky-400 to-sky-600 text-white shadow-lg shadow-sky-900/40 sm:mx-0">
                 <span
