@@ -8,11 +8,13 @@ import {
   FaUser,
   FaSignInAlt,
   FaQuestion,
+  FaTelegramPlane,
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
 import coinGif from '@/assets/coin.gif';
 import PixelFrame from '@/components/PixelFrame';
+import { TELEGRAM_CHANNEL_URL } from '@/constants/links';
 import { useAuth } from '@/context/AuthContext';
 import LoginModal from '@/pages/modals/LoginModal';
 
@@ -93,7 +95,16 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             />
           </div>
 
-          <div>
+          <div className="flex items-center gap-2 md:gap-3">
+            <a
+              href={TELEGRAM_CHANNEL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition-colors duration-200"
+              title="کانال تلگرام باگزبازی"
+            >
+              <FaTelegramPlane className="text-2xl md:text-3xl" />
+            </a>
             {isAuthenticated ? (
               <Link
                 to="/panel"
