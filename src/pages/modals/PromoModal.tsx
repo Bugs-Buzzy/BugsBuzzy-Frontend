@@ -24,7 +24,24 @@ export default function PromoModal({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(discountCode);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(discountCode);
+      } else {
+        // Fallback for browsers that don't support Clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = discountCode;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (!successful) {
+          throw new Error('Fallback copy method failed');
+        }
+      }
       setCopied(true);
       setCopyError(null);
       window.setTimeout(() => setCopied(false), 2500);
