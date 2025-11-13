@@ -72,12 +72,14 @@ export default function Announcements() {
   }, []);
 
   const mappedAnnouncements = useMemo<AnnouncementCard[]>(() => {
-    return announcements.map((item) => ({
-      id: item.id,
-      title: item.announcement.title ?? 'بدون عنوان',
-      description: item.announcement.description ?? null,
-      createdAt: item.announcement.created_at || item.created_at,
-    }));
+    return announcements
+      .map((item) => ({
+        id: item.id,
+        title: item.announcement.title ?? 'بدون عنوان',
+        description: item.announcement.description ?? null,
+        createdAt: item.announcement.created_at || item.created_at,
+      }))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [announcements]);
 
   return (

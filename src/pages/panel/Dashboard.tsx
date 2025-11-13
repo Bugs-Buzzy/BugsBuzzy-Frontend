@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
 import { useAuth } from '@/context/AuthContext';
+import { announcementService, type UserAnnouncement } from '@/services/announcement.service';
 import { gamejamService, type OnlineTeam } from '@/services/gamejam.service';
 import { inpersonService, type InPersonTeam } from '@/services/inperson.service';
 import { workshopService, type Workshop } from '@/services/workshop.service';
@@ -36,7 +37,60 @@ interface DashboardStats {
   totalSpent: number;
   workshops: Workshop[];
   nextWorkshop: Workshop | null;
+  announcements: UserAnnouncement[];
+  latestAnnouncement: UserAnnouncement | null;
 }
+
+const formatDateTime = (isoDate: string) => {
+  if (!isoDate) return '';
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return date.toLocaleString('fa-IR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+};
+
+const isRecentAnnouncement = (isoDate: string) => {
+  const createdAt = new Date(isoDate);
+  if (Number.isNaN(createdAt.getTime())) return false;
+  const now = new Date();
+  const diffInHours = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+  return diffInHours <= 4;
+};
+
+const markdownToPlainText = (markdown: string): string => {
+  if (!markdown) return '';
+
+  return (
+    markdown
+      // Remove headings
+      .replace(/^#+\s+/gm, '')
+      // Remove bold/italic
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/__(.+?)__/g, '$1')
+      .replace(/_(.+?)_/g, '$1')
+      // Remove links [text](url) -> text
+      .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+      // Remove code blocks
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`(.+?)`/g, '$1')
+      // Remove lists
+      .replace(/^[*\-+]\s+/gm, '')
+      .replace(/^\d+\.\s+/gm, '')
+      // Remove images
+      .replace(/!\[.+?\]\(.+?\)/g, '')
+      // Remove HTML tags
+      .replace(/<[^>]*>/g, '')
+      // Clean up extra whitespace
+      .replace(/\n\n+/g, '\n')
+      .trim()
+  );
+};
 
 export default function Dashboard() {
   const { user, profileCompleted, isVerified } = useAuth();
@@ -52,6 +106,8 @@ export default function Dashboard() {
     totalSpent: 0,
     workshops: [],
     nextWorkshop: null,
+    announcements: [],
+    latestAnnouncement: null,
   });
   const [loading, setLoading] = useState(true);
 
@@ -60,12 +116,16 @@ export default function Dashboard() {
       if (!user) return;
 
       try {
-        const [inPersonTeamData, onlineTeamData, purchasedData, workshopsData] = await Promise.all([
-          inpersonService.getMyTeam(),
-          gamejamService.getMyTeam(),
-          import('@/services/payments.service').then((m) => m.paymentsService.getPurchasedItems()),
-          workshopService.getWorkshops(),
-        ]);
+        const [inPersonTeamData, onlineTeamData, purchasedData, workshopsData, announcementsData] =
+          await Promise.all([
+            inpersonService.getMyTeam(),
+            gamejamService.getMyTeam(),
+            import('@/services/payments.service').then((m) =>
+              m.paymentsService.getPurchasedItems(),
+            ),
+            workshopService.getWorkshops(),
+            announcementService.getMyAnnouncements(),
+          ]);
 
         const now = new Date();
         const upcomingWorkshops = workshopsData
@@ -73,6 +133,15 @@ export default function Dashboard() {
           .sort(
             (a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime(),
           );
+
+        // Find latest announcement (newest first)
+        const sortedAnnouncements = [...announcementsData].sort((a, b) => {
+          const dateA = new Date(a.announcement.created_at || a.created_at).getTime();
+          const dateB = new Date(b.announcement.created_at || b.created_at).getTime();
+          return dateB - dateA;
+        });
+
+        const latestAnnouncement = sortedAnnouncements[0] || null;
 
         setStats({
           profileCompleted,
@@ -86,6 +155,8 @@ export default function Dashboard() {
           totalSpent: purchasedData.total_spent,
           workshops: workshopsData,
           nextWorkshop: upcomingWorkshops[0] || null,
+          announcements: announcementsData,
+          latestAnnouncement,
         });
       } catch (error) {
         console.error('خطا در بارگذاری داشبورد:', error);
@@ -96,6 +167,14 @@ export default function Dashboard() {
 
     loadDashboard();
   }, [user, profileCompleted]);
+
+  const formatWorkshopDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    return {
+      date: date.toLocaleDateString('fa-IR'),
+      time: date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
+    };
+  };
 
   if (!isVerified) {
     return (
@@ -122,14 +201,6 @@ export default function Dashboard() {
       </PixelFrame>
     );
   }
-
-  const formatWorkshopDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return {
-      date: date.toLocaleDateString('fa-IR'),
-      time: date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
-    };
-  };
 
   return (
     <div className="space-y-6">
@@ -186,74 +257,121 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
           <div className="flex items-center gap-3 mb-4">
+            <FaBullhorn className="text-primary-sky text-2xl" />
+            <h2 className="text-xl font-bold text-primary-sky">اطلاعیه‌ها</h2>
+          </div>
+          {stats.latestAnnouncement &&
+          isRecentAnnouncement(
+            stats.latestAnnouncement.announcement.created_at || stats.latestAnnouncement.created_at,
+          ) ? (
+            <div className="space-y-3">
+              <div className="bg-secondary-orangePantone/10 border border-secondary-orangeCrayola/40 rounded p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2 py-0.5 rounded bg-secondary-orangePantone/20 text-secondary-orangeCrayola text-xs font-bold">
+                    جدید
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {formatDateTime(
+                      stats.latestAnnouncement.announcement.created_at ||
+                        stats.latestAnnouncement.created_at,
+                    )}
+                  </span>
+                </div>
+                <h3 className="text-white font-bold mb-2">
+                  {stats.latestAnnouncement.announcement.title || 'بدون عنوان'}
+                </h3>
+                {stats.latestAnnouncement.announcement.description && (
+                  <div className="text-primary-aero text-sm line-clamp-2 whitespace-pre-wrap break-words">
+                    {markdownToPlainText(stats.latestAnnouncement.announcement.description)}
+                  </div>
+                )}
+              </div>
+              <Link
+                to="/panel/announcements"
+                className="pixel-btn pixel-btn-primary w-full text-center block"
+              >
+                مشاهده تمام اطلاعیه‌ها
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-primary-aero mb-4">آخرین اخبار و اطلاعیه‌های رویداد</p>
+              <Link
+                to="/panel/announcements"
+                className="pixel-btn pixel-btn-primary w-full text-center block"
+              >
+                مشاهده اطلاعیه‌ها
+              </Link>
+            </div>
+          )}
+        </PixelFrame>
+
+        <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
+          <div className="flex items-center gap-3 mb-4">
             <FaGamepad className="text-primary-sky text-2xl" />
             <h2 className="text-xl font-bold text-primary-sky">گیم‌جم مجازی</h2>
           </div>
-          <div className="space-y-2 text-primary-aero">
-            <div className="flex justify-between items-center">
-              <span>وضعیت پرداخت:</span>
-              <span
-                className={`flex items-center gap-1 ${stats.onlinePaid ? 'text-green-400' : 'text-gray-400'}`}
+          {stats.onlineRegistered ? (
+            <div className="space-y-2 text-primary-aero">
+              <div className="flex justify-between items-center">
+                <span>وضعیت پرداخت:</span>
+                <span
+                  className={`flex items-center gap-1 ${stats.onlinePaid ? 'text-green-400' : 'text-gray-400'}`}
+                >
+                  {stats.onlinePaid ? <FaCheckCircle /> : <FaTimesCircle />}
+                  {stats.onlinePaid ? 'پرداخت شده' : 'پرداخت نشده'}
+                </span>
+              </div>
+              {stats.onlineTeam && (
+                <>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>نام تیم:</span>
+                    <span className="text-white font-normal flex items-center gap-1">
+                      <FaUsers className="text-primary-aero" />
+                      {stats.onlineTeam.name}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>تعداد اعضا:</span>
+                    <span className="text-primary-aero font-pixel" dir="ltr">
+                      {stats.onlineTeam.member_count}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>وضعیت:</span>
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-bold ${
+                        stats.onlineTeam.status === 'completed' ||
+                        stats.onlineTeam.status === 'attended'
+                          ? 'bg-green-900 bg-opacity-30 text-green-400 border border-green-600'
+                          : stats.onlineTeam.status === 'active'
+                            ? 'bg-blue-900 bg-opacity-30 text-blue-400 border border-blue-600'
+                            : 'bg-gray-800 text-gray-400 border border-gray-600'
+                      }`}
+                    >
+                      {stats.onlineTeam.status === 'completed'
+                        ? 'کامل'
+                        : stats.onlineTeam.status === 'attended'
+                          ? 'شرکت کرده'
+                          : stats.onlineTeam.status === 'active'
+                            ? 'فعال'
+                            : 'پرداخت نشده'}
+                    </span>
+                  </div>
+                </>
+              )}
+              <Link
+                to="/panel/gamejam"
+                className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
               >
-                {stats.onlinePaid ? <FaCheckCircle /> : <FaTimesCircle />}
-                {stats.onlinePaid ? 'پرداخت شده' : 'پرداخت نشده'}
-              </span>
+                مشاهده جزئیات
+              </Link>
             </div>
-            <div className="flex justify-between items-center">
-              <span>وضعیت تیم:</span>
-              <span
-                className={`flex items-center gap-1 ${stats.onlineRegistered ? 'text-green-400' : 'text-gray-400'}`}
-              >
-                {stats.onlineRegistered ? <FaCheckCircle /> : <FaTimesCircle />}
-                {stats.onlineRegistered ? 'دارد' : 'ندارد'}
-              </span>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-gray-400">شما در این رویداد ثبت‌نام نکرده‌اید</p>
+              <p className="text-xs text-gray-500 mt-2">مهلت ثبت‌نام تمام شده است</p>
             </div>
-            {stats.onlineTeam && (
-              <>
-                <div className="flex justify-between items-center text-sm">
-                  <span>نام تیم:</span>
-                  <span className="text-white font-normal flex items-center gap-1">
-                    <FaUsers className="text-primary-aero" />
-                    {stats.onlineTeam.name}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span>تعداد اعضا:</span>
-                  <span className="text-primary-aero font-pixel" dir="ltr">
-                    {stats.onlineTeam.member_count}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span>وضعیت:</span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-bold ${
-                      stats.onlineTeam.status === 'completed' ||
-                      stats.onlineTeam.status === 'attended'
-                        ? 'bg-green-900 bg-opacity-30 text-green-400 border border-green-600'
-                        : stats.onlineTeam.status === 'active'
-                          ? 'bg-blue-900 bg-opacity-30 text-blue-400 border border-blue-600'
-                          : 'bg-gray-800 text-gray-400 border border-gray-600'
-                    }`}
-                  >
-                    {stats.onlineTeam.status === 'completed'
-                      ? 'کامل'
-                      : stats.onlineTeam.status === 'attended'
-                        ? 'شرکت کرده'
-                        : stats.onlineTeam.status === 'active'
-                          ? 'فعال'
-                          : 'پرداخت نشده'}
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-          {profileCompleted && (
-            <Link
-              to="/panel/gamejam"
-              className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
-            >
-              {stats.onlineRegistered ? 'مشاهده جزئیات' : 'ثبت‌نام'}
-            </Link>
           )}
         </PixelFrame>
 
@@ -311,20 +429,6 @@ export default function Dashboard() {
               مشاهده همه ({stats.workshops.length})
             </Link>
           </div>
-        </PixelFrame>
-
-        <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
-          <div className="flex items-center gap-3 mb-4">
-            <FaBullhorn className="text-primary-sky text-2xl" />
-            <h2 className="text-xl font-bold text-primary-sky">اطلاعیه‌ها</h2>
-          </div>
-          <p className="text-primary-aero mb-4">آخرین اخبار و اطلاعیه‌های رویداد</p>
-          <Link
-            to="/panel/announcements"
-            className="pixel-btn pixel-btn-primary w-full text-center block"
-          >
-            مشاهده اطلاعیه‌ها
-          </Link>
         </PixelFrame>
 
         <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
