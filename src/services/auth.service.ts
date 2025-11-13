@@ -1,4 +1,5 @@
 import { apiClient } from './api';
+import { tokenStorage } from './tokenStorage';
 
 export interface CheckEmailData {
   email: string;
@@ -95,6 +96,7 @@ export interface ChangePasswordData {
 
 export interface TokenRefreshResponse {
   access: string;
+  refresh?: string;
 }
 
 class AuthService {
@@ -130,28 +132,20 @@ class AuthService {
     return apiClient.post<{ message: string }>('/accounts/change-password/', data);
   }
 
-  async refreshToken(refreshToken: string): Promise<TokenRefreshResponse> {
-    return apiClient.post<TokenRefreshResponse>('/accounts/token/refresh/', {
-      refresh: refreshToken,
-    });
-  }
-
   setTokens(access: string, refresh: string): void {
-    localStorage.setItem('access_token', access);
-    localStorage.setItem('refresh_token', refresh);
+    tokenStorage.setTokens(access, refresh);
   }
 
   clearTokens(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    tokenStorage.clearTokens();
   }
 
   getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+    return tokenStorage.getAccessToken();
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
+    return tokenStorage.getRefreshToken();
   }
 }
 
