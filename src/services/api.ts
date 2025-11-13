@@ -1,3 +1,5 @@
+import { tokenStorage } from './tokenStorage';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 interface ApiError {
@@ -24,7 +26,7 @@ class ApiClient {
       'Content-Type': 'application/json',
     });
 
-    const token = localStorage.getItem('access_token');
+    const token = tokenStorage.getAccessToken();
     if (token) {
       headers.append('Authorization', `Bearer ${token}`);
     }
@@ -33,11 +35,11 @@ class ApiClient {
   }
 
   private async refreshToken(): Promise<string | null> {
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = tokenStorage.getRefreshToken();
     if (!refreshToken) return null;
 
     try {
-      const response = await fetch(`${this.baseURL}/accounts/refresh/`, {
+      const response = await fetch(`${this.baseURL}/accounts/token/refresh/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refresh: refreshToken }),
@@ -45,12 +47,21 @@ class ApiClient {
 
       if (!response.ok) throw new Error('Refresh failed');
 
-      const data = await response.json();
-      localStorage.setItem('access_token', data.access);
+      const data: { access?: string; refresh?: string } = await response.json();
+
+      if (!data.access) {
+        throw new Error('Invalid refresh response');
+      }
+
+      tokenStorage.setAccessToken(data.access);
+      if (data.refresh) {
+        tokenStorage.setRefreshToken(data.refresh);
+      }
+
       return data.access;
-    } catch {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+    } catch (err) {
+      console.error('Token refresh failed:', err);
+      tokenStorage.clearTokens();
       window.location.href = '/';
       return null;
     }

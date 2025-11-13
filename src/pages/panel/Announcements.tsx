@@ -1,4 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
+import remarkMath from 'remark-math';
+import 'katex/dist/katex.min.css';
 
 import Loading from '@/components/Loading';
 import PixelFrame from '@/components/PixelFrame';
@@ -23,7 +28,7 @@ const isRecentAnnouncement = (isoDate: string) => {
   if (Number.isNaN(createdAt.getTime())) return false;
   const now = new Date();
   const diffInHours = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
-  return diffInHours <= 72;
+  return diffInHours <= 24;
 };
 
 interface AnnouncementCard {
@@ -121,9 +126,65 @@ export default function Announcements() {
                   </div>
                 </div>
                 {announcement.description ? (
-                  <p className="text-primary-aero leading-relaxed whitespace-pre-wrap">
-                    {announcement.description}
-                  </p>
+                  <div className="prose prose-invert max-w-none text-primary-aero">
+                    <ReactMarkdown
+                      skipHtml={false}
+                      remarkPlugins={[remarkMath]}
+                      rehypePlugins={[rehypeRaw, rehypeKatex]}
+                      components={{
+                        h1: ({ ...props }) => (
+                          <h1 className="text-3xl font-bold text-white mb-4" {...props} />
+                        ),
+                        h2: ({ ...props }) => (
+                          <h2 className="text-2xl font-bold text-white mb-3 mt-6" {...props} />
+                        ),
+                        h3: ({ ...props }) => (
+                          <h3 className="text-xl font-semibold text-white mb-2 mt-4" {...props} />
+                        ),
+                        p: ({ ...props }) => (
+                          <p className="text-primary-aero leading-relaxed mb-3" {...props} />
+                        ),
+                        ul: ({ ...props }) => (
+                          <ul
+                            className="text-primary-aero list-disc list-inside mb-3 space-y-1"
+                            {...props}
+                          />
+                        ),
+                        ol: ({ ...props }) => (
+                          <ol
+                            className="text-primary-aero list-decimal list-inside mb-3 space-y-1"
+                            {...props}
+                          />
+                        ),
+                        li: ({ ...props }) => <li className="text-primary-aero" {...props} />,
+                        a: ({ ...props }) => (
+                          <a
+                            className="text-primary-columbia hover:text-primary-sky underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...props}
+                          />
+                        ),
+                        strong: ({ ...props }) => (
+                          <strong className="text-primary-columbia font-bold" {...props} />
+                        ),
+                        code: ({ ...props }) => (
+                          <code
+                            className="bg-primary-midnight/80 text-primary-columbia px-2 py-1 rounded font-mono text-sm"
+                            {...props}
+                          />
+                        ),
+                        pre: ({ ...props }) => (
+                          <pre
+                            className="bg-primary-midnight/80 p-4 rounded-lg border border-primary-cerulean/40 overflow-x-auto mb-4"
+                            {...props}
+                          />
+                        ),
+                      }}
+                    >
+                      {announcement.description}
+                    </ReactMarkdown>
+                  </div>
                 ) : (
                   <p className="text-primary-aero text-sm">بدون توضیحات</p>
                 )}

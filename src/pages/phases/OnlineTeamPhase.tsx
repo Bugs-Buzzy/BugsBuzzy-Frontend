@@ -4,11 +4,12 @@ import { FaEdit, FaCheckCircle, FaImage } from 'react-icons/fa';
 import Loading from '@/components/Loading';
 import PixelModal from '@/components/modals/PixelModal';
 import PixelFrame from '@/components/PixelFrame';
-import { GAMEJAM_TEAM_CONFIG } from '@/constants/gamejam';
+import { GAMEJAM_PAYMENT_ITEM, GAMEJAM_TEAM_CONFIG } from '@/constants/gamejam';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import type { ApiError } from '@/services/api';
 import { gamejamService, type OnlineTeam, type OnlineTeamMember } from '@/services/gamejam.service';
+import { paymentsService } from '@/services/payments.service';
 import { extractFieldErrors, translateError } from '@/utils/errorMessages';
 import { ImageProcessor } from '@/utils/imageProcessor';
 
@@ -21,8 +22,10 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   const [team, setTeam] = useState<OnlineTeam | null>(null);
   const [members, setMembers] = useState<OnlineTeamMember[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [registrationClosed, setRegistrationClosed] = useState<boolean | null>(null);
   const toast = useToast();
 
   const [teamName, setTeamName] = useState('');
@@ -38,11 +41,16 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
   useEffect(() => {
     const initTeam = async () => {
-      await loadTeam();
+      try {
+        await loadTeam();
+        await checkRegistrationAvailability();
 
-      // After initial load, check if team is already complete and notify once
-      if (!hasNotifiedCompleteRef.current && onTeamComplete) {
-        hasNotifiedCompleteRef.current = true;
+        // After initial load, check if team is already complete and notify once
+        if (!hasNotifiedCompleteRef.current && onTeamComplete) {
+          hasNotifiedCompleteRef.current = true;
+        }
+      } finally {
+        setInitializing(false);
       }
     };
 
@@ -61,6 +69,22 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       onTeamComplete();
     }
   }, [team?.status, onTeamComplete]);
+
+  const checkRegistrationAvailability = async () => {
+    try {
+      const result = await paymentsService.getPrice([GAMEJAM_PAYMENT_ITEM]);
+      const isClosed = result.amount <= 0;
+      setRegistrationClosed(isClosed);
+
+      if (isClosed) {
+        setShowCreateForm(false);
+        setShowJoinForm(false);
+      }
+    } catch (err) {
+      console.error('Failed to check registration availability:', err);
+      setRegistrationClosed(null);
+    }
+  };
 
   const loadTeam = async () => {
     setLoading(true);
@@ -86,6 +110,11 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   };
 
   const handleCreateTeam = async () => {
+    if (registrationClosed) {
+      toast.error('ثبت‌نام در حال حاضر بسته است');
+      return;
+    }
+
     if (!teamName.trim()) {
       setFieldErrors({ name: 'نام تیم الزامی است' });
       return;
@@ -110,6 +139,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
       // Reload team and trigger phase change to move to payment
       await loadTeam();
+      setRegistrationClosed(false);
       if (onTeamComplete) {
         onTeamComplete();
       }
@@ -130,6 +160,11 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   };
 
   const handleJoinTeam = async () => {
+    if (registrationClosed) {
+      toast.error('ثبت‌نام در حال حاضر بسته است');
+      return;
+    }
+
     if (!inviteCode || inviteCode.length !== 8) {
       setFieldErrors({ invite_code: 'کد دعوت باید 8 کاراکتر باشد' });
       return;
@@ -145,6 +180,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       setShowJoinForm(false);
       toast.success('با موفقیت به تیم پیوستید!');
       await loadTeam();
+      setRegistrationClosed(false);
     } catch (err) {
       console.error('Join team error:', err);
       const apiError = err as ApiError;
@@ -172,6 +208,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       setMembers([]);
       toast.success('از تیم خارج شدید');
       await loadTeam();
+      await checkRegistrationAvailability();
     } catch (err) {
       console.error('Leave team error:', err);
       const apiError = err as ApiError;
@@ -273,7 +310,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
   const isLeader = team ? user?.email === team.leader.email : false;
 
-  if (loading) {
+  if (loading || initializing) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
         <div className="py-8">
@@ -490,6 +527,16 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
             )}
           </PixelFrame>
         </div>
+      ) : registrationClosed ? (
+        <PixelFrame className="bg-primary-midnight bg-opacity-90 border border-primary-cerulean">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-primary-sky">🔒 ثبت‌نام بسته است</h2>
+            <p className="text-primary-aero text-sm leading-relaxed">
+              متأسفانه ظرفیت ثبت‌نام گیم‌جم آنلاین تکمیل شده است. در صورت باز شدن ظرفیت‌های جدید، از
+              طریق شبکه‌های اجتماعی باگزبازی اطلاع‌رسانی خواهد شد.
+            </p>
+          </div>
+        </PixelFrame>
       ) : (
         /* Team Action - Create or Join */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

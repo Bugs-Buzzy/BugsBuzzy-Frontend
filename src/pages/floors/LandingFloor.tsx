@@ -1,16 +1,16 @@
 import { forwardRef, useState } from 'react';
 import { FaChevronDown, FaGamepad } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 import bgLanding from '@/assets/bkg-landing.png';
 import nameImg from '@/assets/name.png'; // 👈 تصویر جدیدت
 import { SocialLinks } from '@/components/SocialLinks';
-import { useAuth } from '@/context/AuthContext';
+// import { useAuth } from '@/context/AuthContext';
 import LoginModal from '@/pages/modals/LoginModal';
 
 const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  // const navigate = useNavigate();
+  // const { isAuthenticated } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   return (
     <section
@@ -22,7 +22,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
         <div className="text-center space-y-8 -translate-y-12 md:-translate-y-16">
           <img src={nameImg} alt="BugsBuzzy" className="w-[500px] md:w-[800px] h-auto" />
 
-          <button
+          {/* <button
             onClick={() => {
               if (isAuthenticated) {
                 navigate('/panel');
@@ -34,7 +34,7 @@ const LandingFloor = forwardRef<HTMLElement>((props, ref) => {
           >
             <span className="relative z-10">ثبت‌نام در گیم‌جم</span>
             <span className="absolute inset-0 bg-white/20 blur-xl opacity-0 hover:opacity-60 transition-opacity duration-700"></span>
-          </button>
+          </button> */}
           <SocialLinks />
         </div>
 

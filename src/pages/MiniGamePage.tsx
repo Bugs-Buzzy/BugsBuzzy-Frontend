@@ -28,6 +28,8 @@ interface MinigameSubmitResponse {
   discount_percentage: number;
 }
 
+const REGISTRATION_CLOSED = true;
+
 const MiniGamePage = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
@@ -165,6 +167,28 @@ const MiniGamePage = () => {
             )}
           </div>
           <p className="text-gray-400 mb-4">هر کاربر فقط یک بار می‌تواند بازی کند</p>
+          <button
+            onClick={() => navigate('/')}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+          >
+            بازگشت به صفحه اصلی
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (REGISTRATION_CLOSED) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
+        <div className="text-center p-6 sm:p-8 bg-gray-800 rounded-2xl shadow-lg max-w-md w-full">
+          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-6">
+            مهلت ثبت‌نام به پایان رسیده است
+          </h1>
+          <p className="text-lg sm:text-xl text-gray-100 mb-6 leading-relaxed">
+            از علاقه‌مندی شما برای شرکت در مینی‌گیم باگزبازی ممنونیم. ثبت‌نام در حال حاضر بسته شده
+            است و به‌زودی اطلاعات دوره‌های بعدی را اطلاع‌رسانی خواهیم کرد.
+          </p>
           <button
             onClick={() => navigate('/')}
             className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
