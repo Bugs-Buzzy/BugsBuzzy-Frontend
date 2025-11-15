@@ -68,12 +68,11 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
         <div className="pointer-events-auto flex justify-between items-start p-3 md:p-6">
-          {/* 👇 دکمه‌ای که پاپ‌آپ اطلاعات تماس را باز می‌کند */}
           <button
             onClick={() => setShowContactPopup(true)}
             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md transition-all text-sm md:text-base"
           >
-            تماس با ما
+            درباره ما
           </button>
 
           <div className="flex items-center gap-2 md:gap-3">
