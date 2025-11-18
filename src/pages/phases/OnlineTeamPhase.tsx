@@ -66,6 +66,11 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
       return;
     }
 
+    if (prevStatusRef.current && prevStatusRef.current === status && isTeamFinalStatus(status)) {
+      // Already notified for this final status (or further actions), no need to re-trigger
+      return;
+    }
+
     const prevStatus = prevStatusRef.current;
     const currentlyFinal = isTeamFinalStatus(status);
     const previouslyFinal = isTeamFinalStatus(prevStatus);
