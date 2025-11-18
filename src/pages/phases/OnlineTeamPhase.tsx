@@ -13,6 +13,9 @@ import { paymentsService } from '@/services/payments.service';
 import { extractFieldErrors, translateError } from '@/utils/errorMessages';
 import { ImageProcessor } from '@/utils/imageProcessor';
 
+const isTeamFinalStatus = (status: 'inactive' | 'active' | 'completed' | 'attended' | null) =>
+  status === 'completed' || status === 'attended';
+
 interface OnlineTeamPhaseProps {
   onTeamComplete?: () => void;
 }
@@ -38,17 +41,13 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
   const [showRevokeModal, setShowRevokeModal] = useState(false);
 
   const hasNotifiedCompleteRef = useRef(false);
+  const prevStatusRef = useRef<OnlineTeam['status'] | null>(null);
 
   useEffect(() => {
     const initTeam = async () => {
       try {
         await loadTeam();
         await checkRegistrationAvailability();
-
-        // After initial load, check if team is already complete and notify once
-        if (!hasNotifiedCompleteRef.current && onTeamComplete) {
-          hasNotifiedCompleteRef.current = true;
-        }
       } finally {
         setInitializing(false);
       }
@@ -59,15 +58,30 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
   // Notify parent only when team status changes TO completed/attended
   useEffect(() => {
-    if (
-      team &&
-      (team.status === 'completed' || team.status === 'attended') &&
-      onTeamComplete &&
-      !hasNotifiedCompleteRef.current
-    ) {
+    const status = team?.status ?? null;
+
+    if (!status) {
+      prevStatusRef.current = null;
+      hasNotifiedCompleteRef.current = false;
+      return;
+    }
+
+    const prevStatus = prevStatusRef.current;
+    const currentlyFinal = isTeamFinalStatus(status);
+    const previouslyFinal = isTeamFinalStatus(prevStatus);
+
+    if (!currentlyFinal) {
+      hasNotifiedCompleteRef.current = false;
+    }
+
+    const becameFinal = prevStatus !== status && !previouslyFinal && currentlyFinal;
+
+    if (becameFinal && onTeamComplete && !hasNotifiedCompleteRef.current) {
       hasNotifiedCompleteRef.current = true;
       onTeamComplete();
     }
+
+    prevStatusRef.current = status;
   }, [team?.status, onTeamComplete]);
 
   const checkRegistrationAvailability = async () => {
