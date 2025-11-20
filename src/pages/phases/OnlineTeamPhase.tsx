@@ -13,7 +13,7 @@ import { paymentsService } from '@/services/payments.service';
 import { extractFieldErrors, translateError } from '@/utils/errorMessages';
 import { ImageProcessor } from '@/utils/imageProcessor';
 
-const isTeamFinalStatus = (status: 'inactive' | 'active' | 'completed' | 'attended' | null) =>
+const isTeamFinalStatus = (status: OnlineTeam['status'] | null) =>
   status === 'completed' || status === 'attended';
 
 interface OnlineTeamPhaseProps {
@@ -42,6 +42,7 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
 
   const hasNotifiedCompleteRef = useRef(false);
   const prevStatusRef = useRef<OnlineTeam['status'] | null>(null);
+  const hasSeenStatusRef = useRef(false);
 
   useEffect(() => {
     const initTeam = async () => {
@@ -63,11 +64,14 @@ export default function OnlineTeamPhase({ onTeamComplete }: OnlineTeamPhaseProps
     if (!status) {
       prevStatusRef.current = null;
       hasNotifiedCompleteRef.current = false;
+      hasSeenStatusRef.current = false;
       return;
     }
 
-    if (prevStatusRef.current && prevStatusRef.current === status && isTeamFinalStatus(status)) {
-      // Already notified for this final status (or further actions), no need to re-trigger
+    if (!hasSeenStatusRef.current) {
+      hasSeenStatusRef.current = true;
+      prevStatusRef.current = status;
+      hasNotifiedCompleteRef.current = isTeamFinalStatus(status);
       return;
     }
 

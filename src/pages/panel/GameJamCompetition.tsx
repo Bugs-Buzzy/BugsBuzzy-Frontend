@@ -188,6 +188,12 @@ export default function GameJamCompetition() {
     }
   };
 
+  const handleTeamComplete = () => {
+    manualPhaseSelectionRef.current = true;
+    setViewingPhase(2);
+    loadStatus();
+  };
+
   if (!profileCompleted) {
     return (
       <PixelFrame className="bg-primary-oxfordblue bg-opacity-90">
@@ -232,7 +238,7 @@ export default function GameJamCompetition() {
       <ProgressBar phases={phases} currentPhase={currentPhase} onPhaseClick={handlePhaseChange} />
 
       {/* Phase Content */}
-      {viewingPhase === 0 && <OnlineTeamPhase onTeamComplete={loadStatus} />}
+      {viewingPhase === 0 && <OnlineTeamPhase onTeamComplete={handleTeamComplete} />}
 
       {viewingPhase === 1 &&
         myTeam &&
