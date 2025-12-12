@@ -25,7 +25,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showFastTravel, setShowFastTravel] = useState(true);
   const { isAuthenticated } = useAuth();
-  const [showContactPopup, setShowContactPopup] = useState(false);
+  // const [showContactPopup, setShowContactPopup] = useState(false);
 
   useEffect(() => {
     let hideTimeout: ReturnType<typeof setTimeout>;
@@ -68,12 +68,12 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
         <div className="pointer-events-auto flex justify-between items-start p-3 md:p-6">
-          <button
+          {/* <button
             onClick={() => setShowContactPopup(true)}
             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md transition-all text-sm md:text-base"
           >
-            درباره ما
-          </button>
+            تماس با ما
+          </button> */}
 
           <div className="flex items-center gap-2 md:gap-3">
             <a
@@ -146,33 +146,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
 
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
 
-      {showContactPopup && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setShowContactPopup(false)}
-        >
-          <div
-            className="bg-gray-900 border-2 border-gray-700 rounded-xl shadow-2xl p-6 w-full max-w-sm text-white relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-bold mb-4 text-center">درباره ما</h2>
-
-            <p className="mb-2 text-sm">ایمیل: info@bugsbuzzy.ir</p>
-            <p className="mb-2 text-sm">شماره تماس: 09155709655</p>
-            <p className="text-sm leading-relaxed">
-              آدرس: دانشگاه صنعتی شریف، دانشکده مهندسی کامپیوتر، طبقه همکف، اتاق انجمن علمی
-            </p>
-
-            <button
-              className="mt-5 w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg transition-all"
-              onClick={() => setShowContactPopup(false)}
-            >
-              بستن
-            </button>
-          </div>
-        </div>
-      )}
-      {showContactPopup && (
+      {/* {showContactPopup && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => setShowContactPopup(false)}
@@ -208,7 +182,7 @@ export default function HUD({ onFloorNavigate, currentFloor }: HUDProps) {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 }

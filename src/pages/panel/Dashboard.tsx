@@ -360,12 +360,9 @@ export default function Dashboard() {
                   </div>
                 </>
               )}
-              <Link
-                to="/panel/gamejam"
-                className="pixel-btn pixel-btn-primary w-full mt-4 text-center block"
-              >
-                مشاهده جزئیات
-              </Link>
+              <div className="pixel-btn bg-gray-500 text-gray-300 cursor-not-allowed w-full mt-4 text-center block opacity-70">
+                رقابت به پایان رسیده
+              </div>
             </div>
           ) : (
             <div className="text-center py-4">
